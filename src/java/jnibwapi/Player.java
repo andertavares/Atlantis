@@ -112,7 +112,7 @@ public class Player {
         return raceID;
     }
 
-    public RaceType getRace() {
+    public Race getRace() {
         return RaceTypes.getRaceType(raceID);
     }
 
