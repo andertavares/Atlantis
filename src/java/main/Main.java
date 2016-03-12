@@ -24,7 +24,7 @@ public class Main {
         Atlantis atlantis = new Atlantis();
 
         // Starts bot.
-        atlantis.start();
+        atlantis.run();
     }
 
 }

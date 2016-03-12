@@ -5,16 +5,16 @@ import atlantis.constructing.ProtossConstructionManager;
 import atlantis.information.AtlantisUnitInformationManager;
 import atlantis.init.AtlantisInitialActions;
 import atlantis.production.strategies.AtlantisProductionStrategy;
-import jnibwapi.BWAPIEventListener;
-import jnibwapi.JNIBWAPI;
-import jnibwapi.Position;
-import jnibwapi.Unit;
-import jnibwapi.types.RaceType;
+import atlantis.util.UnitUtil;
+import bwapi.*;
+import bwta.BWTA;
+import bwta.BaseLocation;
+import jnibwapi.types.UnitType.UnitTypes;
 
 /**
  * Main bridge between the game and your code, build over JNIBWAPI.
  */
-public class Atlantis implements BWAPIEventListener {
+public class Atlantis implements BWEventListener {
 
     /**
      * Singleton instance.
@@ -22,9 +22,11 @@ public class Atlantis implements BWAPIEventListener {
     private static Atlantis instance;
     
     /**
-     * JNIBWAPI is core
+     * BWAPI is core
      */
-    private JNIBWAPI bwapi;
+    private Mirror mirror = new Mirror();
+    private Game bwapi;
+    //private JNIBWAPI bwapi;
     
     /**
      * Top abstraction-level class that governs all units, buildings etc.
@@ -84,7 +86,7 @@ public class Atlantis implements BWAPIEventListener {
         instance = this;
 
         // Standard procedure: create and save Jnibwapi reference
-        bwapi = new JNIBWAPI(this, true);
+        //bwapi = new JNIBWAPI(this, true);
     }
 
     // =========================================================
@@ -92,12 +94,15 @@ public class Atlantis implements BWAPIEventListener {
     /**
      * Starts the bot.
      */
-    public void start() {
+    public void run() {
         if (!_isStarted) {
             _isPaused = false;
             _isStarted = true;
 
-            bwapi.start();
+            mirror.getModule().setEventListener(this);
+            mirror.startGame();
+            
+            bwapi = mirror.getGame();
         }
     }
 
@@ -114,35 +119,29 @@ public class Atlantis implements BWAPIEventListener {
      * This method returns bridge connector between Atlantis and Starcraft, which is JNIWAPI object. It
      * provides low-level functionality for functions like canBuildHere etc. For more details,
      * see JNIBWAPI project documentation.
-     */
-    public static JNIBWAPI getBwapi() {
-        return instance.bwapi;
-    }
+     *
+    public static Game getBwapi() {
+        return bwapi.;
+    }*/
 
     // =========================================================
     
-    /**
-     * Client (bot) has connected to the game.
-     */
-    @Override
-    public void connected() {
-    }
-
+    
     /**
      * It's executed only once, before the first game frame happens.
      */
     @Override
-    public void matchStart() {
+    public void onStart() {
 
         // #### INITIALIZE CONFIG AND PRODUCTION QUEUE ####
         // =========================================================
         // Set up base configuration based on race used.
-        RaceType racePlayed = AtlantisGame.getPlayerUs().getRace();
-        if (racePlayed.equals(RaceType.RaceTypes.Protoss)) {
+        Race racePlayed = bwapi.self().getRace(); //AtlantisGame.getPlayerUs().getRace();
+        if (racePlayed.equals(Race.Protoss)) {
             AtlantisConfig.useConfigForProtoss();
-        } else if (racePlayed.equals(RaceType.RaceTypes.Terran)) {
+        } else if (racePlayed.equals(Race.Terran)) {
             AtlantisConfig.useConfigForTerran();
-        } else if (racePlayed.equals(RaceType.RaceTypes.Zerg)) {
+        } else if (racePlayed.equals(Race.Zerg)) {
             AtlantisConfig.useConfigForZerg();
         }
 
@@ -159,15 +158,15 @@ public class Atlantis implements BWAPIEventListener {
 
         // =========================================================
         gameCommander = new AtlantisGameCommander();
-        bwapi.setGameSpeed(AtlantisConfig.GAME_SPEED);
-        bwapi.enableUserInput();
+        bwapi.setLocalSpeed(AtlantisConfig.GAME_SPEED);
+        bwapi.enableFlag(1);	//FIXME: use the Enum'ed value
     }
 
     /**
      * It's single time frame, entire logic goes in here. It's executed approximately 25 times per second.
      */
     @Override
-    public void matchFrame() {
+    public void onFrame() {
 
         // Initial actions - those should be executed only once.
         if (!_initialActionsExecuted) {
@@ -211,18 +210,17 @@ public class Atlantis implements BWAPIEventListener {
      * @see unitCreate()
      */
     @Override
-    public void unitCreate(int unitID) {
-        Unit unit = Unit.getByID(unitID);
+    public void onUnitCreate(Unit unit) {
         if (unit != null) {
             AtlantisUnitInformationManager.rememberUnit(unit);
 
             // Our unit
-            if (unit.getPlayer().isSelf()) {
+            if (unit.getPlayer().equals(bwapi.self())) {
 //                AtlantisUnitInformationManager.addOurUnfinishedUnit(unit.getType());
                 AtlantisGame.getProductionStrategy().rebuildQueue();
                 
                 // Apply construction fix: detect new Protoss buildings and remove them from queue.
-                if (AtlantisGame.playsAsProtoss() && unit.isBuilding()) {
+                if (AtlantisGame.playsAsProtoss() && unit.getType().isBuilding()) {
                     ProtossConstructionManager.handleWarpingNewBuilding(unit);
                 }
             }
@@ -234,17 +232,16 @@ public class Atlantis implements BWAPIEventListener {
      * New unit has been completed, it's existing on map. It's executed only once per unit.
      */
     @Override
-    public void unitComplete(int unitID) {
-        Unit unit = Unit.getByID(unitID);
+    public void onUnitComplete(Unit unit) {
         if (unit != null) {
 
             // Our unit
-            if (unit.getPlayer().isSelf() && !unit.isLarvaOrEgg()) {
+            if (unit.getPlayer().equals(bwapi.self()) && ! (unit.getType().equals(UnitTypes.Zerg_Larva) || unit.getType().equals(UnitTypes.Zerg_Egg))) {
 //                AtlantisUnitInformationManager.addOurFinishedUnit(unit.getType());
                 AtlantisGroupManager.possibleCombatUnitCreated(unit);
             }
         } else {
-            System.err.println("Unit complete is null " + unitID);
+            System.err.println("Unit complete is null " + unit.getID());
         }
     }
     
@@ -252,34 +249,34 @@ public class Atlantis implements BWAPIEventListener {
      * A unit has been destroyed. It was either our unit or enemy unit. 
      */
     @Override
-    public void unitDestroy(int unitID) {
+    public void onUnitDestroy(Unit unit) {
 
         // We need to get unit by ID, but we need to use our own solution, because normally if we iterated against
         // objects in getAllUnits(), dead unit objects would be gone. But if we manually save them, we can access them
         // at this point, when they're already dead.
-        Unit unit = AtlantisUnitInformationManager.getUnitByID(unitID);
+        Unit theUnit = AtlantisUnitInformationManager.getUnitByID(unit.getID());
 
-        if (unit != null) {
-            AtlantisUnitInformationManager.unitDestroyed(unit);
+        if (theUnit != null) {
+            AtlantisUnitInformationManager.unitDestroyed(theUnit);
 
             // Our unit
-            if (unit.getPlayer().isSelf()) {
+            if (theUnit.getPlayer().equals(bwapi.self())) {
                 AtlantisGame.getProductionStrategy().rebuildQueue();
-                AtlantisGroupManager.battleUnitDestroyed(unit);
+                AtlantisGroupManager.battleUnitDestroyed(theUnit);
                 LOST++;
-                LOST_RESOURCES += unit.getType().getTotalResources();
+                LOST_RESOURCES += UnitUtil.getTotalPrice(theUnit.getType());
             } else {
                 KILLED++;
-                KILLED_RESOURCES += unit.getType().getTotalResources();
+                KILLED_RESOURCES +=  UnitUtil.getTotalPrice(theUnit.getType());
             }
         }
 
         // Forever forget this poor unit
-        AtlantisUnitInformationManager.forgetUnit(unitID);
+        AtlantisUnitInformationManager.forgetUnit(unit.getID());
 
         // =========================================================
         // Game SPEED change
-        if (AtlantisConfig.USE_DYNAMIC_GAME_SPEED_SLOWDOWN && !_dynamicSlowdown_isSlowdownActive && !unit.isBuilding()) {
+        if (AtlantisConfig.USE_DYNAMIC_GAME_SPEED_SLOWDOWN && !_dynamicSlowdown_isSlowdownActive && !theUnit.getType().isBuilding()) {
             activateDynamicSlowdownMode();
         }
     }
@@ -289,13 +286,12 @@ public class Atlantis implements BWAPIEventListener {
      * a <b>mineral</b> or a <b>critter</b>.
      */
     @Override
-    public void unitDiscover(int unitID) {
-        Unit unit = Unit.getByID(unitID);
+    public void onUnitDiscover(Unit unit) {
         if (unit != null) {
             AtlantisUnitInformationManager.rememberUnit(unit);
 
             // Enemy unit
-            if (unit.getPlayer().isEnemy()) {
+            if (bwapi.self().isEnemy(unit.getPlayer())) {
                 AtlantisUnitInformationManager.discoveredEnemyUnit(unit);
 
                 // =========================================================
@@ -311,19 +307,18 @@ public class Atlantis implements BWAPIEventListener {
      * Called when unit is hidden by a fog war and it becomes inaccessible by the BWAPI.
      */
     @Override
-    public void unitEvade(int unitID) {
+    public void onUnitEvade(Unit unit) {
     }
 
     /**
      * Called just as a visible unit is becoming invisible.
      */
     @Override
-    public void unitHide(int unitID) {
-        Unit unit = Unit.getByID(unitID);
+    public void onUnitHide(Unit unit) {
         if (unit != null) {
 
             // Enemy unit
-            if (unit.getPlayer().isEnemy()) {
+            if (bwapi.self().isEnemy(unit.getPlayer())) {
                 AtlantisUnitInformationManager.removeEnemyUnitVisible(unit);
             }
         }
@@ -335,36 +330,35 @@ public class Atlantis implements BWAPIEventListener {
      * For example, when a Drone transforms into a Hatchery, a Siege Tank uses Siege Mode, or a Vespene Geyser receives a Refinery.
      */
     @Override
-    public void unitMorph(int unitID) {
+    public void onUnitMorph(Unit unit) {
         
         // A bit of safe approach: forget the unit and remember it again.
         
         // =========================================================
         // Forget unit
-        Unit unit = AtlantisUnitInformationManager.getUnitByID(unitID);
 
         if (unit != null) {
             AtlantisUnitInformationManager.unitDestroyed(unit);
 
             // Our unit
-            if (unit.getPlayer().isSelf()) {
+            if (unit.getPlayer().equals(bwapi.self())) {
                 AtlantisGame.getProductionStrategy().rebuildQueue();
                 AtlantisGroupManager.battleUnitDestroyed(unit);
             }
-            else if (unit.getPlayer().isEnemy()) {
+            else if (bwapi.self().isEnemy(unit.getPlayer())) {
                 AtlantisUnitInformationManager.discoveredEnemyUnit(unit);
             }
         }
 
         // Forever forget this poor unit
-        AtlantisUnitInformationManager.forgetUnit(unitID);
+        AtlantisUnitInformationManager.forgetUnit(unit.getID());
         
         // =========================================================
         // Remember the unit
         if (unit != null) {
 
             // Our unit
-            if (unit.getPlayer().isSelf() && !unit.isLarvaOrEgg()) {
+            if (unit.getPlayer().equals(bwapi.self()) && ! (unit.getType().equals(UnitTypes.Zerg_Larva) || unit.getType().equals(UnitTypes.Zerg_Egg))) {
 //                AtlantisUnitInformationManager.addOurFinishedUnit(unit.getType());
                 AtlantisGroupManager.possibleCombatUnitCreated(unit);
             }
@@ -375,12 +369,11 @@ public class Atlantis implements BWAPIEventListener {
      * Called when a previously invisible unit becomes visible.
      */
     @Override
-    public void unitShow(int unitID) {
-        Unit unit = Unit.getByID(unitID);
+    public void onUnitShow(Unit unit) {
         if (unit != null) {
 
             // Enemy unit
-            if (unit.getPlayer().isEnemy()) {
+            if (bwapi.self().isEnemy(unit.getPlayer())) {
                 AtlantisUnitInformationManager.addEnemyUnitVisible(unit);
             }
         }
@@ -390,12 +383,12 @@ public class Atlantis implements BWAPIEventListener {
      * Unit has been converted and joined the enemy (by Dark Archon).
      */
     @Override
-    public void unitRenegade(int unitID) {
+    public void onUnitRenegade(Unit unit) {
     }
 
     /**
      * Any key has been pressed. Can be used to define key shortcuts.
-     */
+     *
     @Override
     public void keyPressed(int keyCode) {
         // System.err.println("########################################");
@@ -417,13 +410,13 @@ public class Atlantis implements BWAPIEventListener {
             AtlantisConfig.GAME_SPEED += 2;
             AtlantisGame.changeSpeed(AtlantisConfig.GAME_SPEED);
         }
-    }
+    }*/
 
     /**
      * Match has ended. Shortly after that the game will go to the menu.
      */
     @Override
-    public void matchEnd(boolean winner) {
+    public void onEnd(boolean winner) {
         instance = new Atlantis();
     }
 
@@ -431,50 +424,52 @@ public class Atlantis implements BWAPIEventListener {
      * Send text using in game chat. Can be used to type in cheats.
      */
     @Override
-    public void sendText(String text) {
+    public void onSendText(String text) {
     }
 
     /**
      * The other bot or observer has sent a message using game chat.
      */
     @Override
-    public void receiveText(String text) {
+    public void onReceiveText(Player player, String s) {
+
     }
 
     /**
      * "Nuclear launch detected".
      */
     @Override
-    public void nukeDetect(Position p) {
+    public void onNukeDetect(Position p) {
     }
 
     /**
      * "Nuclear launch detected". 
      * <b>Guess: I guess in this case we don't know the exact point of it.</b>
-     */
+     *
     @Override
     public void nukeDetect() {
-    }
+    }*/
 
     /**
      * Other player has left the game.
      */
     @Override
-    public void playerLeft(int playerID) {
+    public void onPlayerLeft(Player player) {
+
     }
 
     /**
      * <b>Not sure, haven't used it, sorry</b>.
      */
     @Override
-    public void saveGame(String gameName) {
+    public void onSaveGame(String gameName) {
     }
 
     /**
      * Other player has been thrown out from the game.
      */
     @Override
-    public void playerDropped(int playerID) {
+    public void onPlayerDropped(Player player) {
     }
 
     // =========================================================
