@@ -3,10 +3,11 @@ package atlantis.constructing.position;
 import atlantis.AtlantisGame;
 import atlantis.combat.micro.zerg.ZergCreepColony;
 import atlantis.constructing.ConstructionOrder;
+import atlantis.util.UnitUtil;
 import atlantis.wrappers.SelectUnits;
-import jnibwapi.Position;
-import jnibwapi.Unit;
-import jnibwapi.types.UnitType;
+import bwapi.Position;
+import bwapi.Unit;
+import bwapi.UnitType;
 
 public class AtlantisPositionFinder {
 
@@ -33,19 +34,19 @@ public class AtlantisPositionFinder {
 
         // =========================================================
         // Buildings extracting GAS
-        if (building.isGasBuilding()) {
+        if (UnitUtil.isGasBuilding(building)) {
             return AtlantisSpecialPositionFinder.findPositionForGasBuilding(building);
         } 
 
         // =========================================================
         // BASE
-        else if (building.isBase()) {
+        else if (UnitUtil.isBase(building)) {
             return AtlantisSpecialPositionFinder.findPositionForBase(building, builder, constructionOrder);
         } 
 
         // =========================================================
         // BASE
-        else if (building.equals(UnitType.UnitTypes.Zerg_Creep_Colony)) {
+        else if (building.equals(UnitType.Zerg_Creep_Colony)) {
             return ZergCreepColony.findPosition(building, builder, constructionOrder);
         } 
 

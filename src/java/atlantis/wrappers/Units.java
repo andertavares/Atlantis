@@ -1,5 +1,6 @@
 package atlantis.wrappers;
 
+import atlantis.util.PositionUtil;
 import atlantis.util.RUtilities;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -8,7 +9,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import jnibwapi.Position;
-import jnibwapi.Unit;
+import bwapi.Unit;
 
 /**
  * This class is wrapper for ArrayList<Unit>. It allows some helpful methods to be executed upon group of
@@ -139,8 +140,8 @@ public class Units {
         ArrayList<Integer> xCoordinates = new ArrayList<>();
         ArrayList<Integer> yCoordinates = new ArrayList<>();
         for (Unit unit : units) {
-            xCoordinates.add(unit.getPX());
-            yCoordinates.add(unit.getPY());
+            xCoordinates.add(unit.getPosition().getX());	//TODO: check whether position is in Pixels
+            yCoordinates.add(unit.getPosition().getX());
         }
         Collections.sort(xCoordinates);
         Collections.sort(yCoordinates);
@@ -257,7 +258,7 @@ public class Units {
     public void print() {
         System.out.println("Units in list:");
         for (Unit unit : list()) {
-            System.out.println(unit + " // Dist to main base: " + (unit.distanceTo(SelectUnits.mainBase())));
+            System.out.println(unit + " // Dist to main base: " + (PositionUtil.distanceTo(unit, SelectUnits.mainBase()));
         }
         System.out.println();
     }

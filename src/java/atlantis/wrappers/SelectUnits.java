@@ -2,10 +2,13 @@ package atlantis.wrappers;
 
 import atlantis.Atlantis;
 import atlantis.AtlantisConfig;
+import atlantis.util.PositionUtil;
+import atlantis.util.UnitUtil;
+
 import java.util.Collection;
 import java.util.Iterator;
 import jnibwapi.Position;
-import jnibwapi.Unit;
+import bwapi.Unit;
 import jnibwapi.types.UnitType;
 import jnibwapi.types.UnitType.UnitTypes;
 
@@ -42,7 +45,7 @@ public class SelectUnits {
         Units units = new Units();
 
         for (Unit unit : Atlantis.getBwapi().getMyUnits()) {
-            if (unit.isAlive() && unit.isCompleted() && !unit.isSpiderMine() && !unit.isLarvaOrEgg()) {
+            if (unit.exists() && unit.isCompleted() && !unit.isSpiderMine() && !unit.isLarvaOrEgg()) {
                 units.addUnit(unit);
             }
         }
@@ -57,7 +60,7 @@ public class SelectUnits {
         Units units = new Units();
 
         for (Unit unit : Atlantis.getBwapi().getMyUnits()) {
-            if (unit.isAlive() && unit.isCompleted() && !unit.isNotActuallyUnit() && !unit.isBuilding()
+            if (unit.exists() && unit.isCompleted() && !unit.isNotActuallyUnit() && !unit.getType().isBuilding()
                     && !unit.isType(AtlantisConfig.WORKER)) {
                 units.addUnit(unit);
             }
@@ -73,7 +76,7 @@ public class SelectUnits {
         Units units = new Units();
 
         for (Unit unit : Atlantis.getBwapi().getMyUnits()) {
-            if (unit.isAlive() && !unit.isSpiderMine()) {
+            if (unit.exists() && !unit.isSpiderMine()) {
                 units.addUnit(unit);
             }
         }
@@ -88,7 +91,7 @@ public class SelectUnits {
         Units units = new Units();
 
         for (Unit unit : Atlantis.getBwapi().getMyUnits()) {
-            if (unit.isAlive() && !unit.isCompleted()) {
+            if (unit.exists() && !unit.isCompleted()) {
                 units.addUnit(unit);
             }
         }
@@ -103,7 +106,7 @@ public class SelectUnits {
         Units units = new Units();
 
         for (Unit unit : Atlantis.getBwapi().getMyUnits()) {
-            if (unit.isAlive() && unit.isCompleted() && !unit.isBuilding() && !unit.isNotActuallyUnit()) {
+            if (unit.exists() && unit.isCompleted() && !unit.isBuilding() && !unit.isNotActuallyUnit()) {
                 units.addUnit(unit);
             }
         }
@@ -118,7 +121,7 @@ public class SelectUnits {
         Units units = new Units();
 
         for (Unit unit : Atlantis.getBwapi().getMyUnits()) {
-            if (unit.isAlive() && !unit.isCompleted() && !unit.isBuilding() && !unit.isNotActuallyUnit()) {
+            if (unit.exists() && !unit.isCompleted() && !unit.isBuilding() && !unit.isNotActuallyUnit()) {
                 units.addUnit(unit);
             }
         }
@@ -133,7 +136,7 @@ public class SelectUnits {
         Units units = new Units();
 
         for (Unit unit : Atlantis.getBwapi().getEnemyUnits()) {
-            if (unit.isVisible() && unit.getHP() >= 1) {
+            if (unit.isVisible() && unit.getHitPoints() >= 1) {
                 units.addUnit(unit);
             }
         }
@@ -165,7 +168,7 @@ public class SelectUnits {
         Units units = new Units();
 
         for (Unit unit : Atlantis.getBwapi().getEnemyUnits()) {
-            if (unit.isAlive() && unit.isVisible() && !unit.isBuilding() && !unit.isNotActuallyUnit()) {
+            if (unit.exists() && unit.isVisible() && !unit.isBuilding() && !unit.isNotActuallyUnit()) {
                 units.addUnit(unit);
             }
         }
@@ -180,7 +183,7 @@ public class SelectUnits {
         Units units = new Units();
 
         for (Unit unit : Atlantis.getBwapi().getEnemyUnits()) {
-            if (unit.isAlive() && unit.isVisible() && !unit.isBuilding() && !unit.isLarvaOrEgg()) {
+            if (unit.exists() && unit.isVisible() && !unit.isBuilding() && !unit.isLarvaOrEgg()) {
                 if ((unit.isGroundUnit() && includeGroundUnits) || (unit.isAirUnit() && includeAirUnits)) {
                     units.addUnit(unit);
                 }
@@ -253,7 +256,7 @@ public class SelectUnits {
         Iterator<Unit> unitsIterator = units.iterator();
         while (unitsIterator.hasNext()) {
             Unit unit = unitsIterator.next();
-            if (unit.distanceTo(position) > maxDist) {
+            if (PositionUtil.distanceTo(unit.getPosition(),position)) > maxDist) {
                 unitsIterator.remove();
             }
         }
@@ -396,13 +399,13 @@ public class SelectUnits {
         Iterator<Unit> unitsIterator = units.iterator();
         while (unitsIterator.hasNext()) {
             Unit unit = unitsIterator.next();
-            boolean isMilitaryBuilding = unit.isType(
+            boolean isMilitaryBuilding = UnitUtil.isType(unit.getType(),
                     UnitTypes.Terran_Bunker,
                     UnitTypes.Protoss_Photon_Cannon,
                     UnitTypes.Zerg_Sunken_Colony,
                     UnitTypes.Zerg_Spore_Colony
             );
-            if (!unit.isCompleted() || !unit.isAlive() || (unit.isBuilding() && !isMilitaryBuilding)) {
+            if (!unit.isCompleted() || !unit.exists() || (unit.isBuilding() && !isMilitaryBuilding)) {
                 unitsIterator.remove();
             }
         }
@@ -440,7 +443,7 @@ public class SelectUnits {
     public static SelectUnits ourWorkers() {
         SelectUnits selectedUnits = SelectUnits.our();
         for (Unit unit : selectedUnits.list()) {
-            if (!unit.isWorker() && unit.isAlive()) {
+            if (!unit.getType().isWorker() && unit.exists()) {
                 selectedUnits.units.removeUnit(unit);
             }
         }
@@ -454,7 +457,7 @@ public class SelectUnits {
     public static SelectUnits ourWorkersThatGather() {
         SelectUnits selectedUnits = SelectUnits.our();
         for (Unit unit : selectedUnits.list()) {
-            if (!unit.isWorker() || (!unit.isGatheringGas() && !unit.isGatheringMinerals())) {
+            if (!unit.getType().isWorker() || (!unit.isGatheringGas() && !unit.isGatheringMinerals())) {
                 selectedUnits.units.removeUnit(unit);
             }
         }

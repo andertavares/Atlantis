@@ -1,10 +1,12 @@
 package atlantis.information;
 
+import atlantis.Atlantis;
 import atlantis.AtlantisConfig;
+import atlantis.util.UnitUtil;
 import atlantis.wrappers.MappingCounter;
 import atlantis.wrappers.SelectUnits;
 import java.util.ArrayList;
-import jnibwapi.Unit;
+import bwapi.Unit;
 import jnibwapi.types.UnitType;
 
 public class AtlantisUnitInformationManager {
@@ -88,7 +90,7 @@ public class AtlantisUnitInformationManager {
 //                ourUnitsUnfininised.decrementValueFor(unit.getType());
 //            }
 //        } else
-        if (unit.getPlayer().isEnemy()) {
+        if (Atlantis.getInstance().getBwapi().self().isEnemy(unit.getPlayer()) ) {
             enemyUnitsDiscoveredCounter.decrementValueFor(unit.getType());
             enemyUnitsVisibleCounter.decrementValueFor(unit.getType());
             enemyUnitsDiscovered.remove(unit);
@@ -151,7 +153,7 @@ public class AtlantisUnitInformationManager {
     public static int countOurBases() {
         int total = 0;
         for (Unit unit : SelectUnits.our().list()) {
-            if (unit.isBase()) {
+            if (UnitUtil.isBase(unit.getType())) {
                 total++;
             }
         }

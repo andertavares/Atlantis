@@ -2,7 +2,7 @@ package atlantis.combat.group;
 
 import atlantis.combat.group.missions.Missions;
 import java.util.ArrayList;
-import jnibwapi.Unit;
+import bwapi.Unit;
 import jnibwapi.types.UnitType;
 
 /**
@@ -38,8 +38,13 @@ public class AtlantisGroupManager {
         }
     }
 
+    /**
+     * Skips buildings, workers and Zerg Larva
+     * @param unit
+     * @return
+     */
     private static boolean shouldSkipUnit(Unit unit) {
-        return unit.isBuilding() || unit.isWorker() || unit.isType(UnitType.UnitTypes.Zerg_Larva);
+        return unit.getType().isBuilding() || unit.getType().isWorker() || unit.getType().equals(UnitType.UnitTypes.Zerg_Larva);
     }
 
     // =========================================================
