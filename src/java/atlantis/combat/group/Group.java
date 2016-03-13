@@ -9,8 +9,8 @@ import atlantis.wrappers.Units;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.TreeSet;
-import jnibwapi.Position;
-import jnibwapi.Unit;
+import bwapi.Position;
+import bwapi.Unit;
 
 /**
  * Represents battle group (unit squad) that contains multiple battle units (could be one unit as well).
@@ -79,8 +79,8 @@ public class Group extends Units {
         ArrayList<Integer> yCoords = new ArrayList<>();
         
         for (Unit unit : list()) {
-            xCoords.add(unit.getPX());
-            yCoords.add(unit.getPY());
+            xCoords.add(unit.getPosition().getX());
+            yCoords.add(unit.getPosition().getY());
         }
         
         Collections.sort(xCoords);

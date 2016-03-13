@@ -2,8 +2,8 @@ package atlantis.combat.micro;
 
 import atlantis.combat.AtlantisCombatEvaluator;
 import atlantis.wrappers.SelectUnits;
-import jnibwapi.Unit;
-import jnibwapi.types.WeaponType;
+import bwapi.Unit;
+import bwapi.WeaponType;
 
 /**
  *

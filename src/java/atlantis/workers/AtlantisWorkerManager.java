@@ -3,8 +3,9 @@ package atlantis.workers;
 import atlantis.constructing.AtlantisBuilderManager;
 import atlantis.constructing.AtlantisConstructingManager;
 import atlantis.constructing.ConstructionOrder;
+import atlantis.util.UnitUtil;
 import atlantis.wrappers.SelectUnits;
-import jnibwapi.Unit;
+import bwapi.Unit;
 
 public class AtlantisWorkerManager {
 
@@ -46,7 +47,7 @@ public class AtlantisWorkerManager {
     // Auxiliary
     
     public static int getHowManyWorkersAt(Unit target) {
-        boolean isGasBuilding = target.getType().isGasBuilding();
+        boolean isGasBuilding = UnitUtil.isGasBuilding(target.getType());
         int total = 0;
         
         for (Unit worker : SelectUnits.ourWorkers().inRadius(15, target).list()) {

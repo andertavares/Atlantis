@@ -5,9 +5,9 @@ import atlantis.AtlantisGame;
 import atlantis.workers.AtlantisWorkerManager;
 import atlantis.wrappers.SelectUnits;
 import java.util.Collection;
-import jnibwapi.Unit;
-import jnibwapi.types.TechType;
-import jnibwapi.types.UpgradeType;
+import bwapi.Unit;
+import bwapi.TechType;
+import bwapi.UpgradeType;
 
 public class AtlantisGasManager {
 

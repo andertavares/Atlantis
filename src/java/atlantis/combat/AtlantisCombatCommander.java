@@ -7,8 +7,8 @@ import atlantis.combat.group.missions.Mission;
 import atlantis.combat.group.missions.Missions;
 import atlantis.combat.micro.zerg.ZergOverlordManager;
 import atlantis.wrappers.SelectUnits;
-import jnibwapi.Unit;
-import jnibwapi.types.UnitType;
+import bwapi.Unit;
+import bwapi.UnitType;
 
 public class AtlantisCombatCommander {
     
@@ -77,7 +77,7 @@ public class AtlantisCombatCommander {
      * False will give command to standard Melee of Micro managers.
      */
     private static boolean handledAsSpecialUnit(Unit unit) {
-        if (unit.getType().equals(UnitType.UnitTypes.Zerg_Overlord)) {
+        if (unit.getType().equals(UnitType.Zerg_Overlord)) {
             ZergOverlordManager.update(unit);
             unit.setTooltip("Overlord");
             return true;

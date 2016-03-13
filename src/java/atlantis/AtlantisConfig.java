@@ -1,10 +1,8 @@
 package atlantis;
 
 import atlantis.production.strategies.AtlantisProductionStrategy;
-import jnibwapi.types.RaceType;
-import jnibwapi.types.RaceType.RaceTypes;
-import jnibwapi.types.UnitType;
-import jnibwapi.types.UnitType.UnitTypes;
+import bwapi.Race;
+import bwapi.UnitType;
 
 /**
  * This class is used to set up your Atlantis framework by providing some basic informations about your bot.
@@ -74,7 +72,7 @@ public class AtlantisConfig {
     // =========================================================
     // Do not customize - see methods "useConfigFor{Race}"
     
-    public static RaceType MY_RACE = null;
+    public static Race MY_RACE = null;
     public static UnitType BASE = null;
     public static UnitType WORKER = null;
     public static UnitType BARRACKS = null;
@@ -90,26 +88,26 @@ public class AtlantisConfig {
     public static void useConfigForTerran() {
         AtlantisConfig.USE_AUTO_SUPPLY_MANAGER_WHEN_SUPPLY_EXCEEDS = 11;
 
-        AtlantisConfig.MY_RACE = RaceTypes.Terran;
-        AtlantisConfig.BASE = UnitTypes.Terran_Command_Center;
-        AtlantisConfig.WORKER = UnitTypes.Terran_SCV;
-        AtlantisConfig.BARRACKS = UnitTypes.Terran_Barracks;
-        AtlantisConfig.SUPPLY = UnitTypes.Terran_Supply_Depot;
-        AtlantisConfig.GAS_BUILDING = UnitTypes.Terran_Refinery;
+        AtlantisConfig.MY_RACE = Race.Terran;
+        AtlantisConfig.BASE = UnitType.Terran_Command_Center;
+        AtlantisConfig.WORKER = UnitType.Terran_SCV;
+        AtlantisConfig.BARRACKS = UnitType.Terran_Barracks;
+        AtlantisConfig.SUPPLY = UnitType.Terran_Supply_Depot;
+        AtlantisConfig.GAS_BUILDING = UnitType.Terran_Refinery;
     }
 
     /**
-     * Helper method for using Terran race.
+     * Helper method for using Zerg race.
      */
     public static void useConfigForZerg() {
         AtlantisConfig.USE_AUTO_SUPPLY_MANAGER_WHEN_SUPPLY_EXCEEDS = 8;
 
-        AtlantisConfig.MY_RACE = RaceTypes.Zerg;
-        AtlantisConfig.BASE = UnitTypes.Zerg_Hatchery;
-        AtlantisConfig.WORKER = UnitTypes.Zerg_Drone;
-        AtlantisConfig.BARRACKS = UnitTypes.Zerg_Spawning_Pool;
-        AtlantisConfig.SUPPLY = UnitTypes.Zerg_Overlord;
-        AtlantisConfig.GAS_BUILDING = UnitTypes.Zerg_Extractor;
+        AtlantisConfig.MY_RACE = Race.Zerg;
+        AtlantisConfig.BASE = UnitType.Zerg_Hatchery;
+        AtlantisConfig.WORKER = UnitType.Zerg_Drone;
+        AtlantisConfig.BARRACKS = UnitType.Zerg_Spawning_Pool;
+        AtlantisConfig.SUPPLY = UnitType.Zerg_Overlord;
+        AtlantisConfig.GAS_BUILDING = UnitType.Zerg_Extractor;
     }
 
     /**
@@ -118,12 +116,12 @@ public class AtlantisConfig {
     public static void useConfigForProtoss() {
         AtlantisConfig.USE_AUTO_SUPPLY_MANAGER_WHEN_SUPPLY_EXCEEDS = 11;
 
-        AtlantisConfig.MY_RACE = RaceTypes.Protoss;
-        AtlantisConfig.BASE = UnitTypes.Protoss_Nexus;
-        AtlantisConfig.WORKER = UnitTypes.Protoss_Probe;
-        AtlantisConfig.BARRACKS = UnitTypes.Protoss_Gateway;
-        AtlantisConfig.SUPPLY = UnitTypes.Protoss_Pylon;
-        AtlantisConfig.GAS_BUILDING = UnitTypes.Protoss_Assimilator;
+        AtlantisConfig.MY_RACE = Race.Protoss;
+        AtlantisConfig.BASE = UnitType.Protoss_Nexus;
+        AtlantisConfig.WORKER = UnitType.Protoss_Probe;
+        AtlantisConfig.BARRACKS = UnitType.Protoss_Gateway;
+        AtlantisConfig.SUPPLY = UnitType.Protoss_Pylon;
+        AtlantisConfig.GAS_BUILDING = UnitType.Protoss_Assimilator;
         
 //        overrideBwapiIniRace("Protoss");
     }

@@ -1,10 +1,11 @@
 package atlantis.constructing.position;
 
 import atlantis.Atlantis;
+import atlantis.util.PositionUtil;
 import atlantis.wrappers.SelectUnits;
-import jnibwapi.Position;
-import jnibwapi.Unit;
-import jnibwapi.types.UnitType;
+import bwapi.Position;
+import bwapi.Unit;
+import bwapi.UnitType;
 
 public class ProtossPositionFinder extends AbstractPositionFinder {
 
@@ -21,7 +22,7 @@ public class ProtossPositionFinder extends AbstractPositionFinder {
         AtlantisPositionFinder.maxDistance = maxDistance;
 
         // =========================================================
-        int searchRadius = building.isType(UnitType.UnitTypes.Protoss_Pylon) ? 6 : 0;
+        int searchRadius = building.isType(UnitType.Protoss_Pylon) ? 6 : 0;
 
         while (searchRadius < maxDistance) {
             int xCounter = 0;
@@ -86,14 +87,14 @@ public class ProtossPositionFinder extends AbstractPositionFinder {
 
         // We have problem only if building is both close to base and to minerals or to geyser
         Unit nearestBase = SelectUnits.ourBases().nearestTo(position);
-        if (nearestBase != null && nearestBase.distanceTo(position) <= 8) {
+        if (nearestBase != null && PositionUtil.distanceTo(nearestBase.getPosition(), position) <= 8) {
             for (Unit mineral : SelectUnits.minerals().inRadius(8, position).list()) {
-                if (mineral.distanceTo(position) <= 4) {
+                if (PositionUtil.distanceTo(mineral.getPosition(), position) <= 4) {
                     return true;
                 }
             }
             for (Unit mineral : SelectUnits.geysers().inRadius(8, position).list()) {
-                if (mineral.distanceTo(position) <= 4) {
+                if (PositionUtil.distanceTo(mineral.getPosition(), position) <= 4) {
                     return true;
                 }
             }
@@ -103,7 +104,7 @@ public class ProtossPositionFinder extends AbstractPositionFinder {
 
     private static boolean isPowerConditionFulfilled(Position position) {
         return Atlantis.getBwapi().hasPower(position)
-                || AtlantisPositionFinder.building.equals(UnitType.UnitTypes.Protoss_Nexus)
-                || AtlantisPositionFinder.building.equals(UnitType.UnitTypes.Protoss_Pylon);
+                || AtlantisPositionFinder.building.equals(UnitType.Protoss_Nexus)
+                || AtlantisPositionFinder.building.equals(UnitType.Protoss_Pylon);
     }
 }

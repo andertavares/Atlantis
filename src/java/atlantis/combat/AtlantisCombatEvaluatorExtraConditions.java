@@ -1,8 +1,9 @@
 package atlantis.combat;
 
 import atlantis.AtlantisGame;
+import atlantis.util.PositionUtil;
 import atlantis.wrappers.SelectUnits;
-import jnibwapi.Unit;
+import bwapi.Unit;
 
 /**
  *
@@ -49,10 +50,10 @@ public class AtlantisCombatEvaluatorExtraConditions {
         // If you're near the main base, force the fight
         Unit mainBase = SelectUnits.mainBase();
         if (mainBase != null) {
-            if (mainBase.distanceTo(unit) < 7) {
+            if (PositionUtil.distanceTo(mainBase, unit) < 7) {
 
                 // Force to fight units that aren't close to being dead                
-                if (unit.getHP() >= 11) {
+                if (unit.getHitPoints() >= 11) {
                     return true;
                 }
             }
@@ -86,7 +87,7 @@ public class AtlantisCombatEvaluatorExtraConditions {
     // =========================================================
 
     private static boolean isNearestEnemyQuiteFar() {
-        return nearestEnemy == null || nearestEnemy.distanceTo(unit) > 12.2;
+        return nearestEnemy == null || PositionUtil.distanceTo(nearestEnemy, unit) > 12.2;
     }
     
 }

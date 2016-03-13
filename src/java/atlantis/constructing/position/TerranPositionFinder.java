@@ -1,11 +1,11 @@
 package atlantis.constructing.position;
 
+import atlantis.util.PositionUtil;
 import atlantis.wrappers.SelectUnits;
-import jnibwapi.Position;
+import bwapi.Position;
 import jnibwapi.Position.PosType;
-import jnibwapi.Unit;
-import jnibwapi.types.UnitType;
-import jnibwapi.types.UnitType.UnitTypes;
+import bwapi.Unit;
+import bwapi.UnitType;
 
 public class TerranPositionFinder extends AbstractPositionFinder {
 
@@ -22,7 +22,7 @@ public class TerranPositionFinder extends AbstractPositionFinder {
         AtlantisPositionFinder.maxDistance = maxDistance;
 
         // =========================================================
-        int searchRadius = building.isType(UnitTypes.Terran_Supply_Depot) ? 8 : 0;
+        int searchRadius = building.equals(UnitType.Terran_Supply_Depot) ? 8 : 0;
 
         while (searchRadius < maxDistance) {
             int xCounter = 0;
@@ -87,9 +87,9 @@ public class TerranPositionFinder extends AbstractPositionFinder {
 
         // We have problem only if building is both close to base and to minerals or to geyser
         Unit nearestBase = SelectUnits.ourBases().nearestTo(position);
-        if (nearestBase != null && nearestBase.distanceTo(position) <= 7) {
+        if (nearestBase != null && PositionUtil.distanceTo(nearestBase.getPosition(), position) <= 7) {
             for (Unit mineral : SelectUnits.minerals().inRadius(8, position).list()) {
-                if (mineral.distanceTo(position) <= 4) {
+                if (PositionUtil.distanceTo(mineral.getPosition(), position) <= 4) {
                     return true;
                 }
             }

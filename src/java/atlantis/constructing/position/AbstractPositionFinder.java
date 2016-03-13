@@ -4,11 +4,11 @@ import atlantis.Atlantis;
 import atlantis.constructing.AtlantisConstructingManager;
 import atlantis.constructing.ConstructionOrder;
 import atlantis.constructing.ConstructionOrderStatus;
+import atlantis.util.PositionUtil;
 import atlantis.wrappers.SelectUnits;
-import jnibwapi.Position;
-import jnibwapi.Unit;
-import jnibwapi.types.UnitType;
-import jnibwapi.types.UnitType.UnitTypes;
+import bwapi.Position;
+import bwapi.Unit;
+import bwapi.UnitType;
 
 public abstract class AbstractPositionFinder {
     
@@ -20,7 +20,7 @@ public abstract class AbstractPositionFinder {
      * Returns true if game says it's possible to build given building at this position.
      */
     public static boolean canPhysicallyBuildHere(Unit builder, UnitType building, Position position) {
-        return Atlantis.getBwapi().canBuildHere(builder, position, building, false);
+        return Atlantis.getBwapi().canBuildHere(position, building, builder, false);
     }
 
     /**
@@ -51,7 +51,7 @@ public abstract class AbstractPositionFinder {
             if (ConstructionOrderStatus.CONSTRUCTION_NOT_STARTED.equals(constructionOrder.getStatus())
                     && !builder.equals(constructionOrder.getBuilder())) {
                 if (constructionOrder.getPositionToBuild() != null) {
-                    double distance = constructionOrder.getPositionToBuild().distanceTo(position);
+                    double distance = PositionUtil.distanceTo(constructionOrder.getPositionToBuild(), position);
                     if (distance <= 4) {
                         AbstractPositionFinder._CONDITION_THAT_FAILED = "PLANNED BUILDING TOO CLOSE (" 
                                 + constructionOrder.getBuildingType() + ", DIST: " + distance + ")";
@@ -78,7 +78,7 @@ public abstract class AbstractPositionFinder {
         if (edgeToEdgeDistance < 0.1) {
 
             // Allow stacking of depots
-            if (building.isType(UnitTypes.Terran_Supply_Depot) && otherBuilding.isType(UnitTypes.Terran_Supply_Depot)) {
+            if (building.equals(UnitType.Terran_Supply_Depot) && otherBuilding.getType().equals(UnitType.Terran_Supply_Depot)) {
                 return STATUS_BUILDINGS_STICK;
             }
             else {
@@ -97,10 +97,10 @@ public abstract class AbstractPositionFinder {
      */
     protected static double getEdgeToEdgeDistanceBetween(Unit building, Position positionForNewBuilding,
             UnitType newBuildingType) {
-        int targetRight = positionForNewBuilding.getPX() + newBuildingType.getDimensionRight();
-        int targetLeft = positionForNewBuilding.getPX() - newBuildingType.getDimensionLeft();
-        int targetTop = positionForNewBuilding.getPY() - newBuildingType.getDimensionUp();
-        int targetBottom = positionForNewBuilding.getPY() + newBuildingType.getDimensionDown();
+        int targetRight = positionForNewBuilding.getX() + newBuildingType.getDimensionRight();
+        int targetLeft = positionForNewBuilding.getX() - newBuildingType.getDimensionLeft();
+        int targetTop = positionForNewBuilding.getY() - newBuildingType.getDimensionUp();
+        int targetBottom = positionForNewBuilding.getY() + newBuildingType.getDimensionDown();
 
         int xDist = building.getLeftPixelBoundary() - (targetRight + 1);
         if (xDist < 0) {
@@ -116,7 +116,7 @@ public abstract class AbstractPositionFinder {
                 yDist = 0;
             }
         }
-        return new Position(0, 0).distanceTo(new Position(xDist, yDist));
+        return PositionUtil.distanceTo(new Position(0, 0), new Position(xDist, yDist));
     }
 
 }

@@ -3,10 +3,11 @@ package atlantis.constructing.position;
 import atlantis.Atlantis;
 import atlantis.AtlantisConfig;
 import atlantis.wrappers.SelectUnits;
-import jnibwapi.Position;
-import jnibwapi.Unit;
-import jnibwapi.types.UnitType;
+import bwapi.Position;
+import bwapi.Unit;
+import bwapi.UnitType;
 import atlantis.debug.AtlantisPainter;
+import atlantis.util.PositionUtil;
 
 public class ZergPositionFinder extends AbstractPositionFinder {
     
@@ -26,10 +27,10 @@ public class ZergPositionFinder extends AbstractPositionFinder {
 
         // =========================================================
         int searchRadius = 5;
-        if (building.isType(AtlantisConfig.BASE)) {
+        if (building.equals(AtlantisConfig.BASE)) {
             searchRadius = 0;
         }
-        if (building.isType(AtlantisConfig.SUPPLY)) {
+        if (building.equals(AtlantisConfig.SUPPLY)) {
             searchRadius = 8;
         }
         if (maxDistance < searchRadius) {
@@ -118,9 +119,9 @@ public class ZergPositionFinder extends AbstractPositionFinder {
 
         // We have problem only if building is both close to base and to minerals or to geyser
         Unit nearestBase = SelectUnits.ourBases().nearestTo(position);
-        if (nearestBase != null && nearestBase.distanceTo(position) <= 7) {
+        if (nearestBase != null && PositionUtil.distanceTo(nearestBase.getPosition(), position) <= 7) {
             for (Unit mineral : SelectUnits.minerals().inRadius(8, position).list()) {
-                if (mineral.distanceTo(position) <= 4) {
+                if (PositionUtil.distanceTo(mineral.getPosition(), position) <= 4) {
                     return true;
                 }
             }
@@ -130,8 +131,8 @@ public class ZergPositionFinder extends AbstractPositionFinder {
 
     private static boolean isCreepConditionFulfilled(Position position) {
         return Atlantis.getBwapi().hasCreep(position)
-                || AtlantisPositionFinder.building.equals(UnitType.UnitTypes.Zerg_Hatchery)
-                || AtlantisPositionFinder.building.equals(UnitType.UnitTypes.Zerg_Extractor);
+                || AtlantisPositionFinder.building.equals(UnitType.Zerg_Hatchery)
+                || AtlantisPositionFinder.building.equals(UnitType.Zerg_Extractor);
     }
 
 }

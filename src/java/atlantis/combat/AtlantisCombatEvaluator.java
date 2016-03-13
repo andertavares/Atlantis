@@ -1,12 +1,14 @@
 package atlantis.combat;
 
 import atlantis.AtlantisGame;
+import atlantis.util.PositionUtil;
+import atlantis.util.UnitUtil;
 import atlantis.wrappers.SelectUnits;
 import java.util.Collection;
-import jnibwapi.Unit;
-import jnibwapi.types.UnitType;
-import jnibwapi.types.WeaponType;
-import jnibwapi.util.BWColor;
+import bwapi.Unit;
+import bwapi.UnitType;
+import bwapi.WeaponType;
+//import bwapi.util.BWColor;
 
 /**
  *
@@ -117,25 +119,25 @@ public class AtlantisCombatEvaluator {
             
             // =========================================================
             // WORKER
-            if (unit.isWorker()) {
+            if (unit.getType().isWorker()) {
                 strength += 0.2 * unitStrengthEval;
             } 
             
             // =========================================================
             // BUILDING
-            else if (unit.isBuilding() && unit.isCompleted()) {
+            else if (unit.getType().isBuilding() && unit.isCompleted()) {
                 boolean antiGround = (againstUnit != null ? againstUnit.isGroundUnit() : true);
                 boolean antiAir = (againstUnit != null ? againstUnit.isAirUnit() : true);
                 if (unit.isMilitaryBuilding(antiGround, antiAir)) {
                     enemyDefensiveBuildingFound = true;
-                    if (unit.isBunker()) {
-                        strength += 7 * evaluateUnitHPandDamage(UnitType.UnitTypes.Terran_Marine, againstUnit);
+                    if (unit.getType().equals(UnitType.Terran_Bunker)) {
+                        strength += 7 * evaluateUnitHPandDamage(UnitType.Terran_Marine, againstUnit);
                     }
                     else {
                         strength += 1.3 * unitStrengthEval;
                     }
                     
-                    if (unit.distanceTo(againstUnit) <= 8.5) {
+                    if (PositionUtil.distanceTo(unit, againstUnit) <= 8.5) {
                         enemyDefensiveBuildingInRange = true;
                     }
                 }
@@ -165,12 +167,12 @@ public class AtlantisCombatEvaluator {
     // =========================================================
 
     private static double evaluateUnitHPandDamage(Unit evaluate, Unit againstUnit) {
-        return evaluateUnitHPandDamage(evaluate.getType(), evaluate.getHP(), againstUnit);
+        return evaluateUnitHPandDamage(evaluate.getType(), evaluate.getHitPoints(), againstUnit);
     }
 
     private static double evaluateUnitHPandDamage(UnitType evaluate, Unit againstUnit) {
 //        System.out.println(evaluate.getType() + " damage: " + evaluate.getType().getGroundWeapon().getDamageNormalized());
-        return evaluateUnitHPandDamage(evaluate, evaluate.getMaxHitPoints(), againstUnit);
+        return evaluateUnitHPandDamage(evaluate, evaluate.maxHitPoints(), againstUnit);
     }
 
     private static double evaluateUnitHPandDamage(UnitType evaluateType, int hp, Unit againstUnit) {
@@ -181,7 +183,7 @@ public class AtlantisCombatEvaluator {
         
         // =========================================================
         // Deminish role of NON-SHOOTING units
-        if (damage == 0 && !evaluateType.isMedic()) {
+        if (damage == 0 && !evaluateType.equals(UnitType.Terran_Medic)) {
             total /= 15;
         }
         

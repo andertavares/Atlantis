@@ -8,8 +8,8 @@ import atlantis.information.AtlantisUnitInformationManager;
 import atlantis.wrappers.SelectUnits;
 import java.util.ArrayList;
 import jnibwapi.BaseLocation;
-import jnibwapi.Unit;
-import jnibwapi.types.UnitType;
+import bwapi.Unit;
+import bwapi.UnitType;
 
 public class AtlantisScoutManager {
 
@@ -96,7 +96,7 @@ public class AtlantisScoutManager {
         // =========================================================
         // Get nearest unexplored starting location and go there
         BaseLocation startingLocation;
-        if (scout.getType().equals(UnitType.UnitTypes.Zerg_Overlord)) {
+        if (scout.getType().equals(UnitType.Zerg_Overlord)) {
             startingLocation = AtlantisMap.getStartingLocationBasedOnIndex(
                     scout.getUnitIndex()
             );

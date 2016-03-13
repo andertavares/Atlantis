@@ -5,11 +5,11 @@ import atlantis.production.strategies.AtlantisProductionStrategy;
 import atlantis.util.RUtilities;
 import atlantis.wrappers.AtlantisTech;
 import atlantis.wrappers.SelectUnits;
-import jnibwapi.Player;
-import jnibwapi.types.RaceType.RaceTypes;
-import jnibwapi.types.TechType;
-import jnibwapi.types.UnitType;
-import jnibwapi.types.UpgradeType;
+import bwapi.Player;
+import bwapi.Race;
+import bwapi.TechType;
+import bwapi.UnitType;
+import bwapi.UpgradeType;
 
 /**
  * Represents various aspect of the game like time elapsed (in frames or approximated seconds),
@@ -35,8 +35,8 @@ public class AtlantisGame {
     public static boolean hasTechToProduce(UnitType unitType) {
 
         // Needs to have tech
-        TechType techType = TechType.TechTypes.getTechType(unitType.getRequiredTechID());
-        if (techType != null && techType != TechType.TechTypes.None && !AtlantisTech.isResearched(techType)) {
+        TechType techType = TechType.getTechType(unitType.getRequiredTechID());
+        if (techType != null && techType != TechType.None && !AtlantisTech.isResearched(techType)) {
             return false;
         }
 
@@ -62,7 +62,7 @@ public class AtlantisGame {
             }
             
             int requiredAmount = unitType.getRequiredUnits().get(unitTypeID);
-            int weHaveAmount = requiredUnitType.isLarva() ? 
+            int weHaveAmount = requiredUnitType.equals(UnitType.Zerg_Larva) ? 
                     SelectUnits.ourLarva().count() : SelectUnits.our().ofType(requiredUnitType).count();
 //            System.out.println(requiredUnitType + "    x" + requiredAmount);
 //            System.out.println("   and we have: " + weHaveAmount);
@@ -87,7 +87,7 @@ public class AtlantisGame {
      */
     public static void changeSpeed(int speed) {
         AtlantisConfig.GAME_SPEED = speed;
-        getBwapi().setGameSpeed(AtlantisConfig.GAME_SPEED);
+        getBwapi().setLocalSpeed(AtlantisConfig.GAME_SPEED);
     }
 
     /**
@@ -115,14 +115,14 @@ public class AtlantisGame {
      * Number of minerals.
      */
     public static int getMinerals() {
-        return Atlantis.getBwapi().getSelf().getMinerals();
+        return Atlantis.getBwapi().self().minerals();
     }
 
     /**
      * Number of gas.
      */
     public static int getGas() {
-        return Atlantis.getBwapi().getSelf().getGas();
+        return Atlantis.getBwapi().self().gas();
     }
 
     /**
@@ -136,21 +136,21 @@ public class AtlantisGame {
      * Number of supply used.
      */
     public static int getSupplyUsed() {
-        return Atlantis.getBwapi().getSelf().getSupplyUsed() / 2;
+        return Atlantis.getBwapi().self().supplyUsed() / 2;
     }
 
     /**
      * Number of supply totally available.
      */
     public static int getSupplyTotal() {
-        return Atlantis.getBwapi().getSelf().getSupplyTotal() / 2;
+        return Atlantis.getBwapi().self().supplyTotal() / 2;
     }
 
     /**
      * Returns current player.
      */
     public static Player getPlayerUs() {
-        return Atlantis.getBwapi().getSelf();
+        return Atlantis.getBwapi().self();
     }
 
     /**
@@ -158,7 +158,7 @@ public class AtlantisGame {
      */
     public static Player enemy() {
         if (_enemy == null) {
-            _enemy = Atlantis.getBwapi().getEnemies().iterator().next();
+            _enemy = Atlantis.getBwapi().enemies().iterator().next();
         }
         return _enemy;
     }
@@ -168,7 +168,7 @@ public class AtlantisGame {
      */
     public static Player getEnemy() {
         if (_enemy == null) {
-            _enemy = Atlantis.getBwapi().getEnemies().iterator().next();
+            _enemy = Atlantis.getBwapi().enemies().iterator().next();
         }
         return _enemy;
     }
@@ -187,42 +187,42 @@ public class AtlantisGame {
      * Returns true if user plays as Terran.
      */
     public static boolean playsAsTerran() {
-        return AtlantisConfig.MY_RACE.equals(RaceTypes.Terran);
+        return AtlantisConfig.MY_RACE.equals(Race.Terran);
     }
 
     /**
      * Returns true if user plays as Protoss.
      */
     public static boolean playsAsProtoss() {
-        return AtlantisConfig.MY_RACE.equals(RaceTypes.Protoss);
+        return AtlantisConfig.MY_RACE.equals(Race.Protoss);
     }
 
     /**
      * Returns true if user plays as Zerg.
      */
     public static boolean playsAsZerg() {
-        return AtlantisConfig.MY_RACE.equals(RaceTypes.Zerg);
+        return AtlantisConfig.MY_RACE.equals(Race.Zerg);
     }
 
     /**
      * Returns true if enemy plays as Terran.
      */
     public static boolean isEnemyTerran() {
-        return AtlantisGame.enemy().getRace().equals(RaceTypes.Terran);
+        return AtlantisGame.enemy().getRace().equals(Race.Terran);
     }
 
     /**
      * Returns true if enemy plays as Protoss.
      */
     public static boolean isEnemyProtoss() {
-        return AtlantisGame.enemy().getRace().equals(RaceTypes.Protoss);
+        return AtlantisGame.enemy().getRace().equals(Race.Protoss);
     }
 
     /**
      * Returns true if enemy plays as Zerg.
      */
     public static boolean isEnemyZerg() {
-        return AtlantisGame.enemy().getRace().equals(RaceTypes.Zerg);
+        return AtlantisGame.enemy().getRace().equals(Race.Zerg);
     }
 
     /**
@@ -243,7 +243,7 @@ public class AtlantisGame {
      * Returns true if we can afford minerals and gas for given unit type.
      */
     public static boolean canAfford(UnitType unitType) {
-        return hasMinerals(unitType.getMineralPrice()) && hasGas(unitType.getGasPrice());
+        return hasMinerals(unitType.mineralPrice()) && hasGas(unitType.gasPrice());
     }
 
     /**

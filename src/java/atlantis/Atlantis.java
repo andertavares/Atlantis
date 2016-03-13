@@ -9,7 +9,7 @@ import atlantis.util.UnitUtil;
 import bwapi.*;
 import bwta.BWTA;
 import bwta.BaseLocation;
-import jnibwapi.types.UnitType.UnitTypes;
+import bwapi.UnitType;
 
 /**
  * Main bridge between the game and your code, build over JNIBWAPI.
@@ -247,7 +247,7 @@ public class Atlantis implements BWEventListener {
         if (unit != null) {
 
             // Our unit
-            if (unit.getPlayer().equals(bwapi.self()) && ! (unit.getType().equals(UnitTypes.Zerg_Larva) || unit.getType().equals(UnitTypes.Zerg_Egg))) {
+            if (unit.getPlayer().equals(bwapi.self()) && ! (unit.getType().equals(UnitType.Zerg_Larva) || unit.getType().equals(UnitType.Zerg_Egg))) {
 //                AtlantisUnitInformationManager.addOurFinishedUnit(unit.getType());
                 AtlantisGroupManager.possibleCombatUnitCreated(unit);
             }
@@ -369,7 +369,7 @@ public class Atlantis implements BWEventListener {
         if (unit != null) {
 
             // Our unit
-            if (unit.getPlayer().equals(bwapi.self()) && ! (unit.getType().equals(UnitTypes.Zerg_Larva) || unit.getType().equals(UnitTypes.Zerg_Egg))) {
+            if (unit.getPlayer().equals(bwapi.self()) && ! (unit.getType().equals(UnitType.Zerg_Larva) || unit.getType().equals(UnitType.Zerg_Egg))) {
 //                AtlantisUnitInformationManager.addOurFinishedUnit(unit.getType());
                 AtlantisGroupManager.possibleCombatUnitCreated(unit);
             }

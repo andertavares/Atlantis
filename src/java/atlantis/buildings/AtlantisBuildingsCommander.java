@@ -3,8 +3,9 @@ package atlantis.buildings;
 import atlantis.AtlantisConfig;
 import atlantis.buildings.managers.AtlantisBarracksManager;
 import atlantis.buildings.managers.AtlantisBaseManager;
+import atlantis.util.UnitUtil;
 import atlantis.wrappers.SelectUnits;
-import jnibwapi.Unit;
+import bwapi.Unit;
 
 /**
  * Manages all existing-buildings actions, but training new units depends on AtlantisProductionCommander.
@@ -18,19 +19,19 @@ public class AtlantisBuildingsCommander {
         for (Unit building : SelectUnits.ourBuildings().list()) {
 
             // If building is busy, don't disturb.
-            if (building.getTrainingQueueSize() > 0 || building.isUpgrading()) {
+            if (building.getTrainingQueue().size() > 0 || building.isUpgrading()) {
                 continue;
             }
 
             // =========================================================
             // BASE (Command Center / Nexus / Hatchery / Lair / Hive)
-            if (building.isBase()) {
+            if (UnitUtil.isBase(building.getType())) {
                 AtlantisBaseManager.update(building);
             } 
 
             // =========================================================
             // BARRACKS (Barracks, Gateway, Spawning Pool)
-            else if (building.isType(AtlantisConfig.BARRACKS)) {
+            else if (building.getType().equals((AtlantisConfig.BARRACKS))) {
                 AtlantisBarracksManager.update(building);
             }
         }

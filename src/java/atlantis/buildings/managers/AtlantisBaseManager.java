@@ -4,7 +4,7 @@ import atlantis.AtlantisConfig;
 import atlantis.AtlantisGame;
 import atlantis.information.AtlantisUnitInformationManager;
 import atlantis.workers.AtlantisWorkerCommander;
-import jnibwapi.Unit;
+import bwapi.Unit;
 
 public class AtlantisBaseManager {
 

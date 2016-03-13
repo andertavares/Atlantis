@@ -4,9 +4,9 @@ import atlantis.AtlantisGame;
 import atlantis.production.ProductionOrder;
 import atlantis.wrappers.SelectUnits;
 import java.util.ArrayList;
-import jnibwapi.Unit;
-import jnibwapi.types.UnitType;
-import jnibwapi.types.UnitType.UnitTypes;
+import bwapi.Unit;
+import bwapi.UnitType;
+//import jnibwapi.types.UnitType.UnitTypes;
 
 public class AtlantisBarracksManager {
 
@@ -66,7 +66,7 @@ public class AtlantisBarracksManager {
     }
 
     private static UnitType defineUnitToBuild(Unit barracks) {
-        return UnitTypes.Terran_Marine;
+        return UnitType.Terran_Marine;
     }
 
     private static boolean hasEmptySlot(Unit barracks) {
@@ -74,7 +74,7 @@ public class AtlantisBarracksManager {
             return SelectUnits.ourLarva().count() > 0;
         }
         else {
-            return barracks.getTrainingQueueSize() == 0;
+            return barracks.getTrainingQueue().size() == 0;
         }
     }
 

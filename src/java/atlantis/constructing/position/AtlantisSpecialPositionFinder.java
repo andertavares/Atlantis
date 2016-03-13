@@ -2,10 +2,10 @@ package atlantis.constructing.position;
 
 import atlantis.constructing.ConstructionOrder;
 import atlantis.information.AtlantisMap;
-import jnibwapi.Position;
-import jnibwapi.Unit;
-import jnibwapi.types.UnitType;
-import jnibwapi.types.UnitType.UnitTypes;
+import atlantis.util.PositionUtil;
+import bwapi.Position;
+import bwapi.Unit;
+import bwapi.UnitType;
 import atlantis.wrappers.SelectUnits;
 import jnibwapi.BaseLocation;
 
@@ -31,9 +31,9 @@ public class AtlantisSpecialPositionFinder {
      */
     protected static Position findPositionForGasBuilding(UnitType building) {
         for (Unit base : SelectUnits.ourBases().list()) {
-            Unit geyser = SelectUnits.neutral().ofType(UnitTypes.Resource_Vespene_Geyser).nearestTo(base);
+            Unit geyser = SelectUnits.neutral().ofType(UnitType.Resource_Vespene_Geyser).nearestTo(base);
 
-            if (geyser != null && geyser.distanceTo(base) < 10) {
+            if (geyser != null && PositionUtil.distanceTo(geyser, base) < 10) {
                 return geyser.translated(-48, -32);
             }
         }
