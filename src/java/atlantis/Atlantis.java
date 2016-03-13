@@ -24,7 +24,7 @@ public class Atlantis implements BWEventListener {
     /**
      * BWAPI is core
      */
-    private Mirror mirror = new Mirror();
+    private static Mirror mirror = new Mirror();
     private Game bwapi;
     //private JNIBWAPI bwapi;
     
@@ -88,6 +88,17 @@ public class Atlantis implements BWEventListener {
         // Standard procedure: create and save Jnibwapi reference
         //bwapi = new JNIBWAPI(this, true);
     }
+    
+    /**
+     * Returns the current Atlantis instance, useful for retrieving game information
+     * @return
+     */
+    public static Atlantis getInstance(){
+    	if (instance == null){
+    		instance = new Atlantis();
+    	}
+    	return instance;
+    }
 
     // =========================================================
     // Start / Pause / Unpause
@@ -116,13 +127,13 @@ public class Atlantis implements BWEventListener {
     // =========================================================
     
     /**
-     * This method returns bridge connector between Atlantis and Starcraft, which is JNIWAPI object. It
+     * This method returns bridge connector between Atlantis and Starcraft, which is a BWMirror object. It
      * provides low-level functionality for functions like canBuildHere etc. For more details,
-     * see JNIBWAPI project documentation.
-     *
+     * see BWMirror project documentation.
+     */
     public static Game getBwapi() {
-        return bwapi.;
-    }*/
+        return getInstance().bwapi;
+    }
 
     // =========================================================
     

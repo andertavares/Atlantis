@@ -5,12 +5,13 @@ import atlantis.AtlantisGame;
 import atlantis.constructing.position.AtlantisPositionFinder;
 import atlantis.information.AtlantisUnitInformationManager;
 import atlantis.production.ProductionOrder;
+import atlantis.util.UnitUtil;
 import atlantis.wrappers.SelectUnits;
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import jnibwapi.Position;
-import jnibwapi.Unit;
-import jnibwapi.types.UnitType;
+import bwapi.Position;
+import bwapi.Unit;
+import bwapi.UnitType;
 
 public class AtlantisConstructingManager {
 
@@ -34,7 +35,7 @@ public class AtlantisConstructingManager {
      * it.
      */
     public static void requestConstructionOf(UnitType building, ProductionOrder order) {
-        if (building.isGasBuilding()) {
+        if (UnitUtil.isGasBuilding(building)) {
             AtlantisGame.sendMessage(building.toString());
         }
         
@@ -123,7 +124,7 @@ public class AtlantisConstructingManager {
      * If builder has died when constructing, replace him with new one.
      */
     private static void checkForBuilderStatusChange(ConstructionOrder constructionOrder, Unit builder) {
-        if (builder == null || !builder.isAlive()) {
+        if (builder == null || !builder.exists()) {
             constructionOrder.assignOptimalBuilder();
         }
     }
@@ -147,12 +148,12 @@ public class AtlantisConstructingManager {
         // If ZERG change builder into building (it just happens, yeah, weird stuff)
         if (AtlantisGame.playsAsZerg()) {
             Unit builder = constructionOrder.getBuilder();
-            if (builder != null && builder.isBuilding()) {
+            if (builder != null && builder.getType().isBuilding()) {
                 constructionOrder.setConstruction(builder);
                 building = builder;
             }
         } // If TERRAN and building doesn't exist yet, assign it to the construction order.
-        else if (AtlantisGame.playsAsTerran() && (building == null || !building.isExists())) {
+        else if (AtlantisGame.playsAsTerran() && (building == null || !building.exists())) {
             Unit builder = constructionOrder.getBuilder();
             if (builder != null) {
                 Unit buildUnit = builder.getBuildUnit();
@@ -183,7 +184,7 @@ public class AtlantisConstructingManager {
                 removeOrder(constructionOrder);
 
                 // @FIX to fix bug with Refineries not being shown as created, because they're kinda changed.
-                if (building.getType().isGasBuilding()) {
+                if (UnitUtil.isGasBuilding(building.getType())) {
                     AtlantisUnitInformationManager.rememberUnit(building);
                 }
             } // NOT YET COMPLETED
@@ -255,7 +256,7 @@ public class AtlantisConstructingManager {
 
         // =========================================================
         // Special case for Overlord
-        if (type.equals(UnitType.UnitTypes.Zerg_Overlord)) {
+        if (type.equals(UnitType.Zerg_Overlord)) {
             total += SelectUnits.ourUnfinished().ofType(type).count();
         }
 
@@ -282,8 +283,8 @@ public class AtlantisConstructingManager {
 
         // =========================================================
         // Special case for Overlord
-        if (type.equals(UnitType.UnitTypes.Zerg_Overlord)) {
-            total += SelectUnits.ourUnfinished().ofType(UnitType.UnitTypes.Zerg_Overlord).count();
+        if (type.equals(UnitType.Zerg_Overlord)) {
+            total += SelectUnits.ourUnfinished().ofType(UnitType.Zerg_Overlord).count();
         }
 
         return total;
@@ -325,8 +326,8 @@ public class AtlantisConstructingManager {
         int mineralsNeeded = 0;
         int gasNeeded = 0;
         for (ConstructionOrder constructionOrder : AtlantisConstructingManager.getNotStartedConstructionsOfType(null)) {
-            mineralsNeeded += constructionOrder.getBuildingType().getMineralPrice();
-            gasNeeded += constructionOrder.getBuildingType().getGasPrice();
+            mineralsNeeded += constructionOrder.getBuildingType().mineralPrice();
+            gasNeeded += constructionOrder.getBuildingType().gasPrice();
         }
         int[] result = {mineralsNeeded, gasNeeded};
         return result;

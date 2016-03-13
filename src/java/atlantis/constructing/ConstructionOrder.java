@@ -3,9 +3,9 @@ package atlantis.constructing;
 import atlantis.constructing.position.AtlantisPositionFinder;
 import atlantis.production.ProductionOrder;
 import atlantis.wrappers.SelectUnits;
-import jnibwapi.Position;
-import jnibwapi.Unit;
-import jnibwapi.types.UnitType;
+import bwapi.Position;
+import bwapi.Unit;
+import bwapi.UnitType;
 
 /**
  * Represents construction of a building, including ones not yet started.
