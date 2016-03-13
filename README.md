@@ -4,7 +4,7 @@
 
 ![alt tag](http://s15.postimg.org/mnsu7qnt7/Atlantis_Tide.png)
 
-It uses JNIBWAPI as a base, runs with BWAPI 3.7.5, but wraps everything heavily, so you don't need to write yourself countless lines of tedious code that every bot unfortunately needs to have to even do the most basic stuff.
+It is being ported to BWMirror 2.5, which runs with BWAPI 4.1.2. Atlanti wraps everything heavily, so you don't need to write yourself countless lines of tedious code that every bot unfortunately needs to have to even do the most basic stuff.
 
 # What it can do
 Modular approach with cleanest code possible (that's my priority) is offered by core classes which are prefixed with "Atlantis". So what has been implemented so far is:
