@@ -112,4 +112,39 @@ public class UnitUtil {
     	return wt.damageAmount() * wt.damageFactor();
     }
     
+    /**
+     * Returns true if unit has ground weapon.
+     * Replaces Unit.canAttackGroundUnits
+     */
+    public static boolean attacksGround(Unit u){
+        return u.getType().groundWeapon() != WeaponType.None;
+    }
+    
+    /**
+     * Returns true if unit has anti-air weapon.
+     * Replaces Unit.canAttackAirUnits
+     */
+    public static boolean attacksAir(Unit u) {
+        return u.getType().airWeapon() != WeaponType.None;
+    }
+    
+    /**
+     * Returns true if attacker is capable of attacking <b>victim</b>. For example Zerglings can't
+     * attack flying targets and Corsairs can't attack ground targets.
+     * @param includeCooldown if true, then unit will be considered able to attack only if the cooldown
+     * after the last shot allows it
+     */
+    public static boolean canAttack(Unit attacker, Unit victim, boolean includeCooldown) {
+        
+        // Enemy is GROUND unit
+        if (!victim.getType().isFlyer()) {
+            return attacksGround(attacker) && (!includeCooldown || attacker.getGroundWeaponCooldown() == 0);
+        }
+        
+        // Enemy is AIR unit
+        else  {
+            return attacksAir(attacker) && (!includeCooldown || attacker.getAirWeaponCooldown() == 0);
+        }
+    }
+    
 }

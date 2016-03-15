@@ -56,12 +56,12 @@ public class AtlantisPositionFinder {
 
             // If we didn't specify location where to build, build somewhere near the main base
             if (nearTo == null) {
-                nearTo = SelectUnits.mainBase();
+                nearTo = SelectUnits.mainBase().getPosition();
             }
 
             // If all of our bases have been destroyed, build somewhere near our first unit alive
             if (nearTo == null) {
-                nearTo = SelectUnits.our().first();
+                nearTo = SelectUnits.our().first().getPosition();
             }
 
             // Hopeless case, all units have died, just quit.
