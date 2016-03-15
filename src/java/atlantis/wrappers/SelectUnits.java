@@ -7,10 +7,9 @@ import atlantis.util.UnitUtil;
 
 import java.util.Collection;
 import java.util.Iterator;
-import jnibwapi.Position;
+import bwapi.Position;
 import bwapi.Unit;
-import jnibwapi.types.UnitType;
-import jnibwapi.types.UnitType.UnitTypes;
+import bwapi.UnitType;
 
 /**
  * This class allows to easily select units e.g. to select one of your Marines, nearest to given location, you
@@ -44,8 +43,9 @@ public class SelectUnits {
     public static SelectUnits our() {
         Units units = new Units();
 
-        for (Unit unit : Atlantis.getBwapi().getMyUnits()) {
-            if (unit.exists() && unit.isCompleted() && !unit.isSpiderMine() && !unit.isLarvaOrEgg()) {
+        //self().getUnits() replaces getMyUnits()
+        for (Unit unit : Atlantis.getBwapi().self().getUnits()) {
+            if (unit.exists() && unit.isCompleted() && ! UnitUtil.isType(unit.getType(), UnitType.Terran_Vulture_Spider_Mine, UnitType.Zerg_Larva, UnitType.Zerg_Egg) ) {
                 units.addUnit(unit);
             }
         }
@@ -59,9 +59,9 @@ public class SelectUnits {
     public static SelectUnits ourCombatUnits() {
         Units units = new Units();
 
-        for (Unit unit : Atlantis.getBwapi().getMyUnits()) {
-            if (unit.exists() && unit.isCompleted() && !unit.isNotActuallyUnit() && !unit.getType().isBuilding()
-                    && !unit.isType(AtlantisConfig.WORKER)) {
+        for (Unit unit : Atlantis.getBwapi().self().getUnits()) {
+            if (unit.exists() && unit.isCompleted() && ! UnitUtil.isNotActuallyUnit(unit.getType()) && !unit.getType().isBuilding()
+                    && !unit.getType().equals(AtlantisConfig.WORKER)) {
                 units.addUnit(unit);
             }
         }
@@ -75,8 +75,8 @@ public class SelectUnits {
     public static SelectUnits ourIncludingUnfinished() {
         Units units = new Units();
 
-        for (Unit unit : Atlantis.getBwapi().getMyUnits()) {
-            if (unit.exists() && !unit.isSpiderMine()) {
+        for (Unit unit : Atlantis.getBwapi().self().getUnits()) {
+            if (unit.exists() && !unit.getType().equals(UnitType.Terran_Vulture_Spider_Mine)) {
                 units.addUnit(unit);
             }
         }
@@ -90,7 +90,7 @@ public class SelectUnits {
     public static SelectUnits ourUnfinished() {
         Units units = new Units();
 
-        for (Unit unit : Atlantis.getBwapi().getMyUnits()) {
+        for (Unit unit : Atlantis.getBwapi().self().getUnits()) {
             if (unit.exists() && !unit.isCompleted()) {
                 units.addUnit(unit);
             }
@@ -105,8 +105,8 @@ public class SelectUnits {
     public static SelectUnits ourRealUnits() {
         Units units = new Units();
 
-        for (Unit unit : Atlantis.getBwapi().getMyUnits()) {
-            if (unit.exists() && unit.isCompleted() && !unit.isBuilding() && !unit.isNotActuallyUnit()) {
+        for (Unit unit : Atlantis.getBwapi().self().getUnits()) {
+            if (unit.exists() && unit.isCompleted() && !unit.getType().isBuilding() && ! UnitUtil.isNotActuallyUnit(unit.getType())) {
                 units.addUnit(unit);
             }
         }
@@ -120,8 +120,8 @@ public class SelectUnits {
     public static SelectUnits ourUnfinishedRealUnits() {
         Units units = new Units();
 
-        for (Unit unit : Atlantis.getBwapi().getMyUnits()) {
-            if (unit.exists() && !unit.isCompleted() && !unit.isBuilding() && !unit.isNotActuallyUnit()) {
+        for (Unit unit : Atlantis.getBwapi().self().getUnits()) {
+            if (unit.exists() && !unit.isCompleted() && !unit.getType().isBuilding() && ! UnitUtil.isNotActuallyUnit(unit.getType())) {
                 units.addUnit(unit);
             }
         }
@@ -135,7 +135,8 @@ public class SelectUnits {
     public static SelectUnits enemy() {
         Units units = new Units();
 
-        for (Unit unit : Atlantis.getBwapi().getEnemyUnits()) {
+        //TODO: check whether enemy().getUnits() has the same behavior as  getEnemyUnits()
+        for (Unit unit : Atlantis.getBwapi().enemy().getUnits()) {
             if (unit.isVisible() && unit.getHitPoints() >= 1) {
                 units.addUnit(unit);
             }
@@ -150,9 +151,9 @@ public class SelectUnits {
     public static SelectUnits enemy(boolean includeGroundUnits, boolean includeAirUnits) {
         Units units = new Units();
 
-        for (Unit unit : Atlantis.getBwapi().getEnemyUnits()) {
-            if (unit.isVisible() && unit.getHP() >= 1) {
-                if ((unit.isGroundUnit() && includeGroundUnits) || (unit.isAirUnit() && includeAirUnits)) {
+        for (Unit unit : Atlantis.getBwapi().enemy().getUnits()) {
+            if (unit.isVisible() && unit.getHitPoints() >= 1) {
+                if ((!unit.getType().isFlyer() && includeGroundUnits) || (unit.getType().isFlyer() && includeAirUnits)) {
                     units.addUnit(unit);
                 }
             }
@@ -167,8 +168,8 @@ public class SelectUnits {
     public static SelectUnits enemyRealUnits() {
         Units units = new Units();
 
-        for (Unit unit : Atlantis.getBwapi().getEnemyUnits()) {
-            if (unit.exists() && unit.isVisible() && !unit.isBuilding() && !unit.isNotActuallyUnit()) {
+        for (Unit unit : Atlantis.getBwapi().enemy().getUnits()) {
+            if (unit.exists() && unit.isVisible() && !unit.getType().isBuilding() && ! UnitUtil.isNotActuallyUnit(unit.getType())) {
                 units.addUnit(unit);
             }
         }
@@ -182,9 +183,9 @@ public class SelectUnits {
     public static SelectUnits enemyRealUnits(boolean includeGroundUnits, boolean includeAirUnits) {
         Units units = new Units();
 
-        for (Unit unit : Atlantis.getBwapi().getEnemyUnits()) {
-            if (unit.exists() && unit.isVisible() && !unit.isBuilding() && !unit.isLarvaOrEgg()) {
-                if ((unit.isGroundUnit() && includeGroundUnits) || (unit.isAirUnit() && includeAirUnits)) {
+        for (Unit unit : Atlantis.getBwapi().enemy().getUnits()) {
+            if (unit.exists() && unit.isVisible() && !unit.getType().isBuilding() && !UnitUtil.isType(unit.getType(), UnitType.Zerg_Larva, UnitType.Zerg_Egg)) {
+                if ((!unit.getType().isFlyer() && includeGroundUnits) || (unit.getType().isFlyer() && includeAirUnits)) {
                     units.addUnit(unit);
                 }
             }
@@ -213,7 +214,7 @@ public class SelectUnits {
         units.addUnits(Atlantis.getBwapi().getNeutralUnits());
         SelectUnits selectUnits = new SelectUnits(units);
 
-        return selectUnits.ofType(UnitTypes.Resource_Mineral_Field);
+        return selectUnits.ofType(UnitType.Resource_Mineral_Field);
     }
 
     /**
@@ -225,7 +226,7 @@ public class SelectUnits {
         units.addUnits(Atlantis.getBwapi().getNeutralUnits());
         SelectUnits selectUnits = new SelectUnits(units);
 
-        return selectUnits.ofType(UnitTypes.Resource_Vespene_Geyser);
+        return selectUnits.ofType(UnitType.Resource_Vespene_Geyser);
     }
 
     /**
@@ -256,7 +257,7 @@ public class SelectUnits {
         Iterator<Unit> unitsIterator = units.iterator();
         while (unitsIterator.hasNext()) {
             Unit unit = unitsIterator.next();
-            if (PositionUtil.distanceTo(unit.getPosition(),position)) > maxDist) {
+            if (PositionUtil.distanceTo(unit.getPosition(),position) > maxDist) {
                 unitsIterator.remove();
             }
         }
@@ -276,7 +277,7 @@ public class SelectUnits {
             boolean typeMatches = false;
             for (UnitType type : types) {
                 if (unit.getType().equals(type) 
-                        || (unit.getType().equals(UnitTypes.Zerg_Egg) && unit.getBuildType().equals(type))) {
+                        || (unit.getType().equals(UnitType.Zerg_Egg) && unit.getBuildType().equals(type))) {
                     typeMatches = true;
                     break;
                 }
@@ -300,7 +301,7 @@ public class SelectUnits {
             boolean typeMatches = false;
             for (UnitType type : types) {
                 if (unit.getType().equals(type) 
-                        || (unit.getType().equals(UnitTypes.Zerg_Egg) && unit.getBuildType().equals(type))) {
+                        || (unit.getType().equals(UnitType.Zerg_Egg) && unit.getBuildType().equals(type))) {
                     typeMatches = true;
                     break;
                 }
@@ -354,7 +355,7 @@ public class SelectUnits {
         Iterator<Unit> unitsIterator = units.iterator();
         while (unitsIterator.hasNext()) {
             Unit unit = unitsIterator.next();
-            if (!unit.isInfantry()) {
+            if (!unit.getType().isOrganic()) { //replaced  isInfantry()
                 unitsIterator.remove();
             }
         }
@@ -369,7 +370,8 @@ public class SelectUnits {
         Iterator<Unit> unitsIterator = units.iterator();
         while (unitsIterator.hasNext()) {
             Unit unit = unitsIterator.next();
-            if (!unit.isWounded()) {
+            // unit.getHitPoints() >= unit.getType().maxHitPoints() replaces !isWounded()
+            if (unit.getHitPoints() >= unit.getType().maxHitPoints()) {
                 unitsIterator.remove();
             }
         }
@@ -384,7 +386,7 @@ public class SelectUnits {
         Iterator<Unit> unitsIterator = units.iterator();
         while (unitsIterator.hasNext()) {
             Unit unit = unitsIterator.next();
-            if (!unit.isBuilding()) {
+            if (!unit.getType().isBuilding()) {
                 unitsIterator.remove();
             }
         }
@@ -400,12 +402,12 @@ public class SelectUnits {
         while (unitsIterator.hasNext()) {
             Unit unit = unitsIterator.next();
             boolean isMilitaryBuilding = UnitUtil.isType(unit.getType(),
-                    UnitTypes.Terran_Bunker,
-                    UnitTypes.Protoss_Photon_Cannon,
-                    UnitTypes.Zerg_Sunken_Colony,
-                    UnitTypes.Zerg_Spore_Colony
+                    UnitType.Terran_Bunker,
+                    UnitType.Protoss_Photon_Cannon,
+                    UnitType.Zerg_Sunken_Colony,
+                    UnitType.Zerg_Spore_Colony
             );
-            if (!unit.isCompleted() || !unit.exists() || (unit.isBuilding() && !isMilitaryBuilding)) {
+            if (!unit.isCompleted() || !unit.exists() || (unit.getType().isBuilding() && !isMilitaryBuilding)) {
                 unitsIterator.remove();
             }
         }
@@ -421,7 +423,10 @@ public class SelectUnits {
         Iterator<Unit> unitsIterator = units.iterator();
         while (unitsIterator.hasNext()) {
             Unit unit = unitsIterator.next();
-            if (!unit.isRepairableMechanically() || unit.isFullyHealthy() || !unit.isCompleted()) {
+            
+            //isMechanical replaces  isRepairableMechanically
+            //unit.getHitPoints() >= unit.getType().maxHitPoints() replaces isFullyHealthy
+            if (!unit.getType().isMechanical() || unit.getHitPoints() >= unit.getType().maxHitPoints()  || !unit.isCompleted()) {
                 unitsIterator.remove();
             }
         }
@@ -493,7 +498,7 @@ public class SelectUnits {
     public static SelectUnits ourBuildingsIncludingUnfinished() {
         SelectUnits selectedUnits = SelectUnits.ourIncludingUnfinished();
         for (Unit unit : selectedUnits.list()) {
-            if (!unit.isBuilding()) {
+            if (!unit.getType().isBuilding()) {
                 selectedUnits.units.removeUnit(unit);
             }
         }
@@ -504,30 +509,30 @@ public class SelectUnits {
      * Selects all our tanks, both sieged and unsieged.
      */
     public static SelectUnits ourTanks() {
-        return our().ofType(UnitTypes.Terran_Siege_Tank_Siege_Mode, UnitTypes.Terran_Siege_Tank_Tank_Mode);
+        return our().ofType(UnitType.Terran_Siege_Tank_Siege_Mode, UnitType.Terran_Siege_Tank_Tank_Mode);
     }
 
     /**
      * Selects all our sieged tanks.
      */
     public static SelectUnits ourTanksSieged() {
-        return our().ofType(UnitTypes.Terran_Siege_Tank_Siege_Mode);
+        return our().ofType(UnitType.Terran_Siege_Tank_Siege_Mode);
     }
 
     /**
      * Selects all of our Marines, Firebats, Ghosts and Medics.
      */
     public static SelectUnits ourTerranInfantry() {
-        return our().ofType(UnitType.UnitTypes.Terran_Marine, UnitType.UnitTypes.Terran_Medic,
-                    UnitType.UnitTypes.Terran_Firebat, UnitType.UnitTypes.Terran_Ghost);
+        return our().ofType(UnitType.Terran_Marine, UnitType.Terran_Medic,
+                    UnitType.Terran_Firebat, UnitType.Terran_Ghost);
     }
 
     /**
      * Selects all of our Marines, Firebats, Ghosts.
      */
     public static SelectUnits ourTerranInfantryWithoutMedics() {
-        return our().ofType(UnitType.UnitTypes.Terran_Marine,
-                    UnitType.UnitTypes.Terran_Firebat, UnitType.UnitTypes.Terran_Ghost);
+        return our().ofType(UnitType.Terran_Marine,
+                    UnitType.Terran_Firebat, UnitType.Terran_Ghost);
     }
 
     /**
@@ -536,7 +541,7 @@ public class SelectUnits {
     public static SelectUnits ourLarva() {
         SelectUnits selectedUnits = SelectUnits.ourIncludingUnfinished();
         for (Unit unit : selectedUnits.list()) {
-            if (!unit.getType().equals(UnitTypes.Zerg_Larva)) {
+            if (!unit.getType().equals(UnitType.Zerg_Larva)) {
                 selectedUnits.units.removeUnit(unit);
             }
         }
@@ -549,7 +554,7 @@ public class SelectUnits {
     public static SelectUnits ourEggs() {
         SelectUnits selectedUnits = SelectUnits.ourIncludingUnfinished();
         for (Unit unit : selectedUnits.list()) {
-            if (!unit.getType().equals(UnitTypes.Zerg_Egg)) {
+            if (!unit.getType().equals(UnitType.Zerg_Egg)) {
                 selectedUnits.units.removeUnit(unit);
             }
         }
@@ -602,7 +607,7 @@ public class SelectUnits {
      * Returns first idle our unit of given type or null if no idle units found.
      */
     public static Unit ourOneIdle(UnitType type) {
-        for (Unit unit : Atlantis.getBwapi().getMyUnits()) {
+        for (Unit unit : Atlantis.getBwapi().self().getUnits()) {
             if (unit.isCompleted() && unit.isIdle() && unit.getType().equals(type)) {
                 return unit;
             }

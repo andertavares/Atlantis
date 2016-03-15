@@ -1,10 +1,13 @@
 package atlantis.combat;
 
 import atlantis.AtlantisGame;
+import atlantis.util.ColorUtil;
 import atlantis.util.PositionUtil;
 import atlantis.util.UnitUtil;
 import atlantis.wrappers.SelectUnits;
 import java.util.Collection;
+
+import bwapi.Color;
 import bwapi.Unit;
 import bwapi.UnitType;
 import bwapi.WeaponType;
@@ -38,7 +41,7 @@ public class AtlantisCombatEvaluator {
      * <b>FALSE</b> if enemy is too strong and we should pull back.
      */
     public static boolean isSituationFavorable(Unit unit) {
-        Unit nearestEnemy = SelectUnits.enemy().nearestTo(unit);
+        Unit nearestEnemy = SelectUnits.enemy().nearestTo(unit.getPosition());
         
         if (AtlantisCombatEvaluatorExtraConditions.shouldAlwaysFight(unit, nearestEnemy)) {
             return true;
@@ -57,7 +60,7 @@ public class AtlantisCombatEvaluator {
      * <b>FALSE</b> if enemy is too strong and we should pull back.
      */
     public static boolean isSituationExtremelyFavorable(Unit unit) {
-        Unit nearestEnemy = SelectUnits.enemy().nearestTo(unit);
+        Unit nearestEnemy = SelectUnits.enemy().nearestTo(unit.getPosition());
         
         if (AtlantisCombatEvaluatorExtraConditions.shouldAlwaysRetreat(unit, nearestEnemy)) {
             return false;
@@ -81,18 +84,18 @@ public class AtlantisCombatEvaluator {
         // =========================================================
         // Define nearby enemy and our units
         
-        Collection<Unit> enemyUnits = SelectUnits.enemy().combatUnits().inRadius(12, unit).list();
+        Collection<Unit> enemyUnits = SelectUnits.enemy().combatUnits().inRadius(12, unit.getPosition()).list();
         if (enemyUnits.isEmpty()) {
             return updateCombatEval(unit, +999);
         }
-        Collection<Unit> ourUnits = SelectUnits.our().combatUnits().inRadius(8.5, unit).list();
+        Collection<Unit> ourUnits = SelectUnits.our().combatUnits().inRadius(8.5, unit.getPosition()).list();
         
         // =========================================================
         // Evaluate our and enemy strength
 
         double enemyEvaluation = evaluateUnitsAgainstUnit(enemyUnits, unit, true);
         double ourEvaluation = evaluateUnitsAgainstUnit(ourUnits, enemyUnits.iterator().next(), false);
-        double lowHealthPenalty = (100 - unit.getHPPercent()) / 80;
+        double lowHealthPenalty = (100 - UnitUtil.getHPPercent(unit)) / 80;
         double combatEval = ourEvaluation / enemyEvaluation - 1 - lowHealthPenalty;
         
         return updateCombatEval(unit, combatEval);
@@ -126,9 +129,9 @@ public class AtlantisCombatEvaluator {
             // =========================================================
             // BUILDING
             else if (unit.getType().isBuilding() && unit.isCompleted()) {
-                boolean antiGround = (againstUnit != null ? againstUnit.isGroundUnit() : true);
-                boolean antiAir = (againstUnit != null ? againstUnit.isAirUnit() : true);
-                if (unit.isMilitaryBuilding(antiGround, antiAir)) {
+                boolean antiGround = (againstUnit != null ? !againstUnit.getType().isFlyer() : true);
+                boolean antiAir = (againstUnit != null ? againstUnit.getType().isFlyer() : true);
+                if ( UnitUtil.isMilitaryBuilding(unit.getType(), antiGround, antiAir)) {
                     enemyDefensiveBuildingFound = true;
                     if (unit.getType().equals(UnitType.Terran_Bunker)) {
                         strength += 7 * evaluateUnitHPandDamage(UnitType.Terran_Marine, againstUnit);
@@ -176,13 +179,14 @@ public class AtlantisCombatEvaluator {
     }
 
     private static double evaluateUnitHPandDamage(UnitType evaluateType, int hp, Unit againstUnit) {
-        double damage = (againstUnit.isGroundUnit() ? 
-                evaluateType.getGroundWeapon().getDamageNormalized() : 
-                evaluateType.getAirWeapon().getDamageNormalized());
+        double damage = (!againstUnit.getType().isFlyer() ? 
+            UnitUtil.getNormalizedDamage(evaluateType.groundWeapon()) : 
+            UnitUtil.getNormalizedDamage(evaluateType.airWeapon())
+        );
         double total = hp * EVAL_HIT_POINTS_FACTOR + damage * EVAL_DAMAGE_FACTOR;
         
         // =========================================================
-        // Deminish role of NON-SHOOTING units
+        // Diminish role of NON-SHOOTING units
         if (damage == 0 && !evaluateType.equals(UnitType.Terran_Medic)) {
             total /= 15;
         }
@@ -204,11 +208,11 @@ public class AtlantisCombatEvaluator {
             String string = (eval < 0 ? "" : "+") + String.format("%.1f", eval);
 
             if (eval < -0.05) {
-                string = BWColor.getColorString(BWColor.Red) + string;
+                string = ColorUtil.getColorString(Color.Red) + string;
             } else if (eval < 0.05) {
-                string = BWColor.getColorString(BWColor.Yellow) + string;
+                string = ColorUtil.getColorString(Color.Yellow) + string;
             } else {
-                string = BWColor.getColorString(BWColor.Green) + string;
+                string = ColorUtil.getColorString(Color.Green) + string;
             }
 
             return string;

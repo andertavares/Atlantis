@@ -35,7 +35,7 @@ public class AtlantisGame {
     public static boolean hasTechToProduce(UnitType unitType) {
 
         // Needs to have tech
-        TechType techType = TechType.getTechType(unitType.getRequiredTechID());
+        TechType techType = unitType.requiredTech();
         if (techType != null && techType != TechType.None && !AtlantisTech.isResearched(techType)) {
             return false;
         }
@@ -49,8 +49,8 @@ public class AtlantisGame {
     public static boolean hasBuildingsToProduce(UnitType unitType) {
 
         // Need to have every prerequisite building
-        for (Integer unitTypeID : unitType.getRequiredUnits().keySet()) {
-            UnitType requiredUnitType = UnitType.getByID(unitTypeID);
+        for (UnitType requiredUnitType : unitType.requiredUnits().keySet()) {
+            //UnitType requiredUnitType = UnitType.getByID(unitTypeID);
             
 //            if (requiredUnitType.isLarva()) {
 //                continue;
@@ -61,7 +61,7 @@ public class AtlantisGame {
                 continue;
             }
             
-            int requiredAmount = unitType.getRequiredUnits().get(unitTypeID);
+            int requiredAmount = unitType.requiredUnits().get(requiredUnitType);
             int weHaveAmount = requiredUnitType.equals(UnitType.Zerg_Larva) ? 
                     SelectUnits.ourLarva().count() : SelectUnits.our().ofType(requiredUnitType).count();
 //            System.out.println(requiredUnitType + "    x" + requiredAmount);
@@ -250,7 +250,8 @@ public class AtlantisGame {
      * Returns true if we can afford minerals and gas for given upgrade.
      */
     public static boolean canAfford(UpgradeType upgrade) {
-        return hasMinerals(upgrade.getMineralPriceBase()) && hasGas(upgrade.getGasPriceBase());
+    	//TODO: check whether we need to pass level 0 to match getMineral/GasPriceBase()
+        return hasMinerals(upgrade.mineralPrice()) && hasGas(upgrade.gasPrice());	
     }
 
     /**

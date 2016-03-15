@@ -98,7 +98,8 @@ public class AtlantisCombatCommander {
     // =========================================================
     
     private static boolean shouldNotDisturbUnit(Unit unit) {
-        return unit.isJustShooting();
+    	//this below replaces unit.isJustShooting()
+        return unit.isAttackFrame() || unit.isStartingAttack();
     }
 
 }

@@ -1,6 +1,6 @@
 package atlantis.combat.group.missions;
 
-import jnibwapi.Unit;
+import bwapi.Unit;
 
 /**
  * Represents behavior for group of units e.g. DEFEND, ATTACK etc.

@@ -8,7 +8,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
-import jnibwapi.Position;
+import bwapi.Position;
 import bwapi.Unit;
 
 /**
@@ -115,8 +115,8 @@ public class Units {
                 if (p2 == null || !(p2 instanceof Position)) {
                     return 1;
                 }
-                double distance1 = position.distanceTo(p1);
-                double distance2 = position.distanceTo(p2);
+                double distance1 = PositionUtil.distanceTo(position, p1);
+                double distance2 = PositionUtil.distanceTo(position, p2);
                 if (distance1 == distance2) {
                     return 0;
                 }
@@ -258,7 +258,7 @@ public class Units {
     public void print() {
         System.out.println("Units in list:");
         for (Unit unit : list()) {
-            System.out.println(unit + " // Dist to main base: " + (PositionUtil.distanceTo(unit, SelectUnits.mainBase()));
+            System.out.println(unit + " // Dist to main base: " + (PositionUtil.distanceTo(unit, SelectUnits.mainBase())));
         }
         System.out.println();
     }
