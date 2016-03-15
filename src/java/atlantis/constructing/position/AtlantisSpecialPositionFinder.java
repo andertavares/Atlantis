@@ -31,10 +31,10 @@ public class AtlantisSpecialPositionFinder {
      */
     protected static Position findPositionForGasBuilding(UnitType building) {
         for (Unit base : SelectUnits.ourBases().list()) {
-            Unit geyser = SelectUnits.neutral().ofType(UnitType.Resource_Vespene_Geyser).nearestTo(base);
+            Unit geyser = SelectUnits.neutral().ofType(UnitType.Resource_Vespene_Geyser).nearestTo(base.getPosition());
 
             if (geyser != null && PositionUtil.distanceTo(geyser, base) < 10) {
-                return geyser.translated(-48, -32);
+                return PositionUtil.translate(geyser.getPosition(), -48, -32);
             }
         }
 
@@ -63,7 +63,7 @@ public class AtlantisSpecialPositionFinder {
     // =========================================================
     
     private static Position findPositionForBase_nearestFreeBase(UnitType building, Unit builder) {
-        BaseLocation baseLocationToExpand = AtlantisMap.getNearestBaseLocationToExpand(SelectUnits.mainBase());
+        BaseLocation baseLocationToExpand = AtlantisMap.getNearestBaseLocationToExpand(SelectUnits.mainBase().getPosition());
         if (baseLocationToExpand == null) {
             System.err.println("baseLocationToExpand is null");
             return null;

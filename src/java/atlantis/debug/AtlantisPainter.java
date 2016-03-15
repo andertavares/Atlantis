@@ -23,7 +23,7 @@ import java.util.TreeSet;
 import jnibwapi.JNIBWAPI;
 import jnibwapi.Position;
 import jnibwapi.Unit;
-import jnibwapi.types.UnitType;
+import bwapi.UnitType;
 import jnibwapi.util.BWColor;
 
 /**
@@ -356,17 +356,17 @@ public class AtlantisPainter {
                 // Paint box
                 bwapi.drawBox(
                         positionToBuild,
-                        positionToBuild.translated(buildingType.getTileWidth() * 32, buildingType.getTileHeight() * 32),
+                        positionToBuild.translated(buildingType.tileWidth() * 32, buildingType.tileHeight() * 32),
                         BWColor.Teal, false, false);
 
                 // Draw X
                 bwapi.drawLine(
                         positionToBuild,
-                        positionToBuild.translated(buildingType.getTileWidth() * 32, buildingType.getTileHeight() * 32),
+                        positionToBuild.translated(buildingType.tileWidth() * 32, buildingType.tileHeight() * 32),
                         BWColor.Teal, false);
                 bwapi.drawLine(
-                        positionToBuild.translated(buildingType.getTileWidth() * 32, 0),
-                        positionToBuild.translated(0, buildingType.getTileHeight() * 32),
+                        positionToBuild.translated(buildingType.tileWidth() * 32, 0),
+                        positionToBuild.translated(0, buildingType.tileHeight() * 32),
                         BWColor.Teal, false);
                 
                 // Draw text

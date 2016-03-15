@@ -3,8 +3,8 @@ package atlantis.production.strategies;
 import atlantis.AtlantisConfig;
 import atlantis.wrappers.SelectUnits;
 import java.util.ArrayList;
-import jnibwapi.Unit;
-import jnibwapi.types.UnitType;
+import bwapi.Unit;
+import bwapi.UnitType;
 
 public class ProtossProductionStrategy extends AtlantisProductionStrategy {
 
@@ -32,7 +32,7 @@ public class ProtossProductionStrategy extends AtlantisProductionStrategy {
     @Override
     public ArrayList<UnitType> produceWhenNoProductionOrders() {
         ArrayList<UnitType> units = new ArrayList<>();
-        units.add(UnitType.UnitTypes.Protoss_Zealot);
+        units.add(UnitType.Protoss_Zealot);
         return units;
     }
 

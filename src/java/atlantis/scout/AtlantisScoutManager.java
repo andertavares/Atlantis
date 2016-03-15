@@ -2,6 +2,7 @@ package atlantis.scout;
 
 import atlantis.AtlantisConfig;
 import atlantis.AtlantisGame;
+import atlantis.debug.tooltip.TooltipManager;
 import atlantis.information.AtlantisEnemyInformationManager;
 import atlantis.information.AtlantisMap;
 import atlantis.information.AtlantisUnitInformationManager;
@@ -81,7 +82,8 @@ public class AtlantisScoutManager {
         if (scout == null) {
             return;
         }
-        scout.setTooltip("Find enemy");
+        TooltipManager.getInstance().setTooltip(scout, "Find enemy");
+        //scout.setTooltip("Find enemy");
 
         // Don't interrupt when moving
 //        if (scout.isMoving() || scout.isAttacking()) {
@@ -108,7 +110,8 @@ public class AtlantisScoutManager {
         // =========================================================
         
         if (startingLocation != null) {
-            scout.setTooltip("Scout!");
+        	TooltipManager.getInstance().setTooltip(scout, "Scout!");
+            //scout.setTooltip("Scout!");
             scout.move(startingLocation, false);
         }
     }

@@ -47,7 +47,7 @@ public class AtlantisBarracksManager {
         } // Production queue not empty
         else {
             for (ProductionOrder order : unitsToProduce) {
-                if (order.getUnitType().isInfantry()) {
+                if (order.getUnitType().isOrganic()) {	//replaces  isInfantry()
                     return true;
                 }
             }

@@ -11,9 +11,9 @@ import atlantis.wrappers.AtlantisTech;
 import atlantis.wrappers.MappingCounter;
 import atlantis.wrappers.SelectUnits;
 import java.util.ArrayList;
-import jnibwapi.types.TechType;
-import jnibwapi.types.UnitType;
-import jnibwapi.types.UpgradeType;
+import bwapi.TechType;
+import bwapi.UnitType;
+import bwapi.UpgradeType;
 
 /**
  * Represents abstract build orders read from the file.
@@ -182,8 +182,8 @@ public abstract class AtlantisProductionStrategy {
             // =========================================================
             // Protoss fix: wait for at least one Pylon
             if (AtlantisGame.playsAsProtoss() && unitType != null
-                    && !UnitType.UnitTypes.Protoss_Pylon.equals(unitType)
-                    && SelectUnits.our().countUnitsOfType(UnitType.UnitTypes.Protoss_Pylon) == 0) {
+                    && !UnitType.Protoss_Pylon.equals(unitType)
+                    && SelectUnits.our().countUnitsOfType(UnitType.Protoss_Pylon) == 0) {
                 continue;
             }
             
@@ -194,14 +194,14 @@ public abstract class AtlantisProductionStrategy {
                     continue;
                 }
                 
-                mineralsNeeded += unitType.getMineralPrice();
-                gasNeeded += unitType.getGasPrice();
+                mineralsNeeded += unitType.mineralPrice();
+                gasNeeded += unitType.gasPrice();
             } else if (upgrade != null) {
-                mineralsNeeded += upgrade.getMineralPriceBase() * upgrade.getMineralPriceFactor();
-                gasNeeded += upgrade.getGasPriceBase() * upgrade.getGasPriceFactor();
+                mineralsNeeded += upgrade.mineralPrice() * upgrade.mineralPriceFactor();
+                gasNeeded += upgrade.gasPrice() * upgrade.gasPriceFactor();
             } else if (tech != null) {
-                mineralsNeeded += tech.getMineralPrice();
-                gasNeeded += tech.getMineralPrice();
+                mineralsNeeded += tech.mineralPrice();
+                gasNeeded += tech.gasPrice();	//previous was `getMineralPrice()`, this seems to be a bugfix
             }
 
             // =========================================================
@@ -231,10 +231,10 @@ public abstract class AtlantisProductionStrategy {
      * we need to count sunkens as well.
      */
     private int countUnitsOfGivenTypeOrSimilar(UnitType type) {
-        if (type.equals(UnitType.UnitTypes.Zerg_Creep_Colony)) {
+        if (type.equals(UnitType.Zerg_Creep_Colony)) {
             return AtlantisUnitInformationManager.countOurUnitsOfType(type) +
-                    + AtlantisUnitInformationManager.countOurUnitsOfType(UnitType.UnitTypes.Zerg_Sunken_Colony)
-                    + AtlantisUnitInformationManager.countOurUnitsOfType(UnitType.UnitTypes.Zerg_Spore_Colony);
+                    + AtlantisUnitInformationManager.countOurUnitsOfType(UnitType.Zerg_Sunken_Colony)
+                    + AtlantisUnitInformationManager.countOurUnitsOfType(UnitType.Zerg_Spore_Colony);
         }
         else {
             return AtlantisUnitInformationManager.countOurUnitsOfType(type);
@@ -320,17 +320,17 @@ public abstract class AtlantisProductionStrategy {
         // Try getting objects of each type as we don't know if it's unit, research or tech.
         // UNIT
         UnitType.disableErrorReporting = true;
-        UnitType unitType = UnitType.getByName(nameString);
+        UnitType unitType = UnitType.getByName(nameString);	//TODO: put this in unitUtil
         UnitType.disableErrorReporting = false;
 
         // UPGRADE
         UpgradeType.disableErrorReporting = true;
-        UpgradeType upgrade = UpgradeType.getByName(nameString);
+        UpgradeType upgrade = UpgradeType.getByName(nameString); //TODO: put this in UpgradeUtil
         UpgradeType.disableErrorReporting = false;
 
         // TECH
         TechType.disableErrorReporting = true;
-        TechType tech = TechType.getByName(nameString);
+        TechType tech = TechType.getByName(nameString); //TODO: put this in TechUtil
         TechType.disableErrorReporting = false;
 
         // Define convienience boolean variables

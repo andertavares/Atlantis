@@ -4,10 +4,11 @@ import atlantis.AtlantisConfig;
 import atlantis.AtlantisGame;
 import atlantis.buildings.managers.AtlantisGasManager;
 import atlantis.information.AtlantisUnitInformationManager;
+import atlantis.util.PositionUtil;
 import atlantis.wrappers.SelectUnits;
 import atlantis.wrappers.Units;
 import java.util.Collection;
-import jnibwapi.Unit;
+import bwapi.Unit;
 
 /**
  * Manages all worker (SCV, Probe, Drone) actions.
@@ -90,8 +91,8 @@ public class AtlantisWorkerCommander {
         // Count ratios of workers / minerals for every base
         Units baseWorkersRatios = new Units();
         for (Unit ourBase : ourBases) {
-            int numOfWorkersNearBase = SelectUnits.ourWorkersThatGather().inRadius(15, ourBase).count();
-            int numOfMineralsNearBase = SelectUnits.minerals().inRadius(10, ourBase).count() + 1;
+            int numOfWorkersNearBase = SelectUnits.ourWorkersThatGather().inRadius(15, ourBase.getPosition()).count();
+            int numOfMineralsNearBase = SelectUnits.minerals().inRadius(10, ourBase.getPosition()).count() + 1;
             if (numOfWorkersNearBase <= 2) {
                 continue;
             }
@@ -116,16 +117,16 @@ public class AtlantisWorkerCommander {
         
         // If there's only 120% as many workers as minerals OR bases are too close, don't transfer
         if (baseWorkersRatios.getValueFor(baseWithMostWorkers) <= 1.2 || 
-                baseWithMostWorkers.distanceTo(baseWithFewestWorkers) < 10) {
+                PositionUtil.distanceTo(baseWithMostWorkers, baseWithFewestWorkers) < 10) {
             return;
         }
         
         // If the difference is "significant" transfer one worker from base to base
         if (baseWorkersRatios.getValueFor(baseWithMostWorkers) - 0.1 > 
                 baseWorkersRatios.getValueFor(baseWithFewestWorkers)) {
-            Unit worker = SelectUnits.ourWorkersThatGather().inRadius(10, baseWithMostWorkers).first();
+            Unit worker = SelectUnits.ourWorkersThatGather().inRadius(10, baseWithMostWorkers.getPosition()).first();
             if (worker != null) {
-                worker.move(baseWithFewestWorkers);
+                worker.move(baseWithFewestWorkers.getPosition());
             }
         }
     }

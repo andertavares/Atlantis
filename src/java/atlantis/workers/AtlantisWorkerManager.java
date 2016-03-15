@@ -3,6 +3,7 @@ package atlantis.workers;
 import atlantis.constructing.AtlantisBuilderManager;
 import atlantis.constructing.AtlantisConstructingManager;
 import atlantis.constructing.ConstructionOrder;
+import atlantis.debug.tooltip.TooltipManager;
 import atlantis.util.UnitUtil;
 import atlantis.wrappers.SelectUnits;
 import bwapi.Unit;
@@ -13,7 +14,8 @@ public class AtlantisWorkerManager {
      * Executed for every worker unit.
      */
     public static void update(Unit unit) {
-        unit.removeTooltip();
+    	TooltipManager.getInstance().removeTooltip(unit);
+        //unit.removeTooltip();
 
         // Act as BUILDER
         if (AtlantisConstructingManager.isBuilder(unit)) {
@@ -38,7 +40,8 @@ public class AtlantisWorkerManager {
         if (worker.isIdle()
                 || (!worker.isGatheringMinerals() && !worker.isGatheringGas() && !worker.isMoving()
                 && !worker.isConstructing() && !worker.isAttacking() && !worker.isRepairing())) {
-            worker.setTooltip("Move ya ass!");
+        	TooltipManager.getInstance().setTooltip(worker, "Move ya ass!");
+        	//worker.setTooltip("Move ya ass!");
             AtlantisMineralGathering.gatherResources(worker);
         }
     }
@@ -50,7 +53,7 @@ public class AtlantisWorkerManager {
         boolean isGasBuilding = UnitUtil.isGasBuilding(target.getType());
         int total = 0;
         
-        for (Unit worker : SelectUnits.ourWorkers().inRadius(15, target).list()) {
+        for (Unit worker : SelectUnits.ourWorkers().inRadius(15, target.getPosition()).list()) {
             if (target.equals(worker.getTarget())) {
                 total++;
             }
@@ -86,7 +89,7 @@ public class AtlantisWorkerManager {
 
         ConstructionOrder buildingToBuild = AtlantisConstructingManager.getConstructionOrderFor(unit);
         if (buildingToBuild != null) {
-            tooltip += "Build: " + buildingToBuild.getBuildingType().getShortName() + newLine;
+            tooltip += "Build: " + UnitUtil.getShortName(buildingToBuild.getBuildingType()) + newLine;
         }
 //		if (unit.getTarget() != null) {
 //			tooltip += "Target: " + unit.getTarget().getShortName() + newLine;
@@ -118,7 +121,8 @@ public class AtlantisWorkerManager {
         // if (unit.isIdle()) {
         // tooltip += "Idle" + newLine;
         // }
-        unit.setTooltip(tooltip);
+        TooltipManager.getInstance().setTooltip(unit, tooltip);
+        //unit.setTooltip(tooltip);
     }
 
 }

@@ -6,8 +6,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 
-import jnibwapi.Position;
+import bwapi.Position;
 import atlantis.information.AtlantisMap;
+import atlantis.util.PositionUtil;
 import atlantis.util.RUtilities;
 
 /**
@@ -94,8 +95,8 @@ public class Positions<T extends Position> {
 		Collections.sort(positions, new Comparator<Position>() {
 			@Override
 			public int compare(Position u1, Position u2) {
-				return position.distanceTo(u1) < position.distanceTo(u2) ? (nearestFirst ? -1 : 1) : (nearestFirst ? 1
-						: -1);
+				return PositionUtil.distanceTo(position, u1) < PositionUtil.distanceTo(position, u2) ? 
+						(nearestFirst ? -1 : 1) : (nearestFirst ? 1 : -1);
 			}
 		});
 

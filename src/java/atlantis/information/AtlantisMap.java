@@ -1,6 +1,7 @@
 package atlantis.information;
 
 import atlantis.Atlantis;
+import atlantis.util.PositionUtil;
 import atlantis.util.RUtilities;
 import atlantis.wrappers.Positions;
 import atlantis.wrappers.SelectUnits;
@@ -10,9 +11,9 @@ import java.util.List;
 import jnibwapi.BaseLocation;
 import jnibwapi.ChokePoint;
 import jnibwapi.Map;
-import jnibwapi.Position;
+import bwapi.Position;
 import jnibwapi.Region;
-import jnibwapi.Unit;
+import bwapi.Unit;
 
 /**
  * This class provides information about high-abstraction level map operations like returning place for the
@@ -35,13 +36,13 @@ public class AtlantisMap {
             if (mainBase != null) {
 
                 // Define region where our main base is
-                Region mainRegion = getRegion(mainBase);
+                Region mainRegion = getRegion(mainBase.getPosition());
                 // System.out.println("mainRegion = " + mainRegion);
                 if (mainRegion != null) {
 
                     // Define localization of the second base to expand
-                    BaseLocation secondBase = getSecondNearestBaseLocation(Atlantis.getBwapi().getSelf()
-                            .getStartLocation());
+                    BaseLocation secondBase = getSecondNearestBaseLocation(Atlantis.getBwapi().self()
+                            .getStartLocation().toPosition());
                     // System.out.println("secondBase = " + secondBase);
                     if (secondBase == null) {
                         return null;
@@ -163,7 +164,7 @@ public class AtlantisMap {
             int maxRadius = 30;
             int dx = -maxRadius + RUtilities.rand(0, 2 * maxRadius);
             int dy = -maxRadius + RUtilities.rand(0, 2 * maxRadius);
-            position = startPoint.translated(dx, dy).makeValid();
+            position = PositionUtil.translate(startPoint, dx, dy).makeValid();
             if (!isVisible(position)) {
                 return position;
             }
@@ -201,7 +202,7 @@ public class AtlantisMap {
                 // Exclude our base location if needed.
                 if (excludeOurStartLocation) {
                     Unit mainBase = SelectUnits.mainBase();
-                    if (mainBase != null && mainBase.distanceTo(baseLocation) <= 10) {
+                    if (mainBase != null && PositionUtil.distanceTo(mainBase, baseLocation) <= 10) {
                         continue;
                     }
                 }

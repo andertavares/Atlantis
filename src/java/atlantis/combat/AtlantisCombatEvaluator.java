@@ -11,7 +11,6 @@ import bwapi.Color;
 import bwapi.Unit;
 import bwapi.UnitType;
 import bwapi.WeaponType;
-//import bwapi.util.BWColor;
 
 /**
  *

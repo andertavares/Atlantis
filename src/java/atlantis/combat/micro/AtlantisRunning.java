@@ -3,11 +3,13 @@ package atlantis.combat.micro;
 import atlantis.Atlantis;
 import atlantis.AtlantisGame;
 import atlantis.combat.AtlantisCombatEvaluator;
+import atlantis.debug.tooltip.TooltipManager;
 import atlantis.information.AtlantisMap;
+import atlantis.util.PositionUtil;
 import atlantis.wrappers.SelectUnits;
 import java.util.Collection;
-import jnibwapi.Position;
-import jnibwapi.Unit;
+import bwapi.Position;
+import bwapi.Unit;
 
 /**
  * Handles best way of running from close enemies and information about the fact if given unit is running or
@@ -35,7 +37,7 @@ public class AtlantisRunning {
     public boolean runFrom(Unit nearestEnemy) {
         
         // Define position to run to
-        nextPositionToRunTo = getPositionAwayFrom(unit, nearestEnemy);
+        nextPositionToRunTo = getPositionAwayFrom(unit, nearestEnemy.getPosition());
         
         // Remember the last time of the decision
         if (nextPositionToRunTo != null) {
@@ -49,13 +51,14 @@ public class AtlantisRunning {
             updateRunTooltip();
         }
         else {
-            unit.removeTooltip();
+        	TooltipManager.getInstance().removeTooltip(unit);
+            //unit.removeTooltip();
         }
         
         // =========================================================
 
         // Make unit run to the selected position
-        if (nextPositionToRunTo != null && !nextPositionToRunTo.equals((Position) unit)) {
+        if (nextPositionToRunTo != null && !nextPositionToRunTo.equals(unit.getPosition())) {
             unit.move(nextPositionToRunTo, false);
             updateRunTooltip();
             
@@ -93,7 +96,7 @@ public class AtlantisRunning {
     private void notifyOurUnitsAroundToRunAsWell(Unit ourUnit, Unit nearestEnemy) {
         
         // Get all of our units that are close to this unit
-        Collection<Unit> ourUnitsNearby = SelectUnits.our().inRadius(1.5, ourUnit).list();
+        Collection<Unit> ourUnitsNearby = SelectUnits.our().inRadius(1.5, ourUnit.getPosition()).list();
         
         // Tell them to run as well, not to block our escape route
         for (Unit ourOtherUnit : ourUnitsNearby) {
@@ -113,8 +116,8 @@ public class AtlantisRunning {
     private static Position findPositionToRun_preferMainBase(Unit unit, Position runAwayFrom) {
         Unit mainBase = SelectUnits.mainBase();
         if (mainBase != null) {
-            if (mainBase.distanceTo(unit) > 5) {
-                return mainBase;
+            if (PositionUtil.distanceTo(mainBase, unit) > 5) {
+                return mainBase.getPosition();
 //                return mainBase.translated(0, 3 * 64);
             }
         }
@@ -133,27 +136,27 @@ public class AtlantisRunning {
         // =========================================================
 
         while (howManyTiles <= maxTiles) {
-            double xDirectionToUnit = runAwayFrom.getPX() - unit.getPX();
-            double yDirectionToUnit = runAwayFrom.getPY() - unit.getPY();
+            double xDirectionToUnit = runAwayFrom.getX() - unit.getPosition().getX();
+            double yDirectionToUnit = runAwayFrom.getY() - unit.getPosition().getY();
 
-            double vectorLength = runAwayFrom.distanceTo(unit);
+            double vectorLength = PositionUtil.distanceTo(runAwayFrom, unit.getPosition());
             double ratio = howManyTiles / vectorLength;
 
             // Add randomness of move if distance is big enough
             //        int xRandomness = howManyTiles > 3 ? (2 - RUtilities.rand(0, 4)) : 0;
             //        int yRandomness = howManyTiles > 3 ? (2 - RUtilities.rand(0, 4)) : 0;
             runTo = new Position(
-                    (int) (unit.getPX() - ratio * xDirectionToUnit),
-                    (int) (unit.getPY() - ratio * yDirectionToUnit)
+                    (int) (unit.getPosition().getX() - ratio * xDirectionToUnit),
+                    (int) (unit.getPosition().getY() - ratio * yDirectionToUnit)
             );
             
 //            if (howManyTiles >= 8) {
                 runTo = runTo.makeValid();
 //            }
 
-            if (Atlantis.getBwapi().isBuildable(runTo, true) && unit.hasPathTo(runTo)
-                    & Atlantis.getBwapi().hasPath(unit, runTo)
-                    && AtlantisMap.getMap().isConnected(unit, runTo)) {
+            if (Atlantis.getBwapi().isBuildable(runTo.toTilePosition(), true) && unit.hasPathTo(runTo)
+                    & Atlantis.getBwapi().hasPath(unit.getPosition(), runTo)
+                    && AtlantisMap.getMap().isConnected(unit.getPosition(), runTo)) {
                 break;
             } else {
                 howManyTiles++;
@@ -163,13 +166,13 @@ public class AtlantisRunning {
         // =========================================================
         
         if (runTo != null) {
-            double dist = unit.distanceTo(runTo);
+            double dist = PositionUtil.distanceTo(unit.getPosition(), runTo);
             if (dist >= 0.8 && dist <= maxTiles + 1) {
                 return runTo;
             }
         }
         
-        return SelectUnits.mainBase();
+        return SelectUnits.mainBase().getPosition();
     }
     
     // =========================================================

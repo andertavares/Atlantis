@@ -3,11 +3,13 @@ package atlantis.combat.micro;
 import atlantis.combat.micro.terran.TerranMedic;
 import atlantis.AtlantisGame;
 import atlantis.combat.micro.zerg.ZergOverlordManager;
+import atlantis.debug.tooltip.TooltipManager;
+import atlantis.util.PositionUtil;
 import atlantis.wrappers.SelectUnits;
 import atlantis.wrappers.Units;
-import jnibwapi.Position;
-import jnibwapi.Unit;
-import jnibwapi.types.UnitType.UnitTypes;
+import bwapi.Position;
+import bwapi.Unit;
+import bwapi.UnitType;
 
 /**
  * Default micro manager that will be used for all melee units.
@@ -73,7 +75,7 @@ public class DefaultMeleeManager extends MicroMeleeManager {
      * <b>false</b> if unit is in the shooting frame or does any other thing that mustn't be interrupted
      */
     private boolean canIssueOrderToUnit(Unit unit) {
-        return !unit.isJustShooting();
+        return !(unit.isAttackFrame() || unit.isStartingAttack()); //replaces unit.isJustShooting();
     }
 
     /**
@@ -84,7 +86,7 @@ public class DefaultMeleeManager extends MicroMeleeManager {
         
         // ZERG
         if (AtlantisGame.playsAsZerg()) {
-            if (unit.isType(UnitTypes.Zerg_Overlord)) {
+            if (unit.getType().equals(UnitType.Zerg_Overlord)) {
                 ZergOverlordManager.update(unit);
                 return true;
             }
@@ -92,7 +94,7 @@ public class DefaultMeleeManager extends MicroMeleeManager {
         
         // TERRAN
         if (AtlantisGame.playsAsTerran()) {
-            if (unit.isType(UnitTypes.Terran_Medic)) {
+            if (unit.getType().equals(UnitType.Terran_Medic)) {
                 TerranMedic.update(unit);
                 return true;
             }
@@ -105,17 +107,18 @@ public class DefaultMeleeManager extends MicroMeleeManager {
      * If e.g. Terran Marine stands too far forward, it makes him vulnerable. Make him go back.
      */
     private boolean handleDontSpreadTooMuch(Unit unit) {
-        Units ourForcesNearby = SelectUnits.ourCombatUnits().inRadius(7, unit).exclude(unit).units();
+        Units ourForcesNearby = SelectUnits.ourCombatUnits().inRadius(7, unit.getPosition()).exclude(unit).units();
         Position goTo = null;
         if (ourForcesNearby.isEmpty()) {
-            goTo = SelectUnits.ourCombatUnits().exclude(unit).first();
+            goTo = SelectUnits.ourCombatUnits().exclude(unit).first().getPosition();
         } else if (ourForcesNearby.size() <= 4) {
             goTo = ourForcesNearby.positionMedian();
         }
 
-        if (goTo != null && unit.distanceTo(goTo) > 5) {
+        if (goTo != null && PositionUtil.distanceTo(unit.getPosition(), goTo) > 5) {
             unit.move(goTo);
-            unit.setTooltip("Stand closer");
+            TooltipManager.getInstance().setTooltip(unit, "Stand closer");
+            //unit.setTooltip("Stand closer");
             return true;
         }
 

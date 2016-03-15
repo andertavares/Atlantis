@@ -4,6 +4,7 @@ import atlantis.Atlantis;
 import atlantis.AtlantisConfig;
 import atlantis.wrappers.SelectUnits;
 import bwapi.Position;
+import bwapi.TilePosition;
 import bwapi.Unit;
 import bwapi.UnitType;
 import atlantis.debug.AtlantisPainter;
@@ -46,17 +47,18 @@ public class ZergPositionFinder extends AbstractPositionFinder {
             int xCounter = 0;
             int yCounter = 0;
             int doubleRadius = searchRadius * 2;
-            for (int tileX = nearTo.getBX() - searchRadius; tileX <= nearTo.getBX() + searchRadius; tileX++) {
-                for (int tileY = nearTo.getBY() - searchRadius; tileY <= nearTo.getBY() + searchRadius; tileY++) {
+            TilePosition tileNearTo = nearTo.toTilePosition();	//TODO? check the validity of this conversion
+            for (int tileX = tileNearTo.getX() - searchRadius; tileX <= tileNearTo.getX() + searchRadius; tileX++) {
+                for (int tileY = tileNearTo.getY() - searchRadius; tileY <= tileNearTo.getY() + searchRadius; tileY++) {
 //                    System.out.println(xCounter + ", " + yCounter);
                     if ((xCounter == 0 || xCounter == doubleRadius) || (yCounter == 0 || yCounter == doubleRadius)) {
-                        Position position = new Position(tileX, tileY, Position.PosType.BUILD);
+                    	TilePosition tilePosition = new TilePosition(tileX, tileY);	//TODO? check the validity of this conversion 
 //                        System.out.println("tile [" + tileX + ", " + tileY + "]");
-                        if (doesPositionFulfillAllConditions(builder, position)) {
+                        if (doesPositionFulfillAllConditions(builder, tilePosition.toPosition())) {
 //                            System.out.println("--------------------------------------------------------");
 //                            System.out.println("--- Position for " + building + " found at: " + position);
 //                            System.out.println("--------------------------------------------------------");
-                            return position;
+                            return tilePosition.toPosition();
                         }
 //                        System.out.println("    [" + position + "]  Condition failed = " + _CONDITION_THAT_FAILED);
                     }
@@ -130,7 +132,7 @@ public class ZergPositionFinder extends AbstractPositionFinder {
     }
 
     private static boolean isCreepConditionFulfilled(Position position) {
-        return Atlantis.getBwapi().hasCreep(position)
+        return Atlantis.getBwapi().hasCreep(position.toTilePosition())
                 || AtlantisPositionFinder.building.equals(UnitType.Zerg_Hatchery)
                 || AtlantisPositionFinder.building.equals(UnitType.Zerg_Extractor);
     }

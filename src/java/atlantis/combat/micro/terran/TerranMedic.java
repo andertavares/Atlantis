@@ -1,11 +1,12 @@
 package atlantis.combat.micro.terran;
 
+import atlantis.util.PositionUtil;
 import atlantis.wrappers.SelectUnits;
 import atlantis.wrappers.Units;
 import java.util.Collection;
 import java.util.HashMap;
-import jnibwapi.Unit;
-import jnibwapi.types.UnitType;
+import bwapi.Unit;
+import bwapi.UnitType;
 
 public class TerranMedic {
     
@@ -42,7 +43,7 @@ public class TerranMedic {
     private static Unit getInfantryAssignedForThisMedic(Unit medic) {
         Unit assignment = medicsAssignments.get(medic);
         
-        if (assignment == null || !assignment.isAlive()) {
+        if (assignment == null || !assignment.exists()) {
             assignment = SelectUnits.ourTerranInfantryWithoutMedics().random();
         }
         
@@ -51,14 +52,14 @@ public class TerranMedic {
 
     private static boolean handleTooFarFromRealInfantry(Unit medic) {
         int realInfantryNearby
-                = SelectUnits.our().inRadius(4, medic).countUnitsOfType(UnitType.UnitTypes.Terran_Marine,
-                UnitType.UnitTypes.Terran_Firebat, UnitType.UnitTypes.Terran_Ghost);
+                = SelectUnits.our().inRadius(4, medic.getPosition()).countUnitsOfType(UnitType.Terran_Marine,
+                UnitType.Terran_Firebat, UnitType.Terran_Ghost);
         if (realInfantryNearby == 0) {
-            Unit nearestRealInfantry = SelectUnits.ourTerranInfantryWithoutMedics().nearestTo(medic);
+            Unit nearestRealInfantry = SelectUnits.ourTerranInfantryWithoutMedics().nearestTo(medic.getPosition());
             if (nearestRealInfantry != null) {
                 // Check if medic is close to the infantry it should be close to
                 Unit infantryAssignedForThisMedic = getInfantryAssignedForThisMedic(medic);
-                medic.move(infantryAssignedForThisMedic);
+                medic.move(infantryAssignedForThisMedic.getPosition());
                 return true;
             }
         }
@@ -67,7 +68,7 @@ public class TerranMedic {
 
     private static boolean handleHealWoundedUnit(Unit medic) {
         Unit nearestWoundedInfantry = SelectUnits.ourCombatUnits().infantry().wounded()
-                .inRadius(6, medic).nearestTo(medic);
+                .inRadius(6, medic.getPosition()).nearestTo(medic.getPosition());
 
         // =========================================================
         // If there's wounded unit, heal it.
@@ -79,11 +80,11 @@ public class TerranMedic {
         // =========================================================
         // If no wounded unit, get close to random infantry
         Unit nearestInfantry = SelectUnits.our().ofType(
-                UnitType.UnitTypes.Terran_Marine,
-                UnitType.UnitTypes.Terran_Firebat,
-                UnitType.UnitTypes.Terran_Ghost
-        ).nearestTo(medic);
-        if (nearestInfantry != null && nearestInfantry.distanceTo(medic) > 1.4
+                UnitType.Terran_Marine,
+                UnitType.Terran_Firebat,
+                UnitType.Terran_Ghost
+        ).nearestTo(medic.getPosition());
+        if (nearestInfantry != null && PositionUtil.distanceTo(nearestInfantry, medic) > 1.4
                 && !nearestInfantry.equals(medic.getTarget())) {
             healUnit(medic, nearestWoundedInfantry);
         }

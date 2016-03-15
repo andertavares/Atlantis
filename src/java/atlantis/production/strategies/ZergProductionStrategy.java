@@ -1,14 +1,11 @@
 package atlantis.production.strategies;
 
 import atlantis.AtlantisConfig;
-import atlantis.buildings.managers.AtlantisBaseManager;
 import atlantis.workers.AtlantisWorkerCommander;
-import atlantis.workers.AtlantisWorkerManager;
 import atlantis.wrappers.SelectUnits;
 import java.util.ArrayList;
-import jnibwapi.Unit;
-import jnibwapi.types.UnitType;
-import jnibwapi.types.UnitType.UnitTypes;
+import bwapi.Unit;
+import bwapi.UnitType;
 
 public class ZergProductionStrategy extends AtlantisProductionStrategy {
 
@@ -31,10 +28,10 @@ public class ZergProductionStrategy extends AtlantisProductionStrategy {
     public ArrayList<UnitType> produceWhenNoProductionOrders() {
         ArrayList<UnitType> units = new ArrayList<>();
         if (AtlantisWorkerCommander.shouldTrainWorkers()) {
-            units.add(UnitTypes.Zerg_Drone);
+            units.add(UnitType.Zerg_Drone);
         }
         else {
-            units.add(UnitTypes.Zerg_Zergling);
+            units.add(UnitType.Zerg_Zergling);
         }
         return units;
     }
@@ -61,7 +58,7 @@ public class ZergProductionStrategy extends AtlantisProductionStrategy {
     // =========================================================
     // Auxiliary
     private Unit getFreeLarva() {
-        return SelectUnits.our().ofType(UnitTypes.Zerg_Larva).first();
+        return SelectUnits.our().ofType(UnitType.Zerg_Larva).first();
     }
 
 }

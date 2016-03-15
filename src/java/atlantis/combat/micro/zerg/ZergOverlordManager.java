@@ -1,6 +1,7 @@
 package atlantis.combat.micro.zerg;
 
 import atlantis.combat.group.AtlantisGroupManager;
+import atlantis.debug.tooltip.TooltipManager;
 import atlantis.information.AtlantisEnemyInformationManager;
 import atlantis.information.AtlantisMap;
 import atlantis.scout.AtlantisScoutManager;
@@ -58,7 +59,8 @@ public class ZergOverlordManager {
      */
     private static void actWhenDontKnowEnemyLocation(Unit unit) {
         AtlantisScoutManager.tryToFindEnemy(unit);
-        unit.setTooltip("Find enemy");
+        TooltipManager.getInstance().setTooltip(unit, "Find enemy");
+        //unit.setTooltip("Find enemy");
     }
 
 }

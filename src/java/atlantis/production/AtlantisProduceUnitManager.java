@@ -5,10 +5,9 @@ import atlantis.constructing.AtlantisConstructingManager;
 import atlantis.production.strategies.AtlantisProductionStrategy;
 import atlantis.wrappers.SelectUnits;
 import java.util.ArrayList;
-import jnibwapi.Unit;
-import jnibwapi.types.UnitType;
-import jnibwapi.types.UnitType.UnitTypes;
-import jnibwapi.types.UpgradeType;
+import bwapi.Unit;
+import bwapi.UnitType;
+import bwapi.UpgradeType;
 
 public class AtlantisProduceUnitManager {
 
@@ -55,7 +54,7 @@ public class AtlantisProduceUnitManager {
 
         // =========================================================
         // Infantry
-        else if (unitType.isInfantry()) {
+        else if (unitType.isOrganic()) { //replaces  isInfantry()
             produceInfantry(unitType);
         } 
 
@@ -67,7 +66,7 @@ public class AtlantisProduceUnitManager {
     }
 
     private static void researchUpgrade(UpgradeType upgrade) {
-        UnitType buildingType = UnitTypes.getUnitType(upgrade.getWhatUpgradesTypeID());
+        UnitType buildingType = upgrade.whatUpgrades(); //UnitType.getUnitType(upgrade.getWhatUpgradesTypeID());
         if (buildingType != null) {
             Unit building = SelectUnits.ourBuildings().ofType(buildingType).first();
             if (building != null) {

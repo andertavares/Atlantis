@@ -7,7 +7,7 @@ import atlantis.wrappers.MappingCounter;
 import atlantis.wrappers.SelectUnits;
 import java.util.ArrayList;
 import bwapi.Unit;
-import jnibwapi.types.UnitType;
+import jnibwapi.types.UnitType;	//TODO work MappingCounter to accept bwapi
 
 public class AtlantisUnitInformationManager {
 

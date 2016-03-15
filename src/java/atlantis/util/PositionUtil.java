@@ -35,4 +35,11 @@ public class PositionUtil {
     public static double distanceTo(Unit one, Unit other) {
     	return distanceTo(one.getPosition(), other.getPosition());
     }
+    
+    /**
+     * Returns a <b>new</b> Position that represents the effect of moving this position by [deltaX, deltaY].
+     */
+    public static Position translate(Position p, int deltaPixelX, int deltaPixelY) {
+        return new Position(p.getX() + deltaPixelX, p.getY() + deltaPixelY);
+    }
 }

@@ -1,12 +1,10 @@
 package atlantis.combat;
 
-import atlantis.AtlantisGame;
 import atlantis.combat.group.AtlantisGroupManager;
 import atlantis.combat.group.Group;
-import atlantis.combat.group.missions.Mission;
 import atlantis.combat.group.missions.Missions;
 import atlantis.combat.micro.zerg.ZergOverlordManager;
-import atlantis.wrappers.SelectUnits;
+import atlantis.debug.tooltip.TooltipManager;
 import bwapi.Unit;
 import bwapi.UnitType;
 
@@ -79,7 +77,7 @@ public class AtlantisCombatCommander {
     private static boolean handledAsSpecialUnit(Unit unit) {
         if (unit.getType().equals(UnitType.Zerg_Overlord)) {
             ZergOverlordManager.update(unit);
-            unit.setTooltip("Overlord");
+            TooltipManager.getInstance().setTooltip(unit, "Overlord");
             return true;
         } else {
             return false;

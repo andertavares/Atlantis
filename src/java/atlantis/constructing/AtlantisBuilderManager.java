@@ -2,9 +2,10 @@ package atlantis.constructing;
 
 import atlantis.AtlantisGame;
 import atlantis.constructing.position.AbstractPositionFinder;
-import jnibwapi.Position;
-import jnibwapi.Unit;
-import jnibwapi.types.UnitType;
+import atlantis.util.PositionUtil;
+import bwapi.Position;
+import bwapi.Unit;
+import bwapi.UnitType;
 
 public class AtlantisBuilderManager {
 
@@ -45,7 +46,8 @@ public class AtlantisBuilderManager {
     }
 
     private static void travelToConstruct(Unit builder, ConstructionOrder constructionOrder) {
-        Position buildPosition = constructionOrder.getPositionToBuild();
+    	//TODO: check possible confusion with Position and TilePosition here
+    	Position buildPosition = constructionOrder.getPositionToBuild();
         UnitType buildingType = constructionOrder.getBuildingType();
 
         if (builder == null) {
@@ -59,20 +61,21 @@ public class AtlantisBuilderManager {
         }
 
         // Move builder to the build position
-        buildPosition = buildPosition.translated(buildingType.getTileWidth() * 16, buildingType.getTileHeight() * 16);
-        if (!builder.isMoving() && !builder.isConstructing() && builder.distanceTo(buildPosition) > 0.15) {
+        //TODO: check possible confusion with Position and TilePosition here
+        buildPosition = PositionUtil.translate(buildPosition, buildingType.tileWidth() * 16, buildingType.tileHeight() * 16);
+        if (!builder.isMoving() && !builder.isConstructing() && PositionUtil.distanceTo(builder.getPosition(), buildPosition) > 0.15) {
             builder.move(buildPosition, false);
         } // Unit is already at the build position, issue build order
         // If we can afford to construct this building exactly right now, issue build order which should
         // be immediate as unit is standing just right there
-        else if (AtlantisGame.canAfford(buildingType.getMineralPrice(), buildingType.getGasPrice())) {
+        else if (AtlantisGame.canAfford(buildingType.mineralPrice(), buildingType.gasPrice())) {
             if (!AbstractPositionFinder.canPhysicallyBuildHere(builder, buildingType,
                     buildPosition)) {
                 buildPosition = constructionOrder.findNewBuildPosition();
             }
 
             if (buildPosition != null && !builder.isConstructing()) {
-                builder.build(buildPosition, buildingType);
+                builder.build(buildingType, buildPosition.toTilePosition());
             }
         }
 

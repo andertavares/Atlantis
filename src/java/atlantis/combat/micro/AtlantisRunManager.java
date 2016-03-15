@@ -1,8 +1,8 @@
 package atlantis.combat.micro;
 
 import atlantis.wrappers.SelectUnits;
-import jnibwapi.Position;
-import jnibwapi.Unit;
+import bwapi.Position;
+import bwapi.Unit;
 
 /**
  *
@@ -68,7 +68,7 @@ public class AtlantisRunManager {
     private static int defineMinFramesToStopRunning(Unit unit) {
 //        return MIN_TIME_FRAMES_TO_STOP_RUNNING + countNearbyUnits(unit) * 20 +
 //                (100 - unit.getHPPercent()) / 2;
-        return MIN_TIME_FRAMES_TO_STOP_RUNNING + countNearbyUnits(unit) * 10;
+        return MIN_TIME_FRAMES_TO_STOP_RUNNING + countNearbyUnits(unit.getPosition()) * 10;
     }
 
     private static int countNearbyUnits(Position position) {

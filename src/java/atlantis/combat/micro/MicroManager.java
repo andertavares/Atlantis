@@ -1,6 +1,8 @@
 package atlantis.combat.micro;
 
 import atlantis.combat.AtlantisCombatEvaluator;
+import atlantis.util.PositionUtil;
+import atlantis.util.UnitUtil;
 import atlantis.wrappers.SelectUnits;
 import bwapi.Unit;
 import bwapi.WeaponType;
@@ -22,7 +24,7 @@ public abstract class MicroManager {
         
         // If situation is unfavorable, retreat
         if (!AtlantisCombatEvaluator.isSituationFavorable(unit)) {
-            if (unit.isJustShooting()) {
+            if (unit.isAttackFrame() || unit.isStartingAttack()) { //replacing isJustShooting
                 return true;
             }
             else {
@@ -58,13 +60,13 @@ public abstract class MicroManager {
      * If unit is severly wounded, it should run.
      */
     protected boolean handleLowHealthIfNeeded(Unit unit) {
-        Unit nearestEnemy = SelectUnits.nearestEnemy(unit);
-        if (nearestEnemy == null || nearestEnemy.distanceTo(unit) > 6) {
+        Unit nearestEnemy = SelectUnits.nearestEnemy(unit.getPosition());
+        if (nearestEnemy == null || PositionUtil.distanceTo(nearestEnemy, unit) > 6) {
             return false;
         }
         
-        if (unit.getHP() <= 16 || unit.getHPPercent() < 30) {
-            if (SelectUnits.ourCombatUnits().inRadius(4, unit).count() <= 6) {
+        if (unit.getHitPoints() <= 16 || UnitUtil.getHPPercent(unit) < 30) {
+            if (SelectUnits.ourCombatUnits().inRadius(4, unit.getPosition()).count() <= 6) {
                 return AtlantisRunManager.run(unit);
             }
         }
@@ -76,12 +78,12 @@ public abstract class MicroManager {
      * @return <b>true</b> if any of the enemy units can shoot at this unit.
      */
     private boolean isInShootRangeOfAnyEnemyUnit(Unit unit) {
-        for (Unit enemy : SelectUnits.enemy().combatUnits().inRadius(12, unit).list()) {
-            WeaponType enemyWeapon = (unit.isAirUnit() ? enemy.getAirWeapon() : enemy.getGroundWeapon());
-            double distToEnemy = unit.distanceTo(enemy);
+        for (Unit enemy : SelectUnits.enemy().combatUnits().inRadius(12, unit.getPosition()).list()) {
+            WeaponType enemyWeapon = (unit.getType().isFlyer() ? enemy.getType().airWeapon() : enemy.getType().groundWeapon());
+            double distToEnemy = PositionUtil.distanceTo(unit, enemy);
             
             // Compare against max range
-            if (distToEnemy + 0.5 <= enemyWeapon.getMaxRange()) {
+            if (distToEnemy + 0.5 <= enemyWeapon.maxRange()) {
                 _nearestEnemyThatCanShootAtThisUnit = enemy;
                 return true;
             }

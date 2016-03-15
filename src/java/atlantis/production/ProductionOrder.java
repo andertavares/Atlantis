@@ -1,8 +1,9 @@
 package atlantis.production;
 
-import jnibwapi.types.TechType;
-import jnibwapi.types.UnitType;
-import jnibwapi.types.UpgradeType;
+import bwapi.TechType;
+import atlantis.util.UnitUtil;
+import bwapi.UnitType;
+import bwapi.UpgradeType;
 
 public class ProductionOrder {
 
@@ -112,14 +113,14 @@ public class ProductionOrder {
     @Override
     public String toString() {
 //        return "Order: " + unitType.getName() + ", blocking:" + blocking + ", priority:" + priority;
-        return "Order: " + unitType.getName();
+        return "Order: " + unitType; //TODO: test replacement of getName();
     }
 
     public String getShortName() {
         if (unitType != null) {
-            return unitType.getShortName();
+            return UnitUtil.getShortName(unitType);
         } else if (upgrade != null) {
-            return upgrade.getName();
+            return upgrade.toString(); //replaces .getName();
         } else {
             return "Unknown";
         }

@@ -147,4 +147,9 @@ public class UnitUtil {
         }
     }
     
+    public static String getShortName(UnitType t) {
+        return t.toString().replace("Terran ", "").replace("Protoss ", "").replace("Zerg ", "");
+    }
+
+    
 }

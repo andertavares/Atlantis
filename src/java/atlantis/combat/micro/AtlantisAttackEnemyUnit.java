@@ -1,6 +1,8 @@
 package atlantis.combat.micro;
 
-import jnibwapi.Unit;
+import atlantis.debug.tooltip.TooltipManager;
+import atlantis.util.UnitUtil;
+import bwapi.Unit;
 
 /**
  *
@@ -25,12 +27,12 @@ public class AtlantisAttackEnemyUnit {
         }
         
         // Don't interrupt when shooting or starting to shoot
-        if (unit.isJustShooting()) {
+        if (unit.isAttackFrame() || unit.isStartingAttack()) { //replaces isJustShooting()
             return true;
         }
         
         // Check if weapon cooldown allows to attack this enemy
-        if (!unit.canAttackThisKindOfUnit(enemyToAttack, true)) {
+        if (!UnitUtil.canAttack(unit, enemyToAttack, true)) {
             return false;
         } 
         
@@ -38,10 +40,11 @@ public class AtlantisAttackEnemyUnit {
         
         // If we already are attacking this unit, do not issue double command.
         if (!enemyToAttack.equals(unit.getTarget())) {
-            unit.attackUnit(enemyToAttack, false);
+            unit.attack(enemyToAttack, false);
         } 
         
-        unit.removeTooltip();
+        TooltipManager.getInstance().removeTooltip(unit);
+        //unit.removeTooltip();
         return true;
     }
 

@@ -1,8 +1,9 @@
 package atlantis.information;
 
+import atlantis.util.UnitUtil;
 import atlantis.wrappers.SelectUnits;
-import jnibwapi.Position;
-import jnibwapi.Unit;
+import bwapi.Position;
+import bwapi.Unit;
 
 /**
  * Provides various useful infromation about the enemy whereabouts or if even know any enemy building.
@@ -18,7 +19,7 @@ public class AtlantisEnemyInformationManager {
         }
 
         for (Unit enemy : AtlantisUnitInformationManager.enemyUnitsDiscovered) {
-            if (enemy.isBuilding()) {
+            if (enemy.getType().isBuilding()) {
                 return true;
             }
         }
@@ -35,7 +36,7 @@ public class AtlantisEnemyInformationManager {
         }
 
         for (Unit enemyUnit : AtlantisUnitInformationManager.enemyUnitsDiscovered) {
-            if (enemyUnit.isBase()) {
+            if (UnitUtil.isBase(enemyUnit.getType())) {
                 return enemyUnit;
             }
         }
@@ -50,8 +51,8 @@ public class AtlantisEnemyInformationManager {
 //        System.out.println(AtlantisUnitInformationManager.enemyUnitsDiscovered.size());
         for (Unit enemyUnit : AtlantisUnitInformationManager.enemyUnitsDiscovered) {
 //            System.out.println(enemyUnit);
-            if (enemyUnit.isBase() && enemyUnit.isAlive()) {
-                return enemyUnit;
+            if (UnitUtil.isBase(enemyUnit.getType()) && enemyUnit.exists()) {
+                return enemyUnit.getPosition();
             }
         }
 
@@ -64,7 +65,7 @@ public class AtlantisEnemyInformationManager {
     public static Unit getNearestEnemyBuilding() {
         Unit mainBase = SelectUnits.mainBase();
         if (mainBase != null && !AtlantisUnitInformationManager.enemyUnitsDiscovered.isEmpty()) {
-            return SelectUnits.from(AtlantisUnitInformationManager.enemyUnitsDiscovered).buildings().nearestTo(mainBase);
+            return SelectUnits.from(AtlantisUnitInformationManager.enemyUnitsDiscovered).buildings().nearestTo(mainBase.getPosition());
         }
         return null;
     }

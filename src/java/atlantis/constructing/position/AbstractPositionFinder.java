@@ -20,7 +20,7 @@ public abstract class AbstractPositionFinder {
      * Returns true if game says it's possible to build given building at this position.
      */
     public static boolean canPhysicallyBuildHere(Unit builder, UnitType building, Position position) {
-        return Atlantis.getBwapi().canBuildHere(position, building, builder, false);
+        return Atlantis.getBwapi().canBuildHere(position.toTilePosition(), building, builder, false);
     }
 
     /**
@@ -97,21 +97,22 @@ public abstract class AbstractPositionFinder {
      */
     protected static double getEdgeToEdgeDistanceBetween(Unit building, Position positionForNewBuilding,
             UnitType newBuildingType) {
-        int targetRight = positionForNewBuilding.getX() + newBuildingType.getDimensionRight();
-        int targetLeft = positionForNewBuilding.getX() - newBuildingType.getDimensionLeft();
-        int targetTop = positionForNewBuilding.getY() - newBuildingType.getDimensionUp();
-        int targetBottom = positionForNewBuilding.getY() + newBuildingType.getDimensionDown();
+        int targetRight = positionForNewBuilding.getX() + newBuildingType.dimensionRight();
+        int targetLeft = positionForNewBuilding.getX() - newBuildingType.dimensionLeft();
+        int targetTop = positionForNewBuilding.getY() - newBuildingType.dimensionUp();
+        int targetBottom = positionForNewBuilding.getY() + newBuildingType.dimensionDown();
 
-        int xDist = building.getLeftPixelBoundary() - (targetRight + 1);
+        //TODO: check whether get{Left,Right,Top,Bottom}PixelBoundary replacements have expected behavior
+        int xDist = building.getLeft() - (targetRight + 1);
         if (xDist < 0) {
-            xDist = targetLeft - (building.getRightPixelBoundary() + 1);
+            xDist = targetLeft - (building.getRight()+ 1);
             if (xDist < 0) {
                 xDist = 0;
             }
         }
-        int yDist = building.getTopPixelBoundary() - (targetBottom + 1);
+        int yDist = building.getTop() - (targetBottom + 1);
         if (yDist < 0) {
-            yDist = targetTop - (building.getBottomPixelBoundary() + 1);
+            yDist = targetTop - (building.getBottom() + 1);
             if (yDist < 0) {
                 yDist = 0;
             }

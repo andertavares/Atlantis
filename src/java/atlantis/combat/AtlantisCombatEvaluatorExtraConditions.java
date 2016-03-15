@@ -1,6 +1,7 @@
 package atlantis.combat;
 
 import atlantis.AtlantisGame;
+import atlantis.debug.tooltip.TooltipManager;
 import atlantis.util.PositionUtil;
 import atlantis.wrappers.SelectUnits;
 import bwapi.Unit;
@@ -32,7 +33,7 @@ public class AtlantisCombatEvaluatorExtraConditions {
         AtlantisCombatEvaluatorExtraConditions.nearestEnemy = nearestEnemy;
         
         if (shouldRetreatBecauseTooFewOurUnitsAround()) {
-            unit.setTooltip("Closer!");
+            TooltipManager.getInstance().setTooltip(unit, "Closer!");
             return true;
         }
         

@@ -3,6 +3,7 @@ package atlantis.constructing.position;
 import atlantis.util.PositionUtil;
 import atlantis.wrappers.SelectUnits;
 import bwapi.Position;
+import bwapi.TilePosition;
 import jnibwapi.Position.PosType;
 import bwapi.Unit;
 import bwapi.UnitType;
@@ -28,12 +29,13 @@ public class TerranPositionFinder extends AbstractPositionFinder {
             int xCounter = 0;
             int yCounter = 0;
             int doubleRadius = searchRadius * 2;
-            for (int tileX = nearTo.getBX() - searchRadius; tileX <= nearTo.getBX() + searchRadius; tileX++) {
-                for (int tileY = nearTo.getBY() - searchRadius; tileY <= nearTo.getBY() + searchRadius; tileY++) {
+            TilePosition tileNearTo = nearTo.toTilePosition();	//TODO? check the validity of this conversion 
+            for (int tileX = tileNearTo.getX() - searchRadius; tileX <= tileNearTo.getX() + searchRadius; tileX++) {
+                for (int tileY = tileNearTo.getY() - searchRadius; tileY <= tileNearTo.getY() + searchRadius; tileY++) {
                     if (xCounter == 0 || yCounter == 0 || xCounter == doubleRadius || yCounter == doubleRadius) {
-                        Position position = new Position(tileX, tileY, PosType.BUILD);
-                        if (doesPositionFulfillAllConditions(builder, position)) {
-                            return position;
+                        TilePosition tilePosition = new TilePosition(tileX, tileY);	//TODO? check the validity of this conversion 
+                        if (doesPositionFulfillAllConditions(builder, tilePosition.toPosition())) {
+                            return tilePosition.toPosition();
                         }
                     }
 

@@ -3,7 +3,7 @@ package atlantis.workers;
 import atlantis.wrappers.SelectUnits;
 import atlantis.wrappers.Units;
 import java.util.Collection;
-import jnibwapi.Unit;
+import bwapi.Unit;
 
 /**
  * Auxiliary class that's supposed to assign workers to minerals at the beginning of game.
@@ -16,8 +16,8 @@ public class AtlantisMineralGathering {
     public static void initialAssignWorkersToMinerals() {
 
         // Get minerals near to our main base and sort them from closest to most distant one
-        Units minerals = SelectUnits.minerals().inRadius(12, SelectUnits.mainBase()).units()
-                .sortByDistanceTo(SelectUnits.mainBase(), true);
+        Units minerals = SelectUnits.minerals().inRadius(12, SelectUnits.mainBase().getPosition()).units()
+                .sortByDistanceTo(SelectUnits.mainBase().getPosition(), true);
 
         // Get our workers
         Collection<Unit> workers = SelectUnits.ourWorkers().list();
@@ -46,19 +46,19 @@ public class AtlantisMineralGathering {
     private static Unit getMineralFieldToGather(Unit worker) {
 
         // Get nearest base for this unit
-        Unit base = SelectUnits.ourBases().nearestTo(worker);
+        Unit base = SelectUnits.ourBases().nearestTo(worker.getPosition());
         if (base == null) {
             return null;
         }
 
         // Get minerals near to our main base and sort them from closest to most distant one
-        Units minerals = SelectUnits.minerals().inRadius(12, base).units()
-                .sortByDistanceTo(SelectUnits.mainBase(), true);
+        Units minerals = SelectUnits.minerals().inRadius(12, base.getPosition()).units()
+                .sortByDistanceTo(SelectUnits.mainBase().getPosition(), true);
         
         if (!minerals.isEmpty()) {
 
             // Count how many other workers gather this mineral
-            for (Unit otherWorker : SelectUnits.ourWorkers().inRadius(12, base).list()) {
+            for (Unit otherWorker : SelectUnits.ourWorkers().inRadius(12, base.getPosition()).list()) {
                 if (otherWorker.isGatheringMinerals()) {
                     Unit mineralMined = otherWorker.getTarget();
                     if (mineralMined != null) {
@@ -76,7 +76,7 @@ public class AtlantisMineralGathering {
         
         // If no minerals found, return nearest mineral
         else {
-            return SelectUnits.minerals().nearestTo(base);
+            return SelectUnits.minerals().nearestTo(base.getPosition());
         }
     }
 
