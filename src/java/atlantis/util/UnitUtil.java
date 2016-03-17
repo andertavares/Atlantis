@@ -1,5 +1,6 @@
 package atlantis.util;
 
+import atlantis.wrappers.SelectUnits;
 import bwapi.Unit;
 import bwapi.UnitType;
 import bwapi.WeaponType;
@@ -25,6 +26,20 @@ public class UnitUtil {
 	        return isType(t, UnitType.Terran_Command_Center, UnitType.Protoss_Nexus, UnitType.Zerg_Hatchery,
 	                UnitType.Zerg_Lair, UnitType.Zerg_Hive);
 	}
+	
+	/**
+     * Returns which unit of the same type this unit is. E.g. it can be first (0) Overlord or third (2) 
+     * Zergling. It compares IDs of units to return correct result.
+     */
+    public static int getUnitIndex(Unit u) {
+        int index = 0;
+        for (Unit otherUnit : SelectUnits.our().ofType(u.getType()).list()) {
+            if (otherUnit.getID() < u.getID()) {
+                index++;
+            }
+        }
+        return index;
+    }
 	
 	/**
      * Returns true if given type equals to one of types passed as parameter.

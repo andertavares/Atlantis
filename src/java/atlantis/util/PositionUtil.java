@@ -3,6 +3,7 @@ package atlantis.util;
 import bwapi.Position;
 import bwapi.TilePosition;
 import bwapi.Unit;
+import bwta.Chokepoint;
 
 public class PositionUtil {
 	/**
@@ -26,6 +27,7 @@ public class PositionUtil {
             return Math.sqrt(dx * dx + dy * dy) / 32;
         }
     }
+    
     
     /**
      * Returns distance from one position to other in build tiles. One build tile equals to 32 pixels. Usage of build

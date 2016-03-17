@@ -6,9 +6,10 @@ import atlantis.debug.tooltip.TooltipManager;
 import atlantis.information.AtlantisEnemyInformationManager;
 import atlantis.information.AtlantisMap;
 import atlantis.information.AtlantisUnitInformationManager;
+import atlantis.util.UnitUtil;
 import atlantis.wrappers.SelectUnits;
 import java.util.ArrayList;
-import jnibwapi.BaseLocation;
+import bwta.BaseLocation;
 import bwapi.Unit;
 import bwapi.UnitType;
 
@@ -100,11 +101,11 @@ public class AtlantisScoutManager {
         BaseLocation startingLocation;
         if (scout.getType().equals(UnitType.Zerg_Overlord)) {
             startingLocation = AtlantisMap.getStartingLocationBasedOnIndex(
-                    scout.getUnitIndex()
+                    UnitUtil.getUnitIndex(scout)
             );
         }
         else {
-            startingLocation = AtlantisMap.getNearestUnexploredStartingLocation(ourMainBase);
+            startingLocation = AtlantisMap.getNearestUnexploredStartingLocation(ourMainBase.getPosition());
         }
         
         // =========================================================
@@ -112,7 +113,7 @@ public class AtlantisScoutManager {
         if (startingLocation != null) {
         	TooltipManager.getInstance().setTooltip(scout, "Scout!");
             //scout.setTooltip("Scout!");
-            scout.move(startingLocation, false);
+            scout.move(startingLocation.getPosition(), false);
         }
     }
 
@@ -150,9 +151,9 @@ public class AtlantisScoutManager {
     }
 
     private static void scoutForTheNextBase(Unit scout) {
-        BaseLocation baseLocation = AtlantisMap.getNearestUnexploredStartingLocation(scout);
+        BaseLocation baseLocation = AtlantisMap.getNearestUnexploredStartingLocation(scout.getPosition());
         if (baseLocation != null) {
-            scout.move(baseLocation);
+            scout.move(baseLocation.getPosition());
         }
     }
 

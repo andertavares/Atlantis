@@ -8,11 +8,10 @@ import atlantis.production.strategies.AtlantisProductionStrategy;
 import atlantis.util.UnitUtil;
 import bwapi.*;
 import bwta.BWTA;
-import bwta.BaseLocation;
 import bwapi.UnitType;
 
 /**
- * Main bridge between the game and your code, build over JNIBWAPI.
+ * Main bridge between the game and your code, ported to BWMirror.
  */
 public class Atlantis implements BWEventListener {
 
@@ -155,6 +154,11 @@ public class Atlantis implements BWEventListener {
         } else if (racePlayed.equals(Race.Zerg)) {
             AtlantisConfig.useConfigForZerg();
         }
+        
+        System.out.println("Analyzing map...");
+        BWTA.readMap();
+        BWTA.analyze();
+        System.out.println("Map data ready");
 
         // =========================================================
         // Set production strategy (build orders) to use. It can be always changed dynamically.

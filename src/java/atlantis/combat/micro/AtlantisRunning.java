@@ -10,6 +10,7 @@ import atlantis.wrappers.SelectUnits;
 import java.util.Collection;
 import bwapi.Position;
 import bwapi.Unit;
+import bwta.BWTA;
 
 /**
  * Handles best way of running from close enemies and information about the fact if given unit is running or
@@ -154,9 +155,9 @@ public class AtlantisRunning {
                 runTo = runTo.makeValid();
 //            }
 
-            if (Atlantis.getBwapi().isBuildable(runTo.toTilePosition(), true) && unit.hasPathTo(runTo)
+            if (Atlantis.getBwapi().isBuildable(runTo.toTilePosition(), true) && unit.hasPath(runTo.getPoint())
                     & Atlantis.getBwapi().hasPath(unit.getPosition(), runTo)
-                    && AtlantisMap.getMap().isConnected(unit.getPosition(), runTo)) {
+                    && BWTA.isConnected(unit.getPosition().toTilePosition(), runTo.toTilePosition())) {
                 break;
             } else {
                 howManyTiles++;
@@ -210,7 +211,7 @@ public class AtlantisRunning {
     private void updateRunTooltip() {
         String runTimer = String.format("%.1f", 
                     ((double) AtlantisRunManager.getHowManyFramesUnitShouldStillBeRunning(unit) / 30));
-        unit.setTooltip("Run " + runTimer + "s");
+        TooltipManager.getInstance().setTooltip(unit, "Run " + runTimer + "s");  //unit.setTooltip("Run " + runTimer + "s");
     }
     
 }

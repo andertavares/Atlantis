@@ -12,8 +12,11 @@ import atlantis.combat.group.missions.MissionPrepare;
 import atlantis.constructing.AtlantisConstructingManager;
 import atlantis.constructing.ConstructionOrder;
 import atlantis.constructing.ConstructionOrderStatus;
+import atlantis.debug.tooltip.TooltipManager;
 import atlantis.production.ProductionOrder;
+import atlantis.util.PositionUtil;
 import atlantis.util.RUtilities;
+import atlantis.util.UnitUtil;
 import atlantis.workers.AtlantisWorkerManager;
 import atlantis.wrappers.MappingCounter;
 import atlantis.wrappers.SelectUnits;
@@ -21,8 +24,8 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.TreeSet;
 import jnibwapi.JNIBWAPI;
-import jnibwapi.Position;
-import jnibwapi.Unit;
+import bwapi.Position;
+import bwapi.Unit;
 import bwapi.UnitType;
 import jnibwapi.util.BWColor;
 
@@ -35,6 +38,7 @@ public class AtlantisPainter {
     private static int sideMessageTopCounter = 0;
     private static int sideMessageMiddleCounter = 0;
     private static int sideMessageBottomCounter = 0;
+    private static TooltipManager tooltipManager = TooltipManager.getInstance();
     
     /**
      * List of enemy units that have been targetted in the last frame.
@@ -73,8 +77,8 @@ public class AtlantisPainter {
         // =========================================================
         // Paint TOOLTIPS over units
         for (Unit unit : SelectUnits.our().list()) {
-            if (unit.hasTooltip()) {
-                paintTextCentered(unit, unit.getTooltip(), false);
+            if (tooltipManager.hasTooltip(unit)) { // unit.hasTooltip()
+                paintTextCentered(unit.getPosition(), tooltipManager.getTooltip(unit), false);
             }
         }
     }
@@ -106,7 +110,7 @@ public class AtlantisPainter {
         String desc = "";
         Unit mainBase = SelectUnits.mainBase();
         if (focusPoint != null && mainBase != null) {
-            desc = "(dist:" + ((int) focusPoint.distanceTo(mainBase)) + ")";
+            desc = "(dist:" + ((int) PositionUtil.distanceTo(focusPoint, mainBase.getPosition())) + ")";
         }
         paintSideMessage("Focus point: " + focusPoint + desc, BWColor.Blue, 0);
         
@@ -124,17 +128,17 @@ public class AtlantisPainter {
             // =========================================================
             // === Paint life bars bars over wounded units
             // =========================================================
-            if (unit.getHPPercent() < 100) {
+            if (UnitUtil.getHPPercent(unit) < 100) {
                 int boxWidth = 20;
                 int boxHeight = 4;
-                int boxLeft = unit.getPX() - boxWidth / 2;
-                int boxTop = unit.getPY() + 23;
+                int boxLeft = unit.getPosition().getX() - boxWidth / 2;
+                int boxTop = unit.getPosition().getY() + 23;
 
                 Position topLeft = new Position(boxLeft, boxTop);
 
                 // =========================================================
                 // Paint box
-                int healthBarProgress = boxWidth * unit.getHP() / (unit.getMaxHP() + 1);
+                int healthBarProgress = boxWidth * unit.getHitPoints() / (unit.getType().maxHitPoints() + 1);
                 bwapi.drawBox(topLeft, new Position(boxLeft + boxWidth, boxTop + boxHeight),
                         BWColor.Red, true, false);
                 bwapi.drawBox(topLeft, new Position(boxLeft + healthBarProgress, boxTop + boxHeight),
@@ -197,7 +201,7 @@ public class AtlantisPainter {
                 if (eval < 999) {
                     String combatStrength = eval >= 10 ? (BWColor.getColorString(BWColor.Green) + "++") : 
                             AtlantisCombatEvaluator.getEvalString(unit);
-                    paintTextCentered(new Position(unit.getPX(), unit.getPY() - 15), combatStrength, null);
+                    paintTextCentered(new Position(unit.getPosition().getX(), unit.getPosition().getY() - 15), combatStrength, null);
                 }
             }
         }
@@ -207,7 +211,7 @@ public class AtlantisPainter {
             if (eval < 999) {
                 String combatStrength = eval >= 10 ? (BWColor.getColorString(BWColor.Green) + "++") : 
                         AtlantisCombatEvaluator.getEvalString(unit);
-                paintTextCentered(new Position(unit.getPX(), unit.getPY() - 15), combatStrength, null);
+                paintTextCentered(new Position(unit.getPosition().getX(), unit.getPosition().getY() - 15), combatStrength, null);
             }
         }
     }
@@ -251,7 +255,7 @@ public class AtlantisPainter {
         counters = RUtilities.sortByValue(counters, false);
         boolean paintedMessage = false;
         for (UnitType unitType : counters.keySet()) {
-            paintSideMessage("+" + counters.get(unitType) + " " + unitType.getName(), BWColor.Blue, 0);
+            paintSideMessage("+" + counters.get(unitType) + " " + unitType.toString(), BWColor.Blue, 0);
             paintedMessage = true;
         }
 
@@ -270,7 +274,7 @@ public class AtlantisPainter {
         counters = RUtilities.sortByValue(counters, false);
         for (UnitType unitType : counters.keySet()) {
             if (!unitType.isBuilding()) {
-                paintSideMessage(counters.get(unitType) + "x " + unitType.getName(), BWColor.Grey, 0);
+                paintSideMessage(counters.get(unitType) + "x " + unitType.toString(), BWColor.Grey, 0);
             }
         }
         paintSideMessage("", BWColor.White, 0);
@@ -285,10 +289,10 @@ public class AtlantisPainter {
         // Display units currently in production
         for (Unit unit : SelectUnits.ourUnfinished().list()) {
             UnitType type = unit.getType();
-            if (type.equals(UnitType.UnitTypes.Zerg_Egg)) {
+            if (type.equals(UnitType.Zerg_Egg)) {
                 type = unit.getBuildType();
             }
-            paintSideMessage(type.getShortName(), BWColor.Green);
+            paintSideMessage(UnitUtil.getShortName(type), BWColor.Green);
         }
 
         // Display units that should be produced right now or any time
@@ -336,7 +340,7 @@ public class AtlantisPainter {
                         color = BWColor.Teal;
                         break;
                 }
-                paintSideMessage(constructionOrder.getBuildingType().getShortName(), color, yOffset);
+                paintSideMessage(UnitUtil.getShortName(constructionOrder.getBuildingType()), color, yOffset);
             }
         }
     }
@@ -356,21 +360,21 @@ public class AtlantisPainter {
                 // Paint box
                 bwapi.drawBox(
                         positionToBuild,
-                        positionToBuild.translated(buildingType.tileWidth() * 32, buildingType.tileHeight() * 32),
+                        PositionUtil.translate(positionToBuild, buildingType.tileWidth() * 32,  buildingType.tileHeight() * 32), 
                         BWColor.Teal, false, false);
 
                 // Draw X
                 bwapi.drawLine(
                         positionToBuild,
-                        positionToBuild.translated(buildingType.tileWidth() * 32, buildingType.tileHeight() * 32),
+                        PositionUtil.translate(positionToBuild, buildingType.tileWidth() * 32,  buildingType.tileHeight() * 32),
                         BWColor.Teal, false);
                 bwapi.drawLine(
-                        positionToBuild.translated(buildingType.tileWidth() * 32, 0),
-                        positionToBuild.translated(0, buildingType.tileHeight() * 32),
+                		PositionUtil.translate(positionToBuild, buildingType.tileWidth() * 32,  0),
+                		PositionUtil.translate(positionToBuild, 0,  buildingType.tileHeight() * 32),
                         BWColor.Teal, false);
                 
                 // Draw text
-                paintTextCentered(positionToBuild, buildingType.getShortName(), BWColor.Grey);
+                paintTextCentered(positionToBuild, UnitUtil.getShortName(buildingType), BWColor.Grey);
             }
         }
     }
@@ -422,10 +426,10 @@ public class AtlantisPainter {
 
             int labelMaxWidth = 56;
             int labelHeight = 6;
-            int labelLeft = unit.getPX() - labelMaxWidth / 2;
-            int labelTop = unit.getPY() + 13;
+            int labelLeft = unit.getPosition().getX() - labelMaxWidth / 2;
+            int labelTop = unit.getPosition().getY() + 13;
 
-            double progress = (double) unit.getHP() / unit.getType().getMaxHitPoints();
+            double progress = (double) unit.getHitPoints() / unit.getType().maxHitPoints();
             int labelProgress = (int) (1 + 99 * progress);
             String color = RUtilities.assignStringForValue(
                     progress,
@@ -447,8 +451,8 @@ public class AtlantisPainter {
             paintTextCentered(new Position(labelLeft, labelTop - 3), stringToDisplay, false);
 
             // Display name of unit
-            String name = unit.getBuildType().getShortName();
-            paintTextCentered(new Position(unit.getPX(), unit.getPY() - 4), BWColor.getColorString(BWColor.Green)
+            String name = UnitUtil.getShortName(unit.getBuildType());
+            paintTextCentered(new Position(unit.getPosition().getX(), unit.getPosition().getY() - 4), BWColor.getColorString(BWColor.Green)
                     + name, false);
         }
     }
@@ -458,15 +462,15 @@ public class AtlantisPainter {
      */
     private static void paintBuildingHealth() {
         for (Unit unit : SelectUnits.ourBuildings().list()) {
-            if (!unit.isWounded()) {
+            if (unit.getHitPoints() >= unit.getType().maxHitPoints()) { //isWounded()
                 continue;
             }
             int labelMaxWidth = 56;
             int labelHeight = 4;
-            int labelLeft = unit.getPX() - labelMaxWidth / 2;
-            int labelTop = unit.getPY() + 13;
+            int labelLeft = unit.getPosition().getX() - labelMaxWidth / 2;
+            int labelTop = unit.getPosition().getY() + 13;
 
-            double hpRatio = (double) unit.getHP() / unit.getType().getMaxHitPoints();
+            double hpRatio = (double) unit.getHitPoints() / unit.getType().maxHitPoints();
             int hpProgress = (int) (1 + 99 * hpRatio);
 
             BWColor color = BWColor.Green;
@@ -497,7 +501,7 @@ public class AtlantisPainter {
             int workers = AtlantisWorkerManager.getHowManyWorkersAt(building);
             if (workers > 0) {
                 String workersAssigned = "Workers: " + workers;
-                paintTextCentered(building.translated(0, -15), workersAssigned, BWColor.Blue);
+                paintTextCentered(PositionUtil.translate(building.getPosition(), 0, -15), workersAssigned, BWColor.Blue);
             }
         }
     }
@@ -507,21 +511,21 @@ public class AtlantisPainter {
      */
     private static void paintUnitsBeingTrainedInBuildings() {
         for (Unit unit : SelectUnits.ourBuildingsIncludingUnfinished().list()) {
-            if (!unit.isBuilding() || !unit.isTraining()) {
+            if (!unit.getType().isBuilding() || !unit.isTraining()) {
                 continue;
             }
 
             int labelMaxWidth = 100;
             int labelHeight = 10;
-            int labelLeft = unit.getPX() - labelMaxWidth / 2;
-            int labelTop = unit.getPY() + 5;
+            int labelLeft = unit.getPosition().getX() - labelMaxWidth / 2;
+            int labelTop = unit.getPosition().getY() + 5;
 
             int operationProgress = 1;
             Unit trained = unit.getBuildUnit();
             String trainedUnitString = "";
             if (trained != null) {
-                operationProgress = trained.getHP() * 100 / trained.getMaxHP();
-                trainedUnitString = trained.getShortName();
+                operationProgress = UnitUtil.getHPPercent(trained); // trained.getHP() * 100 / trained.getMaxHP();
+                trainedUnitString = UnitUtil.getShortName(trained.getType()); //trained.getShortName();
             }
 
             // Paint box
@@ -534,8 +538,10 @@ public class AtlantisPainter {
 
             // =========================================================
             // Display label
-            paintTextCentered(new Position(unit.getPX() - 4 * trainedUnitString.length(), unit.getPY() + 16),
-                    BWColor.getColorString(BWColor.White) + trainedUnitString, false);
+            paintTextCentered(
+        		new Position(unit.getPosition().getX() - 4 * trainedUnitString.length(), unit.getPosition().getY() + 16),
+                BWColor.getColorString(BWColor.White) + trainedUnitString, false
+            );
         }
     }
 
@@ -570,7 +576,7 @@ public class AtlantisPainter {
             // Paint "x" on every unit that has been targetted by one of our units.
             if (ourUnit.isAttacking() && ourUnit.getTarget() != null) {
 //                paintMessage("X", BWColor.Red, ourUnit.getTarget().getPX(), ourUnit.getTarget().getPY(), false);
-                paintLine(ourUnit, ourUnit.getTarget(), BWColor.Red);
+                paintLine(ourUnit.getPosition(), ourUnit.getTarget().getPosition(), BWColor.Red);
             }
         }
     }
@@ -627,10 +633,11 @@ public class AtlantisPainter {
         if (position == null || text == null) {
             return;
         }
-        getBwapi().drawText(position.translated((int) (-3.7 * text.length()), -2), BWColor.getColorString(color) + text, screenCords);
+        getBwapi().drawText(
+    		PositionUtil.translate(position, (int) (-3.7 * text.length()), -2), BWColor.getColorString(color) + text, screenCords);
     }
 
-    private static JNIBWAPI getBwapi() {
+    private static   getBwapi() {
         return Atlantis.getBwapi();
     }
 

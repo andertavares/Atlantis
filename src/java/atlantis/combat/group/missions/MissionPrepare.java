@@ -1,10 +1,12 @@
 package atlantis.combat.group.missions;
 
+import atlantis.debug.tooltip.TooltipManager;
 import atlantis.information.AtlantisMap;
+import atlantis.util.PositionUtil;
 import atlantis.wrappers.SelectUnits;
-import jnibwapi.ChokePoint;
-import jnibwapi.Position;
-import jnibwapi.Unit;
+import bwta.Chokepoint;
+import bwapi.Position;
+import bwapi.Unit;
 
 public class MissionPrepare extends Mission {
 
@@ -28,7 +30,7 @@ public class MissionPrepare extends Mission {
      * Unit will go towards important choke point near main base.
      */
     private boolean moveUnitToDestinationIfNeeded(Unit unit) {
-        ChokePoint chokepoint = AtlantisMap.getMainBaseChokepoint();
+        Chokepoint chokepoint = AtlantisMap.getMainBaseChokepoint();
         if (chokepoint == null) {
             System.err.println("Couldn't define choke point.");
             return false;
@@ -42,7 +44,7 @@ public class MissionPrepare extends Mission {
             // Too close to
             if (isCriticallyCloseToChokePoint(unit, chokepoint)) {
                 unit.moveAwayFrom(chokepoint, 1.5);
-                unit.setTooltip("Get back");
+                TooltipManager.getInstance().setTooltip(unit, "Get back");  //unit.setTooltip("Get back");
                 return true;
             }
 
@@ -52,34 +54,34 @@ public class MissionPrepare extends Mission {
                 // Too many stacked units
                 if (isTooManyUnitsAround(unit, chokepoint)) {
                     unit.moveAwayFrom(chokepoint, 0.2);
-                    unit.setTooltip("Stacked");
+                    TooltipManager.getInstance().setTooltip(unit, "Stacked"); //unit.setTooltip("Stacked");
                 } // Units aren't stacked too much
                 else {
                 }
             } // Unit is far from choke point
             else {
-                unit.move(chokepoint, false);
+                unit.move(chokepoint.getCenter(), false);
             }
         }
 
         return false;
     }
 
-    private boolean isTooManyUnitsAround(Unit unit, ChokePoint chokepoint) {
-        return SelectUnits.ourCombatUnits().inRadius(0.8, unit).count() >= 4;
+    private boolean isTooManyUnitsAround(Unit unit, Chokepoint chokepoint) {
+        return SelectUnits.ourCombatUnits().inRadius(0.8, unit.getPosition()).count() >= 4;
     }
 
-    private boolean isCloseEnoughToChokePoint(Unit unit, ChokePoint chokepoint) {
+    private boolean isCloseEnoughToChokePoint(Unit unit, Chokepoint chokepoint) {
         if (unit == null || chokepoint == null) {
             return false;
         }
 
         // Distance to the center of choke point
-        double distToChoke = chokepoint.distanceTo(unit) - chokepoint.getRadiusInTiles();
+        double distToChoke = PositionUtil.distanceTo(chokepoint.getCenter(), unit.getPosition()) - chokepoint.getWidth() / 32; //TODO: check consistency with getRadiusInTiles()
 
         // =========================================================
         // Close enough ::meme::
-        if (distToChoke <= Math.max(2.5, 4.5 - chokepoint.getRadiusInTiles() / 3)) {
+        if (distToChoke <= Math.max(2.5, 4.5 - chokepoint.getWidth() / 96)) {	//96 is 32*3, which was the previous denominator
             return true;
         }
 
@@ -100,7 +102,7 @@ public class MissionPrepare extends Mission {
 //        return distToChoke <= maxDistanceAllowed;
     }
 
-    private boolean isCriticallyCloseToChokePoint(Unit unit, ChokePoint chokepoint) {
+    private boolean isCriticallyCloseToChokePoint(Unit unit, Chokepoint chokepoint) {
         if (unit == null || chokepoint == null) {
             return false;
         }
@@ -108,10 +110,10 @@ public class MissionPrepare extends Mission {
         // =========================================================
         // Distance to the center of choke point
 //        double distToChoke = chokepoint.distanceTo(unit) - chokepoint.getRadiusInTiles();
-        double distanceToTarget = chokepoint.distanceTo(unit);
+        double distanceToTarget = PositionUtil.distanceTo(chokepoint.getCenter(), unit.getPosition());
 
         // Can't be closer than X from choke point
-        if (distanceToTarget <= 2 + 2 / chokepoint.getRadiusInTiles()) {
+        if (distanceToTarget <= 2 + 2 / chokepoint.getWidth() / 32) { //TODO: check consistency with getRadiusInTiles()
             return true;
         }
 

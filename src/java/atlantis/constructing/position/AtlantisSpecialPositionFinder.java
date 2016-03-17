@@ -7,7 +7,7 @@ import bwapi.Position;
 import bwapi.Unit;
 import bwapi.UnitType;
 import atlantis.wrappers.SelectUnits;
-import jnibwapi.BaseLocation;
+import bwta.BaseLocation;
 
 public class AtlantisSpecialPositionFinder {
     
@@ -72,11 +72,11 @@ public class AtlantisSpecialPositionFinder {
 //        System.out.println("Main base = " + SelectUnits.mainBase());
 //        System.out.println("baseLocationToExpand = " + baseLocationToExpand);
 
-        return AtlantisPositionFinder.findStandardPosition(builder, building, baseLocationToExpand, 3);
+        return AtlantisPositionFinder.findStandardPosition(builder, building, baseLocationToExpand.getPosition(), 3);
     }
 
     private static Position findPositionForBase_nearestMainBase(UnitType building, Unit builder) {
-        return AtlantisPositionFinder.findStandardPosition(builder, building, SelectUnits.mainBase(), 20);
+        return AtlantisPositionFinder.findStandardPosition(builder, building, SelectUnits.mainBase().getPosition(), 20);
     }
 
 }

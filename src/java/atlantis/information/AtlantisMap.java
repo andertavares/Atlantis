@@ -7,13 +7,16 @@ import atlantis.wrappers.Positions;
 import atlantis.wrappers.SelectUnits;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
-import jnibwapi.BaseLocation;
-import jnibwapi.ChokePoint;
-import jnibwapi.Map;
+import java.util.Set;
+
 import bwapi.Position;
-import jnibwapi.Region;
+import bwta.Region;
+import bwta.Chokepoint;
 import bwapi.Unit;
+import bwta.BWTA;
+import bwta.BaseLocation;
 
 /**
  * This class provides information about high-abstraction level map operations like returning place for the
@@ -21,15 +24,17 @@ import bwapi.Unit;
  */
 public class AtlantisMap {
 
-    private static List<ChokePoint> cached_chokePoints = null;
-    private static ChokePoint cached_mainBaseChokepoint = null;
+    private static List<Chokepoint> cached_chokePoints = null;
+    private static Chokepoint cached_mainBaseChokepoint = null;
+    private static Set<Chokepoint> disabledChokepoints = new HashSet<>();
+    private static BWTA bwta = new BWTA();	//all methods in BWTA are static, but I keep a class instance to return it in getMap()
 
     // =========================================================
     /**
      * Every starting location in BroodWar AI tournament has exactly one critical choke point to defend. This
      * method returns this choke point. It's perfect position to defend (because it's *choke* point).
      */
-    public static ChokePoint getMainBaseChokepoint() {
+    public static Chokepoint getMainBaseChokepoint() {
         if (cached_mainBaseChokepoint == null) {
             Unit mainBase = SelectUnits.mainBase();
             // System.out.println("mainBase = " + mainBase);
@@ -56,11 +61,11 @@ public class AtlantisMap {
                     }
 
                     // Try to match choke points between the two regions
-                    for (ChokePoint mainRegionChoke : mainRegion.getChokePoints()) {
+                    for (Chokepoint mainRegionChoke : mainRegion.getChokepoints()) {
                         // System.out.println("mainRegionChoke = " + mainRegionChoke + " / "
                         // + (mainRegionChoke.getFirstRegion()) + " / " + (mainRegionChoke.getSecondRegion()));
-                        if (secondRegion.equals(mainRegionChoke.getFirstRegion())
-                                || secondRegion.equals(mainRegionChoke.getSecondRegion())) {
+                        if (secondRegion.equals(mainRegionChoke.getRegions().first)	// getFirstRegion()
+                                || secondRegion.equals(mainRegionChoke.getRegions().second)) {	// getSecondRegion()
                             cached_mainBaseChokepoint = mainRegionChoke;
                             // System.out.println("MAIN CHOKE FOUND! " + cached_mainBaseChokepoint);
                             break;
@@ -68,7 +73,7 @@ public class AtlantisMap {
                     }
 
                     if (cached_mainBaseChokepoint == null) {
-                        cached_mainBaseChokepoint = mainRegion.getChokePoints().iterator().next();
+                        cached_mainBaseChokepoint = mainRegion.getChokepoints().iterator().next();
                     }
                 }
             }
@@ -95,7 +100,7 @@ public class AtlantisMap {
 
         // For every location...
         for (BaseLocation baseLocation : startingLocations.list()) {
-            if (!isExplored(baseLocation)) {
+            if (!isExplored(baseLocation.getPosition())) {
                 return baseLocation;
             }
         }
@@ -177,8 +182,8 @@ public class AtlantisMap {
     /**
      * Returns map object.
      */
-    public static Map getMap() {
-        return Atlantis.getBwapi().getMap();
+    public static BWTA getMap() {
+        return bwta;
     }
 
     /**
@@ -186,7 +191,7 @@ public class AtlantisMap {
      * a base. Starting locations are also included here.
      */
     public static List<BaseLocation> getBaseLocations() {
-        return Atlantis.getBwapi().getMap().getBaseLocations();
+        return BWTA.getBaseLocations();
     }
 
     /**
@@ -202,7 +207,7 @@ public class AtlantisMap {
                 // Exclude our base location if needed.
                 if (excludeOurStartLocation) {
                     Unit mainBase = SelectUnits.mainBase();
-                    if (mainBase != null && PositionUtil.distanceTo(mainBase, baseLocation) <= 10) {
+                    if (mainBase != null && PositionUtil.distanceTo(mainBase.getPosition(), baseLocation.getPosition()) <= 10) {
                         continue;
                     }
                 }
@@ -217,11 +222,11 @@ public class AtlantisMap {
      * Returns list of all choke points i.e. places where suddenly it gets extra tight and fighting there
      * usually prefers ranged units. They are perfect places for terran bunkers.
      */
-    public static List<ChokePoint> getChokePoints() {
+    public static List<Chokepoint> getChokePoints() {
         if (cached_chokePoints == null) {
             cached_chokePoints = new ArrayList<>();
-            for (ChokePoint choke : Atlantis.getBwapi().getMap().getChokePoints()) {
-                if (!choke.isDisabled()) {
+            for (Chokepoint choke : BWTA.getChokepoints()) {
+                if (!disabledChokepoints.contains(choke)) { // choke.isDisabled()
                     cached_chokePoints.add(choke);
                 }
             }
@@ -236,21 +241,21 @@ public class AtlantisMap {
      * @see Region
      */
     public static Region getRegion(Position position) {
-        return Atlantis.getBwapi().getMap().getRegion(position);
+        return BWTA.getRegion(position);
     }
 
     /**
      * Returns true if given position is explored i.e. if it's not black screen (but could be fog of war).
      */
     public static boolean isExplored(Position position) {
-        return Atlantis.getBwapi().isExplored(position);
+        return Atlantis.getBwapi().isExplored(position.toTilePosition());
     }
 
     /**
      * Returns true if given position visible.
      */
     public static boolean isVisible(Position position) {
-        return Atlantis.getBwapi().isVisible(position);
+        return Atlantis.getBwapi().isVisible(position.toTilePosition());
     }
 
     // =========================================================
@@ -268,17 +273,17 @@ public class AtlantisMap {
             return;
         }
 
-        Region baseRegion = getRegion(mainBase);
+        Region baseRegion = getRegion(mainBase.getPosition());
         if (baseRegion == null) {
             System.out.println("Error #821493b");
             return;
         }
 
-        Collection<ChokePoint> chokes = baseRegion.getChokePoints();
-        for (ChokePoint choke : chokes) {
-            if (baseRegion.getChokePoints().contains(choke)) {
+        Collection<Chokepoint> chokes = baseRegion.getChokepoints();
+        for (Chokepoint choke : chokes) {
+            if (baseRegion.getChokepoints().contains(choke)) {
                 System.out.println("Disabling choke point: " + choke);
-                choke.setDisabled(true);
+                disabledChokepoints.add(choke);	//choke.setDisabled(true);
             }
         }
 
@@ -302,12 +307,12 @@ public class AtlantisMap {
     private static boolean isBaseLocationFreeOfBuildingsAndEnemyUnits(BaseLocation baseLocation) {
         
         // If we have any base, FALSE.
-        if (SelectUnits.ourBases().inRadius(7, baseLocation).count() > 0) {
+        if (SelectUnits.ourBases().inRadius(7, baseLocation.getPosition()).count() > 0) {
             return false;
         }
         
         // If any enemy unit is nearby
-        if (SelectUnits.enemy().inRadius(11, baseLocation).count() > 0) {
+        if (SelectUnits.enemy().inRadius(11, baseLocation.getPosition()).count() > 0) {
             return false;
         }
         

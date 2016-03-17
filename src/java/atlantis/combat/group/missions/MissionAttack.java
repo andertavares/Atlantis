@@ -2,10 +2,11 @@ package atlantis.combat.group.missions;
 
 import atlantis.information.AtlantisEnemyInformationManager;
 import atlantis.information.AtlantisMap;
+import atlantis.util.PositionUtil;
 import atlantis.wrappers.SelectUnits;
-import jnibwapi.BaseLocation;
-import jnibwapi.Position;
-import jnibwapi.Unit;
+import bwta.BaseLocation;
+import bwapi.Position;
+import bwapi.Unit;
 
 /**
  * This is the mission object that is used by battle groups and it indicates that we should attack 
@@ -25,7 +26,7 @@ public class MissionAttack extends Mission {
 
         // Focus point is well known
         if (focusPoint != null) {
-            if (focusPoint.distanceTo(unit) > 5) {
+            if (PositionUtil.distanceTo(focusPoint, unit.getPosition()) > 5) {
                 unit.attack(focusPoint, false);
 //                unit.setTooltip("Mission focus");
                 return true;
@@ -35,7 +36,7 @@ public class MissionAttack extends Mission {
         // =========================================================
         // Invalid focus point, no enemy can be found, scatter
         else {
-            Position position = AtlantisMap.getRandomInvisiblePosition(unit);
+            Position position = AtlantisMap.getRandomInvisiblePosition(unit.getPosition());
             if (position != null) {
                 unit.attack(position, false);
 //                unit.setTooltip("Mission spread");
@@ -76,19 +77,19 @@ public class MissionAttack extends Mission {
         // Try going near any enemy building
         Unit enemyBuilding = AtlantisEnemyInformationManager.getNearestEnemyBuilding();
         if (enemyBuilding != null) {
-            return enemyBuilding;
+            return enemyBuilding.getPosition();
         }
 
         // Try going to any known enemy unit
         Unit anyEnemyUnit = SelectUnits.enemy().first();
         if (anyEnemyUnit != null) {
-            return anyEnemyUnit;
+            return anyEnemyUnit.getPosition();
         }
         
         // Try to go to some starting location, hoping to find enemy there.
-        BaseLocation startLocation = AtlantisMap.getNearestUnexploredStartingLocation(SelectUnits.mainBase());
+        BaseLocation startLocation = AtlantisMap.getNearestUnexploredStartingLocation(SelectUnits.mainBase().getPosition());
         if (startLocation != null) {
-            return startLocation;
+            return startLocation.getPosition();
         }
 
         // Absolutely no enemy unit can be found

@@ -7,15 +7,17 @@ import java.util.Comparator;
 import java.util.HashMap;
 
 import bwapi.Position;
-import atlantis.information.AtlantisMap;
+import bwapi.PositionedObject;
+import bwta.BWTA;
 import atlantis.util.PositionUtil;
 import atlantis.util.RUtilities;
 
 /**
  * This class is wrapper for ArrayList<Position>. It allows some helpful methods to be executed upon group of positions
  * like sorting etc.
+ * TODO: check whether using PositionedObject instead of Positions yields correct behavior
  */
-public class Positions<T extends Position> {
+public class Positions<T extends PositionedObject> {
 
 	private ArrayList<T> positions = new ArrayList<>();
 
@@ -23,7 +25,7 @@ public class Positions<T extends Position> {
 	 * This mapping can be used to store extra values assigned to positions e.g. if positions reprents mineral fields,
 	 * we can easily store info how many workers are gathering each mineral field thanks to this mapping.
 	 */
-	private HashMap<Position, Double> positionValues;
+	private HashMap<PositionedObject, Double> positionValues;
 
 	// =====================================================================
 
@@ -92,10 +94,11 @@ public class Positions<T extends Position> {
 	 * sorting first position will be the one closest to given position.
 	 */
 	public Positions sortByDistanceTo(final Position position, final boolean nearestFirst) {
-		Collections.sort(positions, new Comparator<Position>() {
+		Collections.sort(positions, new Comparator<PositionedObject>() {
 			@Override
-			public int compare(Position u1, Position u2) {
-				return PositionUtil.distanceTo(position, u1) < PositionUtil.distanceTo(position, u2) ? 
+			public int compare(PositionedObject u1, PositionedObject u2) {
+				//TODO: check whether PositionedObject.getPosition call has the correct behavior
+				return PositionUtil.distanceTo(position, u1.getPosition()) < PositionUtil.distanceTo(position, u2.getPosition()) ? 
 						(nearestFirst ? -1 : 1) : (nearestFirst ? 1 : -1);
 			}
 		});
@@ -108,14 +111,14 @@ public class Positions<T extends Position> {
 	 * sorting first position will be the one closest to given position.
 	 */
 	public Positions sortByGroundDistanceTo(final Position position, final boolean nearestFirst) {
-		Collections.sort(positions, new Comparator<Position>() {
+		Collections.sort(positions, new Comparator<PositionedObject>() {
 			@Override
-			public int compare(Position u1, Position u2) {
-				double distToU1 = AtlantisMap.getMap().getGroundDistance(position, u1);
+			public int compare(PositionedObject u1, PositionedObject u2) {
+				double distToU1 = BWTA.getGroundDistance(position.toTilePosition(), u1.getPosition().toTilePosition());
 				if (distToU1 < 0) {
 					distToU1 = 99999;
 				}
-				double distToU2 = AtlantisMap.getMap().getGroundDistance(position, u2);
+				double distToU2 = BWTA.getGroundDistance(position.toTilePosition(), u2.getPosition().toTilePosition());
 				return distToU1 < distToU2 ? (nearestFirst ? -1 : 1) : (nearestFirst ? 1 : -1);
 			}
 		});
@@ -170,7 +173,7 @@ public class Positions<T extends Position> {
 
 	private void ensureValueMappingExists() {
 		positionValues = new HashMap<>();
-		for (Position position : positions) {
+		for (PositionedObject position : positions) {
 			positionValues.put(position, 0.0);
 		}
 	}
@@ -182,7 +185,7 @@ public class Positions<T extends Position> {
 	public String toString() {
 		String string = "Positions (" + positions.size() + "):\n";
 
-		for (Position position : positions) {
+		for (PositionedObject position : positions) {
 			string += "   - " + position + "\n";
 		}
 
@@ -194,7 +197,7 @@ public class Positions<T extends Position> {
 
 	public void print() {
 		System.out.println("Positions in list:");
-		for (Position position : list()) {
+		for (PositionedObject position : list()) {
 			System.out.println(position);
 		}
 		System.out.println();
