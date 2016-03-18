@@ -23,7 +23,7 @@ public class AtlantisGroupManager {
 
         Group group = getAlphaGroup();
         group.addUnit(unit);
-        unit.setGroup(group);
+        Group.setGroupOfUnit(unit, group); //unit.setGroup(group);
     }
 
     public static void battleUnitDestroyed(Unit unit) {
@@ -31,10 +31,10 @@ public class AtlantisGroupManager {
             return;
         }
 
-        Group group = unit.getGroup();
+        Group group = Group.getGroupOfUnit(unit);	// unit.getGroup();
         if (group != null) {
             group.removeUnit(unit);
-            unit.setGroup(null);
+            Group.setGroupOfUnit(unit, null);		//unit.setGroup(null);
         }
     }
 

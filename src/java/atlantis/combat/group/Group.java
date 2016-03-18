@@ -8,7 +8,9 @@ import atlantis.combat.micro.MicroRangedManager;
 import atlantis.wrappers.Units;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.TreeSet;
+
 import bwapi.Position;
 import bwapi.Unit;
 
@@ -39,6 +41,30 @@ public class Group extends Units {
      * Manager for microing melee units.
      */
     private MicroMeleeManager microMeleeManager;
+    
+    /**
+     * Stores the group that each unit belongs to. Intends to replace Unit.setGroup() and getGroup() methods.
+     */
+    private static java.util.Map<Unit, Group> groupOfUnit = new HashMap<>();
+    
+    
+    /**
+     * Stores that a Unit belongs to a Group
+     * @param u
+     * @param g
+     */
+    public static void setGroupOfUnit(Unit u, Group g){
+    	groupOfUnit.put(u, g);
+    }
+    
+    /**
+     * Retrieves the group that the unit belongs to
+     * @param u
+     * @return
+     */
+    public static Group getGroupOfUnit(Unit u){
+    	return groupOfUnit.get(u);
+    }
 
     // =========================================================
     
