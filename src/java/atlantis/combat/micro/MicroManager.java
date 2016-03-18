@@ -33,7 +33,7 @@ public abstract class MicroManager {
         }
 
         // If unit is running, allow it to stop running only if chances are quite favorable
-        if (unit.isRunning() && AtlantisCombatEvaluator.evaluateSituation(unit) >= 0.3) {
+        if (AtlantisRunning.isRunning(unit) && AtlantisCombatEvaluator.evaluateSituation(unit) >= 0.3) {
             AtlantisRunManager.unitWantsStopRunning(unit);
         }
         

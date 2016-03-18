@@ -1,5 +1,7 @@
 package atlantis.combat.group.missions;
 
+import atlantis.combat.micro.AtlantisRunManager;
+import atlantis.combat.micro.AtlantisRunning;
 import atlantis.information.AtlantisEnemyInformationManager;
 import atlantis.information.AtlantisMap;
 import atlantis.util.PositionUtil;
@@ -55,7 +57,7 @@ public class MissionAttack extends Mission {
      */
     @Override
     protected boolean canIssueOrderToUnit(Unit unit) {
-        if (unit.isAttacking() || unit.isStartingAttack() || unit.isRunning()) {
+        if (unit.isAttacking() || unit.isStartingAttack() || AtlantisRunning.isRunning(unit)) {
             return false;
         }
 

@@ -1,12 +1,31 @@
 package atlantis.util;
 
+import atlantis.debug.tooltip.TooltipManager;
 import atlantis.wrappers.SelectUnits;
 import bwapi.Unit;
 import bwapi.UnitType;
 import bwapi.WeaponType;
-import jnibwapi.types.UnitType.UnitTypes;
+import bwapi.Position;
 
 public class UnitUtil {
+	
+	/**
+     * Unit will move by given distance (in build tiles) from given position.
+     * @TODO: check conversion between TilePosition and Position
+     */
+    public static void moveAwayFrom(Unit u, Position position, double moveDistance) {
+        int dx = position.getX() - u.getPosition().getX();
+        int dy = position.getY() - u.getPosition().getY();
+        double vectorLength = Math.sqrt(dx * dx + dy * dy);
+        double modifier = (moveDistance * 32) / vectorLength;
+        dx = (int) (dx * modifier);
+        dy = (int) (dy * modifier);
+
+        Position newPosition = new Position(u.getPosition().getX() - dx, u.getPosition().getY() - dy);
+
+        u.move(newPosition, false);
+        TooltipManager.getInstance().setTooltip(u, "Run");
+    }
 	
 	/**
 	 * Returns the total cost of a unit for score calculation,

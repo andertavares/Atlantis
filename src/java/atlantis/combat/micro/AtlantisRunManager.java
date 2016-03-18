@@ -18,7 +18,7 @@ public class AtlantisRunManager {
      * Makes unit run (from close enemies) in the most reasonable way possible.
      */
     public static boolean run(Unit unit) {
-        return unit.runFrom(null); // Run from the nearest enemy
+        return AtlantisRunning.runFrom(unit, null); // Run from the nearest enemy
 
 //        // Define the range-wise closest enemy and run from it
 //        Unit nearestEnemy = SelectUnits.enemyRealUnits().nearestTo(unit);
@@ -50,16 +50,16 @@ public class AtlantisRunManager {
      */
     public static void unitWantsStopRunning(Unit unit) {
 //        if (unit.getRunning().getTimeSinceLastRun() >= defineMinFramesToStopRunning(unit)) {
-        unit.getRunning().stopRunning();
+        AtlantisRunning.stopRunning(unit); //unit.getRunning().stopRunning();
 //        }
     }
     
     public static int getHowManyFramesUnitShouldStillBeRunning(Unit unit) {
-        if (!unit.isRunning()) {
+        if (!AtlantisRunning.isRunning(unit)) {
             return 0;
         }
         else {
-            return Math.max(0, defineMinFramesToStopRunning(unit) - unit.getRunning().getTimeSinceLastRun());
+            return Math.max(0, defineMinFramesToStopRunning(unit) - AtlantisRunning.getTimeSinceLastRun(unit));
         }
     }
     
@@ -74,7 +74,7 @@ public class AtlantisRunManager {
     private static int countNearbyUnits(Position position) {
         int total = 0;
         for (Unit unit : SelectUnits.our().inRadius(6, position).list()) {
-            if (!unit.isRunning()) {
+            if (!AtlantisRunning.isRunning(unit)) {
                 total++;
             }
         }

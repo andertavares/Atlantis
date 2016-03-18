@@ -1,8 +1,10 @@
 package atlantis.combat.group.missions;
 
+import atlantis.combat.micro.AtlantisRunning;
 import atlantis.debug.tooltip.TooltipManager;
 import atlantis.information.AtlantisMap;
 import atlantis.util.PositionUtil;
+import atlantis.util.UnitUtil;
 import atlantis.wrappers.SelectUnits;
 import bwta.Chokepoint;
 import bwapi.Unit;
@@ -44,7 +46,7 @@ public class MissionDefend extends Mission {
 
             // Too close to
             if (isCriticallyCloseToChokePoint(unit, chokepoint)) {
-                unit.moveAwayFrom(chokepoint, 1.0);
+                UnitUtil.moveAwayFrom(unit, chokepoint.getCenter(),  1.0);	//unit.moveAwayFrom(chokepoint, 1.0);
                 TooltipManager.getInstance().setTooltip(unit, "Get back");
                 //unit.setTooltip("Get back");
                 return true;
@@ -55,9 +57,8 @@ public class MissionDefend extends Mission {
 
                 // Too many stacked units
                 if (isTooManyUnitsAround(unit, chokepoint)) {
-                    unit.moveAwayFrom(chokepoint, 1.0);
-                    TooltipManager.getInstance().setTooltip(unit, "Stacked");
-                    //unit.setTooltip("Stacked");
+                	UnitUtil.moveAwayFrom(unit, chokepoint.getCenter(),  1.0);	//unit.moveAwayFrom(chokepoint, 1.0);
+                    TooltipManager.getInstance().setTooltip(unit, "Stacked"); //unit.setTooltip("Stacked");
                 } // Units aren't stacked too much
                 else {
                 }
@@ -131,7 +132,7 @@ public class MissionDefend extends Mission {
     protected boolean canIssueOrderToUnit(Unit unit) {
 
         // If unit has far more important actions than fucking positioning, disallow any actions here.
-        if (unit.isAttacking() || unit.isStartingAttack() || unit.isRunning() || unit.isAttackFrame() || unit.isMoving()) {
+        if (unit.isAttacking() || unit.isStartingAttack() || AtlantisRunning.isRunning(unit) || unit.isAttackFrame() || unit.isMoving()) {
             return false;
         }
 
