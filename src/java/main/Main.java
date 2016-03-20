@@ -20,7 +20,7 @@ public class Main {
         // =============================================================
         // =============================================================
         //
-        // Create Atlantis object to use for this bot. It wraps JNIBWAPI functionality.
+        // Create Atlantis object to use for this bot. It wraps BWMirror functionality.
         Atlantis atlantis = new Atlantis();
 
         // Starts bot.

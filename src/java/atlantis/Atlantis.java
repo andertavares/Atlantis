@@ -112,7 +112,6 @@ public class Atlantis implements BWEventListener {
             mirror.getModule().setEventListener(this);
             mirror.startGame();
             
-            bwapi = mirror.getGame();
         }
     }
 
@@ -142,7 +141,8 @@ public class Atlantis implements BWEventListener {
      */
     @Override
     public void onStart() {
-
+    	bwapi = mirror.getGame();
+    	
         // #### INITIALIZE CONFIG AND PRODUCTION QUEUE ####
         // =========================================================
         // Set up base configuration based on race used.
@@ -182,8 +182,21 @@ public class Atlantis implements BWEventListener {
      */
     @Override
     public void onFrame() {
+    	try{
+    		playerOnFrame();
+    	}
+    	catch (Exception e){
+    		System.err.println("AN ERROR HAS OCCURRED");
+    		e.printStackTrace();
+    	}
 
-        // Initial actions - those should be executed only once.
+    }
+    
+    /**
+     * This was the previous onFrame. Now it is wrapped in a try-catch
+     */
+	private void playerOnFrame() {
+		// Initial actions - those should be executed only once.
         if (!_initialActionsExecuted) {
             _initialActionsExecuted = true;
             System.out.println("### Starting Atlantis... ###");
@@ -215,7 +228,7 @@ public class Atlantis implements BWEventListener {
                 // No need to handle
             }
         }
-    }
+	}
     
     
     /**
