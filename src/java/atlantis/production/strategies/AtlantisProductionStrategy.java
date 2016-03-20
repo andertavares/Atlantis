@@ -6,7 +6,9 @@ import atlantis.AtlantisGame;
 import atlantis.constructing.AtlantisConstructingManager;
 import atlantis.information.AtlantisUnitInformationManager;
 import atlantis.production.ProductionOrder;
+import atlantis.util.NameUtil;
 import atlantis.util.RUtilities;
+import atlantis.util.UnitUtil;
 import atlantis.wrappers.AtlantisTech;
 import atlantis.wrappers.MappingCounter;
 import atlantis.wrappers.SelectUnits;
@@ -319,19 +321,19 @@ public abstract class AtlantisProductionStrategy {
         // =========================================================
         // Try getting objects of each type as we don't know if it's unit, research or tech.
         // UNIT
-        UnitType.disableErrorReporting = true;
-        UnitType unitType = UnitType.getByName(nameString);	//TODO: put this in unitUtil
-        UnitType.disableErrorReporting = false;
+        NameUtil.disableErrorReporting = true;
+        UnitType unitType = NameUtil.getUnitTypeByName(nameString);	
+        NameUtil.disableErrorReporting = false;
 
         // UPGRADE
-        UpgradeType.disableErrorReporting = true;
-        UpgradeType upgrade = UpgradeType.getByName(nameString); //TODO: put this in UpgradeUtil
-        UpgradeType.disableErrorReporting = false;
+        NameUtil.disableErrorReporting = true;
+        UpgradeType upgrade = NameUtil.getUpgradeTypeByName(nameString); //TODO: put this in UpgradeUtil
+        NameUtil.disableErrorReporting = false;
 
         // TECH
-        TechType.disableErrorReporting = true;
-        TechType tech = TechType.getByName(nameString); //TODO: put this in TechUtil
-        TechType.disableErrorReporting = false;
+        NameUtil.disableErrorReporting = true;
+        TechType tech = NameUtil.getTechTypeByName(nameString); //TODO: put this in TechUtil
+        NameUtil.disableErrorReporting = false;
 
         // Define convienience boolean variables
         boolean isUnit = unitType != null;

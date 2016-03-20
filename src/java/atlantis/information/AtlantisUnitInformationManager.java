@@ -7,7 +7,7 @@ import atlantis.wrappers.MappingCounter;
 import atlantis.wrappers.SelectUnits;
 import java.util.ArrayList;
 import bwapi.Unit;
-import jnibwapi.types.UnitType;	//TODO work MappingCounter to accept bwapi
+import bwapi.UnitType;	
 
 public class AtlantisUnitInformationManager {
 
@@ -116,7 +116,7 @@ public class AtlantisUnitInformationManager {
     public static int countOurUnitsOfType(UnitType type) {
 
         // Bas building
-        if (type.isGasBuilding()) {
+        if (UnitUtil.isGasBuilding(type)) {
             int total = 0;
             for (Unit unit : allUnits) {
                 if (type.equals(unit.getType())) {

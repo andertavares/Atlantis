@@ -4,6 +4,7 @@ import atlantis.constructing.AtlantisBuilderManager;
 import atlantis.constructing.AtlantisConstructingManager;
 import atlantis.constructing.ConstructionOrder;
 import atlantis.debug.tooltip.TooltipManager;
+import atlantis.util.NameUtil;
 import atlantis.util.UnitUtil;
 import atlantis.wrappers.SelectUnits;
 import bwapi.Unit;
@@ -89,7 +90,7 @@ public class AtlantisWorkerManager {
 
         ConstructionOrder buildingToBuild = AtlantisConstructingManager.getConstructionOrderFor(unit);
         if (buildingToBuild != null) {
-            tooltip += "Build: " + UnitUtil.getShortName(buildingToBuild.getBuildingType()) + newLine;
+            tooltip += "Build: " + NameUtil.getShortName(buildingToBuild.getBuildingType()) + newLine;
         }
 //		if (unit.getTarget() != null) {
 //			tooltip += "Target: " + unit.getTarget().getShortName() + newLine;

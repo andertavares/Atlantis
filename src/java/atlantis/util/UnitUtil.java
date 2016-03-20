@@ -1,10 +1,13 @@
 package atlantis.util;
 
+import java.lang.reflect.Field;
+
 import atlantis.debug.tooltip.TooltipManager;
 import atlantis.wrappers.SelectUnits;
 import bwapi.Unit;
 import bwapi.UnitType;
 import bwapi.WeaponType;
+import jnibwapi.types.UnitType.UnitTypes;
 import bwapi.Position;
 
 public class UnitUtil {
@@ -180,10 +183,5 @@ public class UnitUtil {
             return attacksAir(attacker) && (!includeCooldown || attacker.getAirWeaponCooldown() == 0);
         }
     }
-    
-    public static String getShortName(UnitType t) {
-        return t.toString().replace("Terran ", "").replace("Protoss ", "").replace("Zerg ", "");
-    }
-
     
 }

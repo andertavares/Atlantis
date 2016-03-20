@@ -9,6 +9,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import bwapi.Position;
+import bwapi.PositionedObject;
 import bwapi.Unit;
 
 /**
@@ -106,17 +107,17 @@ public class Units {
             return null;
         }
         
-        Collections.sort(units, new Comparator<Position>() {
+        Collections.sort(units, new Comparator<PositionedObject>() {
             @Override
-            public int compare(Position p1, Position p2) {
-                if (p1 == null || !(p1 instanceof Position)) {
+            public int compare(PositionedObject p1, PositionedObject p2) {
+                if (p1 == null || !(p1 instanceof PositionedObject)) {
                     return -1;
                 }
-                if (p2 == null || !(p2 instanceof Position)) {
+                if (p2 == null || !(p2 instanceof PositionedObject)) {
                     return 1;
                 }
-                double distance1 = PositionUtil.distanceTo(position, p1);
-                double distance2 = PositionUtil.distanceTo(position, p2);
+                double distance1 = PositionUtil.distanceTo(position, p1.getPosition());	//TODO: check whether this doesn't mix up position types
+                double distance2 = PositionUtil.distanceTo(position, p2.getPosition());
                 if (distance1 == distance2) {
                     return 0;
                 }

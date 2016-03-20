@@ -5,8 +5,9 @@ import java.util.HashMap;
 /**
  * Allows to easily count amount of given key objects. Can be used to e.g. count number of UnitTypes. Minimum
  * value is 0.
+ * TODO: check whether removing the need of K extend Comparable has negative side effects
  */
-public class MappingCounter<K extends Comparable<K>> {
+public class MappingCounter<K> {
 
     private HashMap<K, Integer> mapping = new HashMap<>();
 
