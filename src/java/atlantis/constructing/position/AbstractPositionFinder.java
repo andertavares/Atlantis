@@ -25,10 +25,12 @@ public abstract class AbstractPositionFinder {
 
     /**
      * Returns true if game says it's possible to build given building at this position.
-     */
+     *
     protected static boolean canPhysicallyBuildHere(UnitType building, Position position) {
+    	return Atlantis.getBwapi().canBuildHere(arg0, arg1, arg2, arg3)
         return Atlantis.getBwapi().canBuildHere(position.toTilePosition(), building, true);
-    }
+        
+    }*/
 
     /**
      * Returns true if any other building is too close to this building or if two buildings would overlap

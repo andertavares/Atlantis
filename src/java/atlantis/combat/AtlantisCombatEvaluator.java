@@ -6,6 +6,8 @@ import atlantis.util.PositionUtil;
 import atlantis.util.UnitUtil;
 import atlantis.wrappers.SelectUnits;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 import bwapi.Color;
 import bwapi.Unit;
@@ -33,6 +35,12 @@ public class AtlantisCombatEvaluator {
      */
     private static double EVAL_DAMAGE_FACTOR = 1.0;
 
+    
+    /**
+	 * Stores the instances of AtlantisCombatInformation for each unit
+	 */
+	private static Map<Unit, AtlantisCombatInformation> combatInfo = new HashMap<>();
+    
     // =========================================================
     
     /**
@@ -74,8 +82,10 @@ public class AtlantisCombatEvaluator {
      */
     public static double evaluateSituation(Unit unit) {
         
+    	checkCombatInfo(unit);
+    	
         // Try using cached value
-        double combatEvalCachedValueIfNotExpired = unit.getCombatEvalCachedValueIfNotExpired();
+        double combatEvalCachedValueIfNotExpired = combatInfo.get(unit).getCombatEvalCachedValueIfNotExpired();
         if (combatEvalCachedValueIfNotExpired > -12345) {
             return updateCombatEval(unit, combatEvalCachedValueIfNotExpired);
         }
@@ -222,8 +232,21 @@ public class AtlantisCombatEvaluator {
      * Returns combat eval and caches it for the time of several frames.
      */
     private static double updateCombatEval(Unit unit, double combatEval) {
-        unit.updateCombatEval(combatEval);
+    	checkCombatInfo(unit);
+    	combatInfo.get(unit).updateCombatEval(combatEval);
+        //unit.updateCombatEval(combatEval);
         return combatEval;
     }
+
+    /**
+     * Checks whether AtlantisCombatInformation exists for a given unit, 
+     * creating an instance if necessary
+     * @param unit
+     */
+	private static void checkCombatInfo(Unit unit) {
+		if (!combatInfo.containsKey(unit)){
+    		combatInfo.put(unit, new AtlantisCombatInformation(unit));
+    	}
+	}
 
 }

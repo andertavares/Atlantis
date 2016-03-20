@@ -1,6 +1,6 @@
 package atlantis.combat.micro;
 
-import jnibwapi.Unit;
+import bwapi.Unit;
 
 public class DefaultRangedManager extends MicroRangedManager {
 

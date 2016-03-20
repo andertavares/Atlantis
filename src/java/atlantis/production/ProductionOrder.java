@@ -1,6 +1,7 @@
 package atlantis.production;
 
 import bwapi.TechType;
+import atlantis.util.NameUtil;
 import atlantis.util.UnitUtil;
 import bwapi.UnitType;
 import bwapi.UpgradeType;
@@ -118,7 +119,7 @@ public class ProductionOrder {
 
     public String getShortName() {
         if (unitType != null) {
-            return UnitUtil.getShortName(unitType);
+            return NameUtil.getShortName(unitType);
         } else if (upgrade != null) {
             return upgrade.toString(); //replaces .getName();
         } else {

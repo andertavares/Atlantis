@@ -4,7 +4,6 @@ import atlantis.util.PositionUtil;
 import atlantis.wrappers.SelectUnits;
 import bwapi.Position;
 import bwapi.TilePosition;
-import jnibwapi.Position.PosType;
 import bwapi.Unit;
 import bwapi.UnitType;
 

@@ -3,7 +3,7 @@ package atlantis.combat.group;
 import atlantis.combat.group.missions.Missions;
 import java.util.ArrayList;
 import bwapi.Unit;
-import jnibwapi.types.UnitType;
+import bwapi.UnitType;
 
 /**
  * Commands all existing battle groups.
@@ -44,7 +44,7 @@ public class AtlantisGroupManager {
      * @return
      */
     private static boolean shouldSkipUnit(Unit unit) {
-        return unit.getType().isBuilding() || unit.getType().isWorker() || unit.getType().equals(UnitType.UnitTypes.Zerg_Larva);
+        return unit.getType().isBuilding() || unit.getType().isWorker() || unit.getType().equals(UnitType.Zerg_Larva);
     }
 
     // =========================================================

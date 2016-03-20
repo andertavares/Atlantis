@@ -7,7 +7,6 @@ import atlantis.wrappers.SelectUnits;
 import bwapi.Unit;
 import bwapi.UnitType;
 import bwapi.WeaponType;
-import jnibwapi.types.UnitType.UnitTypes;
 import bwapi.Position;
 
 public class UnitUtil {
