@@ -221,8 +221,8 @@ public class AtlantisRunning {
     /**
      * Returns the position where unit is running to (it's quite close to the unit, few tiles).
      */
-    public Position getNextPositionToRunTo() {
-        return nextPositionToRunTo;
+    public static Position getNextPositionToRunTo(Unit u) {
+        return unitRunning.get(u).nextPositionToRunTo;
     }
 
     public static int getTimeSinceLastRun(Unit u) {

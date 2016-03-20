@@ -9,11 +9,14 @@ import atlantis.combat.group.AtlantisGroupManager;
 import atlantis.combat.group.missions.MissionAttack;
 import atlantis.combat.group.missions.MissionDefend;
 import atlantis.combat.group.missions.MissionPrepare;
+import atlantis.combat.micro.AtlantisRunning;
 import atlantis.constructing.AtlantisConstructingManager;
 import atlantis.constructing.ConstructionOrder;
 import atlantis.constructing.ConstructionOrderStatus;
 import atlantis.debug.tooltip.TooltipManager;
 import atlantis.production.ProductionOrder;
+import atlantis.util.ColorUtil;
+import atlantis.util.NameUtil;
 import atlantis.util.PositionUtil;
 import atlantis.util.RUtilities;
 import atlantis.util.UnitUtil;
@@ -23,18 +26,19 @@ import atlantis.wrappers.SelectUnits;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.TreeSet;
-import jnibwapi.JNIBWAPI;
+
+import bwapi.Color;
+import bwapi.Game;
 import bwapi.Position;
 import bwapi.Unit;
 import bwapi.UnitType;
-import jnibwapi.util.BWColor;
 
 /**
  * Here you can include code that will draw extra informations over units etc.
  */
 public class AtlantisPainter {
 
-    private static JNIBWAPI bwapi;
+    private static Game bwapi;
     private static int sideMessageTopCounter = 0;
     private static int sideMessageMiddleCounter = 0;
     private static int sideMessageBottomCounter = 0;
@@ -93,15 +97,15 @@ public class AtlantisPainter {
         
         // =========================================================
         // Time
-        paintSideMessage("Time: " + AtlantisGame.getTimeSeconds() + "s", BWColor.Grey);
+        paintSideMessage("Time: " + AtlantisGame.getTimeSeconds() + "s", Color.Grey);
         
         // =========================================================
         // Gas workers
-        paintSideMessage("Gas workers: " + AtlantisGasManager.defineMinGasWorkersPerBuilding(), BWColor.Grey);
+        paintSideMessage("Gas workers: " + AtlantisGasManager.defineMinGasWorkersPerBuilding(), Color.Grey);
         
         // =========================================================
         // Global mission
-        paintSideMessage("Mission: " + AtlantisGroupManager.getAlphaGroup().getMission().getName(), BWColor.White);
+        paintSideMessage("Mission: " + AtlantisGroupManager.getAlphaGroup().getMission().getName(), Color.White);
         
         // =========================================================
         // Focus point
@@ -112,11 +116,11 @@ public class AtlantisPainter {
         if (focusPoint != null && mainBase != null) {
             desc = "(dist:" + ((int) PositionUtil.distanceTo(focusPoint, mainBase.getPosition())) + ")";
         }
-        paintSideMessage("Focus point: " + focusPoint + desc, BWColor.Blue, 0);
+        paintSideMessage("Focus point: " + focusPoint + desc, Color.Blue, 0);
         
         // =========================================================
         
-        paintSideMessage("Combat group size: " + AtlantisGroupManager.getAlphaGroup().size(), BWColor.Blue, 0);
+        paintSideMessage("Combat group size: " + AtlantisGroupManager.getAlphaGroup().size(), Color.Blue, 0);
     }
     
     /**
@@ -139,15 +143,15 @@ public class AtlantisPainter {
                 // =========================================================
                 // Paint box
                 int healthBarProgress = boxWidth * unit.getHitPoints() / (unit.getType().maxHitPoints() + 1);
-                bwapi.drawBox(topLeft, new Position(boxLeft + boxWidth, boxTop + boxHeight),
-                        BWColor.Red, true, false);
-                bwapi.drawBox(topLeft, new Position(boxLeft + healthBarProgress, boxTop + boxHeight),
-                        BWColor.Green, true, false);
+                bwapi.drawBoxMap(topLeft, new Position(boxLeft + boxWidth, boxTop + boxHeight), Color.Red, true);
+                //(jni)bwapi.drawBox(topLeft, new Position(boxLeft + boxWidth, boxTop + boxHeight), BWColor.Red, true, false);
+                bwapi.drawBoxMap(topLeft, new Position(boxLeft + healthBarProgress, boxTop + boxHeight), Color.Green, true);
+                //(jni)bwapi.drawBox(topLeft, new Position(boxLeft + healthBarProgress, boxTop + boxHeight),BWColor.Green, true, false);
 
                 // =========================================================
                 // Paint box borders
-                bwapi.drawBox(topLeft, new Position(boxLeft + boxWidth, boxTop + boxHeight),
-                        BWColor.Black, false, false);
+                bwapi.drawBoxMap(topLeft, new Position(boxLeft + boxWidth, boxTop + boxHeight), Color.Black, false);
+                //(jni)bwapi.drawBox(topLeft, new Position(boxLeft + boxWidth, boxTop + boxHeight),BWColor.Black, false, false);
             }
 
             // =========================================================
@@ -199,7 +203,7 @@ public class AtlantisPainter {
             if (AtlantisCombatEvaluator.evaluateSituation(unit) < 10) {
                 double eval = AtlantisCombatEvaluator.evaluateSituation(unit);
                 if (eval < 999) {
-                    String combatStrength = eval >= 10 ? (BWColor.getColorString(BWColor.Green) + "++") : 
+                    String combatStrength = eval >= 10 ? (ColorUtil.getColorString(Color.Green) + "++") : 
                             AtlantisCombatEvaluator.getEvalString(unit);
                     paintTextCentered(new Position(unit.getPosition().getX(), unit.getPosition().getY() - 15), combatStrength, null);
                 }
@@ -209,7 +213,7 @@ public class AtlantisPainter {
         for (Unit unit : SelectUnits.enemy().combatUnits().list()) {
             double eval = AtlantisCombatEvaluator.evaluateSituation(unit);
             if (eval < 999) {
-                String combatStrength = eval >= 10 ? (BWColor.getColorString(BWColor.Green) + "++") : 
+                String combatStrength = eval >= 10 ? (ColorUtil.getColorString(Color.Green) + "++") : 
                         AtlantisCombatEvaluator.getEvalString(unit);
                 paintTextCentered(new Position(unit.getPosition().getX(), unit.getPosition().getY() - 15), combatStrength, null);
             }
@@ -223,22 +227,22 @@ public class AtlantisPainter {
         Position position;
 
         // Main DEFEND focus point
-        position = MissionDefend.getFocusPoint();
-        paintCircle(position, 20, BWColor.Black);
-        paintCircle(position, 19, BWColor.Black);
-        paintTextCentered(position, "DEFEND", BWColor.Grey);
+        position = MissionDefend.getFocusPoint().getCenter();
+        paintCircle(position, 20, Color.Black);
+        paintCircle(position, 19, Color.Black);
+        paintTextCentered(position, "DEFEND", Color.Grey);
 
         // Mission PREPARE focus point
         position = MissionPrepare.getFocusPoint();
-        paintCircle(position, 20, BWColor.Black);
-        paintCircle(position, 19, BWColor.Black);
-        paintTextCentered(position, "PREPARE", BWColor.Grey);
+        paintCircle(position, 20, Color.Black);
+        paintCircle(position, 19, Color.Black);
+        paintTextCentered(position, "PREPARE", Color.Grey);
 
         // Mission ATTACK focus point
         position = MissionAttack.getFocusPoint();
-        paintCircle(position, 20, BWColor.Red);
+        paintCircle(position, 20, Color.Red);
 //        paintCircle(position, 19, BWColor.Black);
-        paintTextCentered(position, "ATTACK", BWColor.Red);
+        paintTextCentered(position, "ATTACK", Color.Red);
     }
     
     /**
@@ -255,12 +259,12 @@ public class AtlantisPainter {
         counters = RUtilities.sortByValue(counters, false);
         boolean paintedMessage = false;
         for (UnitType unitType : counters.keySet()) {
-            paintSideMessage("+" + counters.get(unitType) + " " + unitType.toString(), BWColor.Blue, 0);
+            paintSideMessage("+" + counters.get(unitType) + " " + unitType.toString(), Color.Blue, 0);
             paintedMessage = true;
         }
 
         if (paintedMessage) {
-            paintSideMessage("", BWColor.White, 0);
+            paintSideMessage("", Color.White, 0);
         }
 
         // =========================================================
@@ -274,17 +278,17 @@ public class AtlantisPainter {
         counters = RUtilities.sortByValue(counters, false);
         for (UnitType unitType : counters.keySet()) {
             if (!unitType.isBuilding()) {
-                paintSideMessage(counters.get(unitType) + "x " + unitType.toString(), BWColor.Grey, 0);
+                paintSideMessage(counters.get(unitType) + "x " + unitType.toString(), Color.Grey, 0);
             }
         }
-        paintSideMessage("", BWColor.White, 0);
+        paintSideMessage("", Color.White, 0);
     }
 
     /**
      * Paints next units to build in top left corner.
      */
     private static void paintProductionQueue() {
-        paintSideMessage("Prod. queue:", BWColor.White);
+        paintSideMessage("Prod. queue:", Color.White);
 
         // Display units currently in production
         for (Unit unit : SelectUnits.ourUnfinished().list()) {
@@ -292,13 +296,13 @@ public class AtlantisPainter {
             if (type.equals(UnitType.Zerg_Egg)) {
                 type = unit.getBuildType();
             }
-            paintSideMessage(UnitUtil.getShortName(type), BWColor.Green);
+            paintSideMessage(NameUtil.getShortName(type), Color.Green);
         }
 
         // Display units that should be produced right now or any time
         ArrayList<ProductionOrder> produceNow = AtlantisGame.getProductionStrategy().getThingsToProduceRightNow(false);
         for (ProductionOrder order : produceNow) {
-            paintSideMessage(order.getShortName(), BWColor.Yellow);
+            paintSideMessage(order.getShortName(), Color.Yellow);
         }
 
         // Display next units to produce
@@ -311,7 +315,7 @@ public class AtlantisPainter {
                         && !AtlantisGame.hasBuildingsToProduce(order.getUnitType())) {
                     continue;
                 }
-                paintSideMessage(order.getShortName(), BWColor.Red);
+                paintSideMessage(order.getShortName(), Color.Red);
             }
         }
     }
@@ -323,24 +327,24 @@ public class AtlantisPainter {
         int yOffset = 205;
         ArrayList<ConstructionOrder> allOrders = AtlantisConstructingManager.getAllConstructionOrders();
         if (!allOrders.isEmpty()) {
-            paintSideMessage("Constructing (" + allOrders.size() + ")", BWColor.White, yOffset);
+            paintSideMessage("Constructing (" + allOrders.size() + ")", Color.White, yOffset);
             for (ConstructionOrder constructionOrder : allOrders) {
-                BWColor color = null;
+                Color color = null;
                 switch (constructionOrder.getStatus()) {
                     case CONSTRUCTION_NOT_STARTED:
-                        color = BWColor.Red;
+                        color = Color.Red;
                         break;
                     case CONSTRUCTION_IN_PROGRESS:
-                        color = BWColor.Blue;
+                        color = Color.Blue;
                         break;
                     case CONSTRUCTION_FINISHED:
-                        color = BWColor.Teal;
+                        color = Color.Teal;
                         break;
                     default:
-                        color = BWColor.Teal;
+                        color = Color.Teal;
                         break;
                 }
-                paintSideMessage(UnitUtil.getShortName(constructionOrder.getBuildingType()), color, yOffset);
+                paintSideMessage(NameUtil.getShortName(constructionOrder.getBuildingType()), color, yOffset);
             }
         }
     }
@@ -358,23 +362,41 @@ public class AtlantisPainter {
                 }
 
                 // Paint box
-                bwapi.drawBox(
+                bwapi.drawBoxMap(
+            		positionToBuild,
+                    PositionUtil.translate(positionToBuild, buildingType.tileWidth() * 32,  buildingType.tileHeight() * 32), 
+                    Color.Teal,
+                    false
+                );
+                /*bwapi.drawBox(
                         positionToBuild,
                         PositionUtil.translate(positionToBuild, buildingType.tileWidth() * 32,  buildingType.tileHeight() * 32), 
-                        BWColor.Teal, false, false);
+                        BWColor.Teal, false, false);*/
 
                 // Draw X
-                bwapi.drawLine(
+                bwapi.drawLineMap(
+            		positionToBuild,
+                    PositionUtil.translate(positionToBuild, buildingType.tileWidth() * 32,  buildingType.tileHeight() * 32),
+                    Color.Teal
+                );
+                
+                /*bwapi.drawLine(
                         positionToBuild,
                         PositionUtil.translate(positionToBuild, buildingType.tileWidth() * 32,  buildingType.tileHeight() * 32),
-                        BWColor.Teal, false);
-                bwapi.drawLine(
+                        BWColor.Teal, false);*/
+                
+                bwapi.drawLineMap(
+            		PositionUtil.translate(positionToBuild, buildingType.tileWidth() * 32,  0),
+            		PositionUtil.translate(positionToBuild, 0,  buildingType.tileHeight() * 32),
+                    Color.Teal
+                );
+                /*bwapi.drawLine(
                 		PositionUtil.translate(positionToBuild, buildingType.tileWidth() * 32,  0),
                 		PositionUtil.translate(positionToBuild, 0,  buildingType.tileHeight() * 32),
-                        BWColor.Teal, false);
+                        BWColor.Teal, false);*/
                 
                 // Draw text
-                paintTextCentered(positionToBuild, UnitUtil.getShortName(buildingType), BWColor.Grey);
+                paintTextCentered(positionToBuild, NameUtil.getShortName(buildingType), Color.Grey);
             }
         }
     }
@@ -407,8 +429,8 @@ public class AtlantisPainter {
 //            }
 
             // RUN
-            if (unit.isRunning()) {
-                paintLine(unit, unit.getRunning().getNextPositionToRunTo(), BWColor.Blue);
+            if (AtlantisRunning.isRunning(unit)) {
+                paintLine(unit.getPosition(), AtlantisRunning.getNextPositionToRunTo(unit), Color.Blue);
             }
         }
     }
@@ -435,24 +457,34 @@ public class AtlantisPainter {
                     progress,
                     1.0,
                     0.0,
-                    new String[]{BWColor.getColorString(BWColor.Red), BWColor.getColorString(BWColor.Yellow),
-                        BWColor.getColorString(BWColor.Green)});
+                    new String[]{ColorUtil.getColorString(Color.Red), ColorUtil.getColorString(Color.Yellow),
+                    		ColorUtil.getColorString(Color.Green)});
             stringToDisplay = color + labelProgress + "%";
 
             // Paint box
-            bwapi.drawBox(new Position(labelLeft, labelTop), new Position(labelLeft + labelMaxWidth * labelProgress
-                    / 100, labelTop + labelHeight), BWColor.Blue, true, false);
+            bwapi.drawBoxMap(
+        		new Position(labelLeft, labelTop), 
+        		new Position(labelLeft + labelMaxWidth * labelProgress/ 100, labelTop + labelHeight), 
+        		Color.Blue, 
+        		true
+        	);
+            //bwapi.drawBox(new Position(labelLeft, labelTop), new Position(labelLeft + labelMaxWidth * labelProgress / 100, labelTop + labelHeight), BWColor.Blue, true, false);
 
             // Paint box borders
-            bwapi.drawBox(new Position(labelLeft, labelTop), new Position(labelLeft + labelMaxWidth, labelTop
-                    + labelHeight), BWColor.Black, false, false);
+            bwapi.drawBoxMap(
+        		new Position(labelLeft, labelTop), 
+        		new Position(labelLeft + labelMaxWidth, labelTop + labelHeight), 
+        		Color.Black,
+        		false
+        	);
+            //bwapi.drawBox(new Position(labelLeft, labelTop), new Position(labelLeft + labelMaxWidth, labelTop + labelHeight), BWColor.Black, false, false);
 
             // Paint label
             paintTextCentered(new Position(labelLeft, labelTop - 3), stringToDisplay, false);
 
             // Display name of unit
-            String name = UnitUtil.getShortName(unit.getBuildType());
-            paintTextCentered(new Position(unit.getPosition().getX(), unit.getPosition().getY() - 4), BWColor.getColorString(BWColor.Green)
+            String name = NameUtil.getShortName(unit.getBuildType());
+            paintTextCentered(new Position(unit.getPosition().getX(), unit.getPosition().getY() - 4), ColorUtil.getColorString(Color.Green)
                     + name, false);
         }
     }
@@ -473,21 +505,31 @@ public class AtlantisPainter {
             double hpRatio = (double) unit.getHitPoints() / unit.getType().maxHitPoints();
             int hpProgress = (int) (1 + 99 * hpRatio);
 
-            BWColor color = BWColor.Green;
+            Color color = Color.Green;
             if (hpRatio < 0.66) {
-                color = BWColor.Yellow;
+                color = Color.Yellow;
                 if (hpRatio < 0.33) {
-                    color = BWColor.Red;
+                    color = Color.Red;
                 }
             }
 
             // Paint box
-            bwapi.drawBox(new Position(labelLeft, labelTop), new Position(labelLeft + labelMaxWidth * hpProgress / 100,
-                    labelTop + labelHeight), color, true, false);
+            bwapi.drawBoxMap(
+        		new Position(labelLeft, labelTop), 
+        		new Position(labelLeft + labelMaxWidth * hpProgress / 100, labelTop + labelHeight), 
+        		color, 
+        		true
+        	);
+            //bwapi.drawBox(new Position(labelLeft, labelTop), new Position(labelLeft + labelMaxWidth * hpProgress / 100, labelTop + labelHeight), color, true, false);
 
             // Paint box borders
-            bwapi.drawBox(new Position(labelLeft, labelTop), new Position(labelLeft + labelMaxWidth, labelTop
-                    + labelHeight), BWColor.Black, false, false);
+            bwapi.drawBoxMap(
+            	new Position(labelLeft, labelTop), 
+            	new Position(labelLeft + labelMaxWidth, labelTop + labelHeight), 
+            	Color.Black, 
+            	false
+            );
+            //bwapi.drawBox(new Position(labelLeft, labelTop), new Position(labelLeft + labelMaxWidth, labelTop + labelHeight), BWColor.Black, false, false);
         }
     }
 
@@ -501,7 +543,7 @@ public class AtlantisPainter {
             int workers = AtlantisWorkerManager.getHowManyWorkersAt(building);
             if (workers > 0) {
                 String workersAssigned = "Workers: " + workers;
-                paintTextCentered(PositionUtil.translate(building.getPosition(), 0, -15), workersAssigned, BWColor.Blue);
+                paintTextCentered(PositionUtil.translate(building.getPosition(), 0, -15), workersAssigned, Color.Blue);
             }
         }
     }
@@ -525,22 +567,32 @@ public class AtlantisPainter {
             String trainedUnitString = "";
             if (trained != null) {
                 operationProgress = UnitUtil.getHPPercent(trained); // trained.getHP() * 100 / trained.getMaxHP();
-                trainedUnitString = UnitUtil.getShortName(trained.getType()); //trained.getShortName();
+                trainedUnitString = NameUtil.getShortName(trained.getType()); //trained.getShortName();
             }
 
             // Paint box
-            bwapi.drawBox(new Position(labelLeft, labelTop), new Position(labelLeft + labelMaxWidth * operationProgress
-                    / 100, labelTop + labelHeight), BWColor.White, true, false);
+            bwapi.drawBoxMap(
+            	new Position(labelLeft, labelTop), 
+            	new Position(labelLeft + labelMaxWidth * operationProgress / 100, labelTop + labelHeight),
+            	Color.White, 
+            	true
+            );
+            //bwapi.drawBox(new Position(labelLeft, labelTop), new Position(labelLeft + labelMaxWidth * operationProgress / 100, labelTop + labelHeight), BWColor.White, true, false);
 
             // Paint box borders
-            bwapi.drawBox(new Position(labelLeft, labelTop), new Position(labelLeft + labelMaxWidth, labelTop
-                    + labelHeight), BWColor.Black, false, false);
+            bwapi.drawBoxMap(
+        		new Position(labelLeft, labelTop), 
+        		new Position(labelLeft + labelMaxWidth, labelTop + labelHeight), 
+        		Color.Black,
+        		false
+        	);
+            //bwapi.drawBox(new Position(labelLeft, labelTop), new Position(labelLeft + labelMaxWidth, labelTop + labelHeight), BWColor.Black, false, false);
 
             // =========================================================
             // Display label
             paintTextCentered(
         		new Position(unit.getPosition().getX() - 4 * trainedUnitString.length(), unit.getPosition().getY() + 16),
-                BWColor.getColorString(BWColor.White) + trainedUnitString, false
+                ColorUtil.getColorString(Color.White) + trainedUnitString, false
             );
         }
     }
@@ -554,16 +606,16 @@ public class AtlantisPainter {
         int dx = 30;
         int dy = 9;
 
-        paintMessage("Killed: ", BWColor.White, x, y, true);
-        paintMessage("Lost: ", BWColor.White, x, y + dy, true);
-        paintMessage("-----------", BWColor.Grey, x, y + 2 * dy, true);
-        paintMessage("Price: ", BWColor.White, x, y + 3 * dy, true);
+        paintMessage("Killed: ", Color.White, x, y, true);
+        paintMessage("Lost: ", Color.White, x, y + dy, true);
+        paintMessage("-----------", Color.Grey, x, y + 2 * dy, true);
+        paintMessage("Price: ", Color.White, x, y + 3 * dy, true);
 
-        paintMessage(Atlantis.KILLED + "", BWColor.Green, x + dx, y, true);
-        paintMessage(Atlantis.LOST + "", BWColor.Red, x + dx, y + dy, true);
+        paintMessage(Atlantis.KILLED + "", Color.Green, x + dx, y, true);
+        paintMessage(Atlantis.LOST + "", Color.Red, x + dx, y + dy, true);
 
         int balance = Atlantis.KILLED_RESOURCES - Atlantis.LOST_RESOURCES;
-        BWColor color = balance >= 0 ? BWColor.Green : BWColor.Red;
+        Color color = balance >= 0 ? Color.Green : Color.Red;
         paintMessage((balance >= 0 ? "+" : "") + balance, color, x + dx, y + 3 * dy, true);
     }
     
@@ -576,20 +628,20 @@ public class AtlantisPainter {
             // Paint "x" on every unit that has been targetted by one of our units.
             if (ourUnit.isAttacking() && ourUnit.getTarget() != null) {
 //                paintMessage("X", BWColor.Red, ourUnit.getTarget().getPX(), ourUnit.getTarget().getPY(), false);
-                paintLine(ourUnit.getPosition(), ourUnit.getTarget().getPosition(), BWColor.Red);
+                paintLine(ourUnit.getPosition(), ourUnit.getTarget().getPosition(), Color.Red);
             }
         }
     }
 
     // =========================================================
     // Lo-level
-    private static void paintSideMessage(String text, BWColor color) {
+    private static void paintSideMessage(String text, Color color) {
         paintSideMessage(text, color, 0);
     }
 
-    private static void paintSideMessage(String text, BWColor color, int yOffset) {
+    private static void paintSideMessage(String text, Color color, int yOffset) {
         if (color == null) {
-            color = BWColor.White;
+            color = Color.White;
         }
 
         int screenX = 10;
@@ -603,25 +655,33 @@ public class AtlantisPainter {
         }
     }
 
-    private static void paintMessage(String text, BWColor color, int x, int y, boolean screenCoord) {
-        getBwapi().drawText(new Position(x, y), BWColor.getColorString(color) + text, screenCoord);
+    private static void paintMessage(String text, Color color, int x, int y, boolean screenCoord) {
+    	if (screenCoord){
+    		bwapi.drawTextScreen(new Position(x, y), ColorUtil.getColorString(color) + text);
+    	}
+    	else{
+    		bwapi.drawTextMap(new Position(x, y), ColorUtil.getColorString(color) + text);
+    	}
+        //getBwapi().drawText(new Position(x, y), Color.getColorString(color) + text, screenCoord);
     }
 
-    private static void paintCircle(Position position, int radius, BWColor color) {
+    private static void paintCircle(Position position, int radius, Color color) {
         if (position == null) {
             return;
         }
-        getBwapi().drawCircle(position, radius, color, false, false);
+        bwapi.drawCircleMap(position, radius, color, false);
+        //getBwapi().drawCircle(position, radius, color, false, false);
     }
 
-    private static void paintLine(Position start, Position end, BWColor color) {
+    private static void paintLine(Position start, Position end, Color color) {
         if (start == null || end == null) {
             return;
         }
-        getBwapi().drawLine(start, end, color, false);
+        bwapi.drawLineMap(start, end, color);
+        //getBwapi().drawLine(start, end, color, false);
     }
 
-    private static void paintTextCentered(Position position, String text, BWColor color) {
+    private static void paintTextCentered(Position position, String text, Color color) {
         paintTextCentered(position, text, color, false);
     }
 
@@ -629,16 +689,29 @@ public class AtlantisPainter {
         paintTextCentered(position, text, null, screenCords);
     }
 
-    private static void paintTextCentered(Position position, String text, BWColor color, boolean screenCords) {
+    private static void paintTextCentered(Position position, String text, Color color, boolean screenCoords) {
         if (position == null || text == null) {
             return;
         }
-        getBwapi().drawText(
-    		PositionUtil.translate(position, (int) (-3.7 * text.length()), -2), BWColor.getColorString(color) + text, screenCords);
+        
+        if(screenCoords){
+        	bwapi.drawTextScreen(
+    			PositionUtil.translate(position, (int) (-3.7 * text.length()), -2), 
+    			ColorUtil.getColorString(color) + text
+    		);
+        }
+        else {
+        	bwapi.drawTextMap(
+    			PositionUtil.translate(position, (int) (-3.7 * text.length()), -2), 
+    			ColorUtil.getColorString(color) + text
+    		);
+        }
+        
+        //getBwapi().drawText(PositionUtil.translate(position, (int) (-3.7 * text.length()), -2), Color.getColorString(color) + text, screenCords);
     }
 
-    private static   getBwapi() {
+    /*private static   getBwapi() {
         return Atlantis.getBwapi();
-    }
+    }*/
 
 }
