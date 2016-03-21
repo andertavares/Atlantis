@@ -65,6 +65,9 @@ public class AtlantisEnemyInformationManager {
     public static Unit getNearestEnemyBuilding() {
         Unit mainBase = SelectUnits.mainBase();
         if (mainBase != null && !AtlantisUnitInformationManager.enemyUnitsDiscovered.isEmpty()) {
+        	System.out.println("# all:" + SelectUnits.from(AtlantisUnitInformationManager.enemyUnitsDiscovered));
+        	System.out.println("# bldgs: " + SelectUnits.from(AtlantisUnitInformationManager.enemyUnitsDiscovered).buildings().count());
+        	System.out.println("Closest bldg: " + SelectUnits.from(AtlantisUnitInformationManager.enemyUnitsDiscovered).buildings().nearestTo(mainBase.getPosition()));
             return SelectUnits.from(AtlantisUnitInformationManager.enemyUnitsDiscovered).buildings().nearestTo(mainBase.getPosition());
         }
         return null;

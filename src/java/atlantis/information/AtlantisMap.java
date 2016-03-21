@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Set;
 
 import bwapi.Position;
+import bwapi.TilePosition;
 import bwta.Region;
 import bwta.Chokepoint;
 import bwapi.Unit;
@@ -166,7 +167,7 @@ public class AtlantisMap {
     public static Position getRandomInvisiblePosition(Position startPoint) {
         Position position = null;
         for (int attempts = 0; attempts < 10; attempts++) {
-            int maxRadius = 30;
+            int maxRadius = 30 * TilePosition.SIZE_IN_PIXELS;	//TODO: check whether this scaling to TilePosition is oK
             int dx = -maxRadius + RUtilities.rand(0, 2 * maxRadius);
             int dy = -maxRadius + RUtilities.rand(0, 2 * maxRadius);
             position = PositionUtil.translate(startPoint, dx, dy).makeValid();

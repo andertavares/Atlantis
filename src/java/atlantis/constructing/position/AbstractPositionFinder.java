@@ -99,12 +99,15 @@ public abstract class AbstractPositionFinder {
      */
     protected static double getEdgeToEdgeDistanceBetween(Unit building, Position positionForNewBuilding,
             UnitType newBuildingType) {
-        int targetRight = positionForNewBuilding.getX() + newBuildingType.dimensionRight();
+    	
+    	
+        int targetRight = positionForNewBuilding.getX() + newBuildingType.dimensionRight();	//dimension* returns distance in pixels
         int targetLeft = positionForNewBuilding.getX() - newBuildingType.dimensionLeft();
         int targetTop = positionForNewBuilding.getY() - newBuildingType.dimensionUp();
         int targetBottom = positionForNewBuilding.getY() + newBuildingType.dimensionDown();
 
         //TODO: check whether get{Left,Right,Top,Bottom}PixelBoundary replacements have expected behavior
+        //get{left,right,top,bottom} returns distances in pixels
         int xDist = building.getLeft() - (targetRight + 1);
         if (xDist < 0) {
             xDist = targetLeft - (building.getRight()+ 1);

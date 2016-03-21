@@ -22,9 +22,9 @@ public class PositionUtil {
         // Precision is fine, return approx value
         if (distanceApprx > 4.5) {
             return distanceApprx;
-        } // Unit is too close and we need to know the exact distance, not approximization.
+        } // Unit is too close and we need to know the exact distance, not approximation.
         else {
-            return Math.sqrt(dx * dx + dy * dy) / 32;
+            return Math.sqrt(dx * dx + dy * dy) / TilePosition.SIZE_IN_PIXELS;
         }
     }
     

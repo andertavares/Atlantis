@@ -82,6 +82,7 @@ public class AtlantisPainter {
         // Paint TOOLTIPS over units
         for (Unit unit : SelectUnits.our().list()) {
             if (tooltipManager.hasTooltip(unit)) { // unit.hasTooltip()
+            	//System.out.println("-will paint tooltip!"); //TODO DEBUG
                 paintTextCentered(unit.getPosition(), tooltipManager.getTooltip(unit), false);
             }
         }
@@ -706,6 +707,7 @@ public class AtlantisPainter {
     			ColorUtil.getColorString(color) + text
     		);
         }
+        //System.out.println(String.format("writing @ %d, %d", (int) (-3.7 * text.length()), -2));	//TODO DEBUG
         
         //getBwapi().drawText(PositionUtil.translate(position, (int) (-3.7 * text.length()), -2), Color.getColorString(color) + text, screenCords);
     }

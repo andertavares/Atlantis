@@ -3,6 +3,7 @@ package atlantis.combat.micro;
 import atlantis.Atlantis;
 import atlantis.AtlantisGame;
 import atlantis.combat.AtlantisCombatEvaluator;
+import atlantis.combat.AtlantisCombatInformation;
 import atlantis.debug.tooltip.TooltipManager;
 import atlantis.information.AtlantisMap;
 import atlantis.util.PositionUtil;
@@ -55,7 +56,7 @@ public class AtlantisRunning {
         } /*else {
             return running.runFrom(nearestEnemy);
         }*/
-        
+        checkRunningInfo(runner);
         AtlantisRunning running = unitRunning.get(runner);
         // Define position to run to
         running.nextPositionToRunTo = getPositionAwayFrom(runner, chaser.getPosition());
@@ -200,6 +201,7 @@ public class AtlantisRunning {
     // Stop running
     
     public static void stopRunning(Unit u) {
+    	checkRunningInfo(u);
         unitRunning.get(u).nextPositionToRunTo = null;
     }
     
@@ -210,10 +212,21 @@ public class AtlantisRunning {
      * Returns true if given unit is currently (this frame) running from an enemy.
      */
     public static boolean isRunning(Unit u) {
-    	
+    	checkRunningInfo(u);
         return unitRunning.get(u).nextPositionToRunTo != null;
     }
 
+    /**
+     * Checks whether AtlantisCombatInformation exists for a given unit, 
+     * creating an instance if necessary
+     * @param unit
+     */
+	private static void checkRunningInfo(Unit unit) {
+		if (!unitRunning.containsKey(unit)){
+			unitRunning.put(unit, new AtlantisRunning(unit));
+    	}
+	}
+    
     public Unit getUnit() {
         return unit;
     }
@@ -222,10 +235,12 @@ public class AtlantisRunning {
      * Returns the position where unit is running to (it's quite close to the unit, few tiles).
      */
     public static Position getNextPositionToRunTo(Unit u) {
+    	checkRunningInfo(u);
         return unitRunning.get(u).nextPositionToRunTo;
     }
 
     public static int getTimeSinceLastRun(Unit u) {
+    	checkRunningInfo(u);
         return AtlantisGame.getTimeFrames() - unitRunning.get(u).lastRunTime;
     }
 
