@@ -67,7 +67,7 @@ public class TerranMedic {
     }
 
     private static boolean handleHealWoundedUnit(Unit medic) {
-        Unit nearestWoundedInfantry = Select.ourCombatUnits().infantry().wounded()
+        Unit nearestWoundedInfantry = (Unit) Select.ourCombatUnits().infantry().wounded()
                 .inRadius(6, medic.getPosition()).nearestTo(medic.getPosition());
 
         // =========================================================
@@ -79,7 +79,7 @@ public class TerranMedic {
 
         // =========================================================
         // If no wounded unit, get close to random infantry
-        Unit nearestInfantry = Select.our().ofType(
+        Unit nearestInfantry = (Unit) Select.our().ofType(
                 UnitType.Terran_Marine,
                 UnitType.Terran_Firebat,
                 UnitType.Terran_Ghost

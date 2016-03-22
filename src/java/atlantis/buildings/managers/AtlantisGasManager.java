@@ -27,7 +27,7 @@ public class AtlantisGasManager {
         
         // =========================================================
         
-        Collection<Unit> gasBuildings = Select.ourBuildings().ofType(AtlantisConfig.GAS_BUILDING).list();
+        Collection<Unit> gasBuildings = (Collection<Unit>) Select.ourBuildings().ofType(AtlantisConfig.GAS_BUILDING).list();
         Collection<Unit> workers = Select.ourWorkers().list();
         
         // =========================================================

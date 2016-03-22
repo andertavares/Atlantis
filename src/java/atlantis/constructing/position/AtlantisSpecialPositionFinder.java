@@ -31,7 +31,7 @@ public class AtlantisSpecialPositionFinder {
      */
     protected static Position findPositionForGasBuilding(UnitType building) {
         for (Unit base : Select.ourBases().list()) {
-            Unit geyser = Select.neutral().ofType(UnitType.Resource_Vespene_Geyser).nearestTo(base.getPosition());
+            Unit geyser = (Unit) Select.neutral().ofType(UnitType.Resource_Vespene_Geyser).nearestTo(base.getPosition());
 
             if (geyser != null && PositionUtil.distanceTo(geyser, base) < 10) {
                 return PositionUtil.translate(geyser.getPosition(), -48, -32);

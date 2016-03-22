@@ -68,7 +68,7 @@ public class AtlantisProduceUnitManager {
     private static void researchUpgrade(UpgradeType upgrade) {
         UnitType buildingType = upgrade.whatUpgrades(); //UnitType.getUnitType(upgrade.getWhatUpgradesTypeID());
         if (buildingType != null) {
-            Unit building = Select.ourBuildings().ofType(buildingType).first();
+            Unit building = (Unit) Select.ourBuildings().ofType(buildingType).first();
             if (building != null) {
                 building.upgrade(upgrade);
             }

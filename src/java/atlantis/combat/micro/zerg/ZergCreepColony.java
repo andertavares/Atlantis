@@ -26,7 +26,7 @@ public class ZergCreepColony {
     // =========================================================
 
     public static void creepOneIntoSunkenColony() {
-        Unit creepColony = Select.ourBuildings().ofType(UnitType.Zerg_Creep_Colony).first();
+        Unit creepColony = (Unit) Select.ourBuildings().ofType(UnitType.Zerg_Creep_Colony).first();
         if (creepColony != null) {
             creepColony.morph(UnitType.Zerg_Sunken_Colony);
         }

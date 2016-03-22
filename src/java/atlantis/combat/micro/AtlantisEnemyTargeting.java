@@ -20,7 +20,7 @@ public class AtlantisEnemyTargeting {
         
         // =========================================================
         // Attack top priority units
-        nearestEnemy = Select.enemy(canAttackGround, canAttackAir)
+        nearestEnemy = (Unit)Select.enemy(canAttackGround, canAttackAir)	//TODO: check safety of cast
                 .inRadius(14, unit.getPosition())
                 .ofType(
                         UnitType.Terran_Siege_Tank_Siege_Mode,
@@ -47,7 +47,7 @@ public class AtlantisEnemyTargeting {
         
         // =========================================================
         // If no real units found, try selecting important buildings
-        nearestEnemy = Select.enemy(canAttackGround, canAttackAir)
+        nearestEnemy = (Unit)Select.enemy(canAttackGround, canAttackAir)	//TODO: check safety of cast
                 .ofType(UnitType.Protoss_Zealot, UnitType.Protoss_Dragoon, 
                         UnitType.Terran_Marine, UnitType.Terran_Medic, 
                         UnitType.Terran_Firebat, UnitType.Zerg_Zergling, 
@@ -58,7 +58,7 @@ public class AtlantisEnemyTargeting {
         
         // =========================================================
         // Try selecting defensive buildings
-        nearestEnemy = Select.enemy(canAttackGround, canAttackAir)
+        nearestEnemy = (Unit)Select.enemy(canAttackGround, canAttackAir)	//TODO: check safety of cast
                 .ofType(UnitType.Protoss_Photon_Cannon, UnitType.Zerg_Sunken_Colony, 
                         UnitType.Terran_Bunker).nearestTo(unit.getPosition());
         if (nearestEnemy != null) {
@@ -74,7 +74,7 @@ public class AtlantisEnemyTargeting {
         
         // =========================================================
         // If no real units found, try selecting important buildings
-        nearestEnemy = Select.enemy(canAttackGround, canAttackAir)
+        nearestEnemy = (Unit)Select.enemy(canAttackGround, canAttackAir)	//TODO: check safety of cast
                 .ofType(UnitType.Protoss_Pylon, UnitType.Zerg_Spawning_Pool, 
                         UnitType.Terran_Command_Center).nearestTo(unit.getPosition());
         if (nearestEnemy != null) {

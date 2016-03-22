@@ -282,7 +282,7 @@ public class Atlantis implements BWEventListener {
         // We need to get unit by ID, but we need to use our own solution, because normally if we iterated against
         // objects in getAllUnits(), dead unit objects would be gone. But if we manually save them, we can access them
         // at this point, when they're already dead.
-        Unit theUnit = AtlantisUnitInformationManager.getUnitByID(unit.getID());
+        Unit theUnit = AtlantisUnitInformationManager.getUnitDataByID(unit.getID()).getUnit();
 
         if (theUnit != null) {
             AtlantisUnitInformationManager.unitDestroyed(theUnit);

@@ -124,7 +124,7 @@ public class AtlantisWorkerCommander {
         // If the difference is "significant" transfer one worker from base to base
         if (baseWorkersRatios.getValueFor(baseWithMostWorkers) - 0.1 > 
                 baseWorkersRatios.getValueFor(baseWithFewestWorkers)) {
-            Unit worker = Select.ourWorkersThatGather().inRadius(10, baseWithMostWorkers.getPosition()).first();
+            Unit worker = (Unit) Select.ourWorkersThatGather().inRadius(10, baseWithMostWorkers.getPosition()).first();
             if (worker != null) {
                 worker.move(baseWithFewestWorkers.getPosition());
             }

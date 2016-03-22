@@ -58,7 +58,7 @@ public class ZergProductionStrategy extends AtlantisProductionStrategy {
     // =========================================================
     // Auxiliary
     private Unit getFreeLarva() {
-        return Select.our().ofType(UnitType.Zerg_Larva).first();
+        return (Unit) Select.our().ofType(UnitType.Zerg_Larva).first();
     }
 
 }

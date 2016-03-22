@@ -1,5 +1,7 @@
 package atlantis.workers;
 
+import java.util.Collection;
+
 import atlantis.constructing.AtlantisBuilderManager;
 import atlantis.constructing.AtlantisConstructingManager;
 import atlantis.constructing.ConstructionOrder;
@@ -53,8 +55,8 @@ public class AtlantisWorkerManager {
     public static int getHowManyWorkersAt(Unit target) {
         boolean isGasBuilding = UnitUtil.isGasBuilding(target.getType());
         int total = 0;
-        
-        for (Unit worker : Select.ourWorkers().inRadius(15, target.getPosition()).list()) {
+        Collection<Unit> ourWorkersInRange = (Collection<Unit>) Select.ourWorkers().inRadius(15, target.getPosition()).list();
+        for (Unit worker : ourWorkersInRange) {
             if (target.equals(worker.getTarget())) {
                 total++;
             }

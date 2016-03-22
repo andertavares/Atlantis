@@ -1,5 +1,7 @@
 package atlantis.combat.micro;
 
+import java.util.List;
+
 import atlantis.wrappers.Select;
 import bwapi.Position;
 import bwapi.Unit;
@@ -73,7 +75,8 @@ public class AtlantisRunManager {
 
     private static int countNearbyUnits(Position position) {
         int total = 0;
-        for (Unit unit : Select.our().inRadius(6, position).list()) {
+        List<Unit> unitsInRange = (List<Unit>) Select.our().inRadius(6, position).list();	//TODO check cast safety
+        for (Unit unit : unitsInRange) {
             if (!AtlantisRunning.isRunning(unit)) {
                 total++;
             }

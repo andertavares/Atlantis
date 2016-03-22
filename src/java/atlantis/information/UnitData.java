@@ -1,6 +1,7 @@
 package atlantis.information;
 
 import bwapi.Position;
+import bwapi.PositionedObject;
 import bwapi.Unit;
 import bwapi.UnitType;
 
@@ -10,21 +11,27 @@ import bwapi.UnitType;
  * @author Anderson
  *
  */
-public class UnitData {
+public class UnitData extends PositionedObject {
 
 	private Position position;
 	private Unit unit;
-	private UnitType type;
+	private UnitType type, buildType;
 	
 	public UnitData(Unit u){
 		unit = u;
 		position = u.getPosition();
 		type = u.getType();
+		buildType = u.getBuildType();
 	}
 	
 	public UnitType getType(){
 		return type;
 	}
+	
+	public UnitType getBuildType(){
+		return buildType;
+	}
+	
 	
 	public Unit getUnit(){
 		return unit;

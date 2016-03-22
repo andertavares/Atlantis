@@ -62,13 +62,13 @@ public class AtlantisEnemyInformationManager {
     /**
      *
      */
-    public static Unit getNearestEnemyBuilding() {
+    public static UnitData getNearestEnemyBuilding() {
         Unit mainBase = Select.mainBase();
         if (mainBase != null && !AtlantisUnitInformationManager.enemyUnitsDiscovered.isEmpty()) {
-        	System.out.println("# all:" + Select.from(AtlantisUnitInformationManager.enemyUnitsDiscovered.values()));
-        	System.out.println("# bldgs: " + Select.from(AtlantisUnitInformationManager.enemyUnitsDiscovered.values()).buildings().count());
-        	System.out.println("Closest bldg: " + Select.from(AtlantisUnitInformationManager.enemyUnitsDiscovered.values()).buildings().nearestTo(mainBase.getPosition()));
-            return Select.from(AtlantisUnitInformationManager.enemyUnitsDiscovered.values()).buildings().nearestTo(mainBase.getPosition());
+        	System.out.println("# all:" + Select.fromData(AtlantisUnitInformationManager.enemyUnitsDiscovered.values()));
+        	System.out.println("# bldgs: " + Select.fromData(AtlantisUnitInformationManager.enemyUnitsDiscovered.values()).buildings().count());
+        	System.out.println("Closest bldg: " + Select.fromData(AtlantisUnitInformationManager.enemyUnitsDiscovered.values()).buildings().nearestTo(mainBase.getPosition()));
+            return Select.fromData(AtlantisUnitInformationManager.enemyUnitsDiscovered.values()).buildings().nearestTo(mainBase.getPosition());
         }
         return null;
     }

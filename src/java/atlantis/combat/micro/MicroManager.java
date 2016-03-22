@@ -1,5 +1,7 @@
 package atlantis.combat.micro;
 
+import java.util.Collection;
+
 import atlantis.combat.AtlantisCombatEvaluator;
 import atlantis.util.PositionUtil;
 import atlantis.util.UnitUtil;
@@ -78,7 +80,8 @@ public abstract class MicroManager {
      * @return <b>true</b> if any of the enemy units can shoot at this unit.
      */
     private boolean isInShootRangeOfAnyEnemyUnit(Unit unit) {
-        for (Unit enemy : Select.enemy().combatUnits().inRadius(12, unit.getPosition()).list()) {
+    	Collection<Unit> enemiesInRange = (Collection<Unit>) Select.enemy().combatUnits().inRadius(12, unit.getPosition()).list();
+        for (Unit enemy : enemiesInRange) {
             WeaponType enemyWeapon = (unit.getType().isFlyer() ? enemy.getType().airWeapon() : enemy.getType().groundWeapon());
             double distToEnemy = PositionUtil.distanceTo(unit, enemy);
             

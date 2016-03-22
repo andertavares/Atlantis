@@ -13,7 +13,7 @@ import bwapi.UnitType;
 
 public class AtlantisUnitInformationManager {
 
-    protected static HashMap<Integer, Unit> allUnits = new HashMap<>();
+    protected static HashMap<Integer, UnitData> allUnits = new HashMap<>();
 
 //    protected static MappingCounter<UnitType> ourUnitsFininised = new MappingCounter<>();
 //    protected static MappingCounter<UnitType> ourUnitsUnfininised = new MappingCounter<>();
@@ -30,7 +30,7 @@ public class AtlantisUnitInformationManager {
      * unfinished) and enemy's.
      */
     public static void rememberUnit(Unit unit) {
-        allUnits.put(unit.getID(), unit);
+        allUnits.put(unit.getID(), new UnitData(unit));
     }
 
     /**
@@ -38,18 +38,18 @@ public class AtlantisUnitInformationManager {
      * unfinished) and enemy's.
      */
     public static void forgetUnit(int unitID) {
-        Unit unit = getUnitByID(unitID);
-        if (unit != null) {
-            allUnits.remove(unit.getID());
-            enemyUnitsDiscovered.remove(unit.getID());
-            enemyUnitsVisible.remove(unit.getID());
+        UnitData unitData = getUnitDataByID(unitID);
+        if (unitData != null) {
+            allUnits.remove(unitID);
+            enemyUnitsDiscovered.remove(unitID);
+            enemyUnitsVisible.remove(unitID);
         }
     }
 
     /**
      * Based on a stored collection, returns unit object for given unitID.
      */
-    public static Unit getUnitByID(int unitID) {
+    public static UnitData getUnitDataByID(int unitID) {
         return allUnits.get(unitID);
     	/*for (Unit unit : allUnits) {
             if (unit.getID() == unitID) {
@@ -93,7 +93,7 @@ public class AtlantisUnitInformationManager {
 //                ourUnitsUnfininised.decrementValueFor(unit.getType());
 //            }
 //        } else
-        if (Atlantis.getInstance().getBwapi().self().isEnemy(unit.getPlayer()) ) {
+        if (Atlantis.getBwapi().self().isEnemy(unit.getPlayer()) ) {
             enemyUnitsDiscoveredCounter.decrementValueFor(unit.getType());
             enemyUnitsVisibleCounter.decrementValueFor(unit.getType());
             enemyUnitsDiscovered.remove(unit.getID());
@@ -124,7 +124,7 @@ public class AtlantisUnitInformationManager {
         // Bas building
         if (UnitUtil.isGasBuilding(type)) {
             int total = 0;
-            for (Unit unit : allUnits.values()) {
+            for (UnitData unit : allUnits.values()) {
                 if (type.equals(unit.getType())) {
                     total++;
                 }

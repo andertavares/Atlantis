@@ -3,6 +3,8 @@ package atlantis.workers;
 import atlantis.wrappers.Select;
 import atlantis.wrappers.Units;
 import java.util.Collection;
+import java.util.List;
+
 import bwapi.Unit;
 
 /**
@@ -16,8 +18,9 @@ public class AtlantisMineralGathering {
     public static void initialAssignWorkersToMinerals() {
 
         // Get minerals near to our main base and sort them from closest to most distant one
-        Units minerals = Select.minerals().inRadius(12, Select.mainBase().getPosition()).units()
-                .sortByDistanceTo(Select.mainBase().getPosition(), true);
+    	//TODO check safety of this cast
+        List<Unit> minerals = (List<Unit>) Select.minerals().inRadius(12, Select.mainBase().getPosition()).
+                sortDataByDistanceTo(Select.mainBase().getPosition(), true);
 
         // Get our workers
         Collection<Unit> workers = Select.ourWorkers().list();
@@ -52,13 +55,14 @@ public class AtlantisMineralGathering {
         }
 
         // Get minerals near to our main base and sort them from closest to most distant one
-        Units minerals = Select.minerals().inRadius(12, base.getPosition()).units()
-                .sortByDistanceTo(Select.mainBase().getPosition(), true);
+        List<Unit> minerals = (List<Unit>) Select.minerals().inRadius(12, base.getPosition())
+                .sortDataByDistanceTo(Select.mainBase().getPosition(), true);
         
         if (!minerals.isEmpty()) {
 
             // Count how many other workers gather this mineral
-            for (Unit otherWorker : Select.ourWorkers().inRadius(12, base.getPosition()).list()) {
+        	Collection<Unit> ourWorkersInRange = (Collection<Unit>) Select.ourWorkers().inRadius(12, base.getPosition()).list();
+            for (Unit otherWorker : ourWorkersInRange) {
                 if (otherWorker.isGatheringMinerals()) {
                     Unit mineralMined = otherWorker.getTarget();
                     if (mineralMined != null) {

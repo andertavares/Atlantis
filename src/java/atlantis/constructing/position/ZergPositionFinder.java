@@ -1,5 +1,7 @@
 package atlantis.constructing.position;
 
+import java.util.Collection;
+
 import atlantis.Atlantis;
 import atlantis.AtlantisConfig;
 import atlantis.wrappers.Select;
@@ -122,7 +124,8 @@ public class ZergPositionFinder extends AbstractPositionFinder {
         // We have problem only if building is both close to base and to minerals or to geyser
         Unit nearestBase = Select.ourBases().nearestTo(position);
         if (nearestBase != null && PositionUtil.distanceTo(nearestBase.getPosition(), position) <= 7) {
-            for (Unit mineral : Select.minerals().inRadius(8, position).list()) {
+        	Collection<Unit> mineralsInRange = (Collection<Unit>) Select.minerals().inRadius(8, position).list();
+            for (Unit mineral : mineralsInRange) {
                 if (PositionUtil.distanceTo(mineral.getPosition(), position) <= 4) {
                     return true;
                 }

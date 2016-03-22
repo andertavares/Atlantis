@@ -1,6 +1,7 @@
 package atlantis.util;
 
 import java.lang.reflect.Field;
+import java.util.Collection;
 
 import atlantis.debug.tooltip.TooltipManager;
 import atlantis.wrappers.Select;
@@ -54,7 +55,8 @@ public class UnitUtil {
      */
     public static int getUnitIndex(Unit u) {
         int index = 0;
-        for (Unit otherUnit : Select.our().ofType(u.getType()).list()) {
+        Collection<Unit> ourUnitsOfType = (Collection<Unit>) Select.our().ofType(u.getType()).list();
+        for (Unit otherUnit : ourUnitsOfType) {
             if (otherUnit.getID() < u.getID()) {
                 index++;
             }

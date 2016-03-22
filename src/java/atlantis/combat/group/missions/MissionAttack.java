@@ -6,6 +6,7 @@ import atlantis.combat.micro.AtlantisRunning;
 import atlantis.debug.tooltip.TooltipManager;
 import atlantis.information.AtlantisEnemyInformationManager;
 import atlantis.information.AtlantisMap;
+import atlantis.information.UnitData;
 import atlantis.util.PositionUtil;
 import atlantis.wrappers.Select;
 import bwta.BaseLocation;
@@ -85,7 +86,7 @@ public class MissionAttack extends Mission {
         }
 
         // Try going near any enemy building
-        Unit enemyBuilding = AtlantisEnemyInformationManager.getNearestEnemyBuilding();
+        UnitData enemyBuilding = AtlantisEnemyInformationManager.getNearestEnemyBuilding();
         if (enemyBuilding != null) {
         	System.out.println("focus on enemy bldg");	//TODO debug
             return enemyBuilding.getPosition();
