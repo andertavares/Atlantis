@@ -6,7 +6,7 @@ import atlantis.information.AtlantisEnemyInformationManager;
 import atlantis.information.AtlantisMap;
 import atlantis.scout.AtlantisScoutManager;
 import atlantis.util.PositionUtil;
-import atlantis.wrappers.SelectUnits;
+import atlantis.wrappers.Select;
 import bwapi.Position;
 import bwapi.Unit;
 

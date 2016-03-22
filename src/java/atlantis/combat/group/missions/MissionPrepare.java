@@ -5,7 +5,7 @@ import atlantis.debug.tooltip.TooltipManager;
 import atlantis.information.AtlantisMap;
 import atlantis.util.PositionUtil;
 import atlantis.util.UnitUtil;
-import atlantis.wrappers.SelectUnits;
+import atlantis.wrappers.Select;
 import bwta.Chokepoint;
 import bwapi.Position;
 import bwapi.Unit;
@@ -70,7 +70,7 @@ public class MissionPrepare extends Mission {
     }
 
     private boolean isTooManyUnitsAround(Unit unit, Chokepoint chokepoint) {
-        return SelectUnits.ourCombatUnits().inRadius(0.8, unit.getPosition()).count() >= 4;
+        return Select.ourCombatUnits().inRadius(0.8, unit.getPosition()).count() >= 4;
     }
 
     private boolean isCloseEnoughToChokePoint(Unit unit, Chokepoint chokepoint) {

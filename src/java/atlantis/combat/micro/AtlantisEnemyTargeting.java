@@ -3,7 +3,7 @@ package atlantis.combat.micro;
 import atlantis.AtlantisGame;
 import atlantis.util.PositionUtil;
 import atlantis.util.UnitUtil;
-import atlantis.wrappers.SelectUnits;
+import atlantis.wrappers.Select;
 import bwapi.Unit;
 import bwapi.UnitType;
 
@@ -20,7 +20,7 @@ public class AtlantisEnemyTargeting {
         
         // =========================================================
         // Attack top priority units
-        nearestEnemy = SelectUnits.enemy(canAttackGround, canAttackAir)
+        nearestEnemy = Select.enemy(canAttackGround, canAttackAir)
                 .inRadius(14, unit.getPosition())
                 .ofType(
                         UnitType.Terran_Siege_Tank_Siege_Mode,
@@ -35,9 +35,9 @@ public class AtlantisEnemyTargeting {
         // =========================================================
         // Attack nearest enemy
         if (AtlantisGame.getTimeSeconds() < 180) {
-            nearestEnemy = SelectUnits.enemyRealUnits(canAttackGround, canAttackAir).nearestTo(unit.getPosition());
+            nearestEnemy = Select.enemyRealUnits(canAttackGround, canAttackAir).nearestTo(unit.getPosition());
             if (nearestEnemy != null && nearestEnemy.getType().isWorker() 
-                    && PositionUtil.distanceTo(nearestEnemy, SelectUnits.mainBase()) < 30) {
+                    && PositionUtil.distanceTo(nearestEnemy, Select.mainBase()) < 30) {
 //                return null;
             }
             else {
@@ -47,7 +47,7 @@ public class AtlantisEnemyTargeting {
         
         // =========================================================
         // If no real units found, try selecting important buildings
-        nearestEnemy = SelectUnits.enemy(canAttackGround, canAttackAir)
+        nearestEnemy = Select.enemy(canAttackGround, canAttackAir)
                 .ofType(UnitType.Protoss_Zealot, UnitType.Protoss_Dragoon, 
                         UnitType.Terran_Marine, UnitType.Terran_Medic, 
                         UnitType.Terran_Firebat, UnitType.Zerg_Zergling, 
@@ -58,7 +58,7 @@ public class AtlantisEnemyTargeting {
         
         // =========================================================
         // Try selecting defensive buildings
-        nearestEnemy = SelectUnits.enemy(canAttackGround, canAttackAir)
+        nearestEnemy = Select.enemy(canAttackGround, canAttackAir)
                 .ofType(UnitType.Protoss_Photon_Cannon, UnitType.Zerg_Sunken_Colony, 
                         UnitType.Terran_Bunker).nearestTo(unit.getPosition());
         if (nearestEnemy != null) {
@@ -67,14 +67,14 @@ public class AtlantisEnemyTargeting {
         
         // =========================================================
         // Try selecting real units
-        nearestEnemy = SelectUnits.enemyRealUnits(canAttackGround, canAttackAir).nearestTo(unit.getPosition());
+        nearestEnemy = Select.enemyRealUnits(canAttackGround, canAttackAir).nearestTo(unit.getPosition());
         if (nearestEnemy != null) {
             return nearestEnemy;
         }
         
         // =========================================================
         // If no real units found, try selecting important buildings
-        nearestEnemy = SelectUnits.enemy(canAttackGround, canAttackAir)
+        nearestEnemy = Select.enemy(canAttackGround, canAttackAir)
                 .ofType(UnitType.Protoss_Pylon, UnitType.Zerg_Spawning_Pool, 
                         UnitType.Terran_Command_Center).nearestTo(unit.getPosition());
         if (nearestEnemy != null) {
@@ -83,7 +83,7 @@ public class AtlantisEnemyTargeting {
         
         // =========================================================
         // Okay, try targeting any-fuckin-thing
-        nearestEnemy = SelectUnits.enemy(canAttackGround, canAttackAir).nearestTo(unit.getPosition());
+        nearestEnemy = Select.enemy(canAttackGround, canAttackAir).nearestTo(unit.getPosition());
         if (nearestEnemy != null) {
             return nearestEnemy;
         }

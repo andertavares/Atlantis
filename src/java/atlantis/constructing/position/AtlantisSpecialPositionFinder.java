@@ -6,7 +6,7 @@ import atlantis.util.PositionUtil;
 import bwapi.Position;
 import bwapi.Unit;
 import bwapi.UnitType;
-import atlantis.wrappers.SelectUnits;
+import atlantis.wrappers.Select;
 import bwta.BaseLocation;
 
 public class AtlantisSpecialPositionFinder {
@@ -30,8 +30,8 @@ public class AtlantisSpecialPositionFinder {
      * that doesn't have gas extracting building.
      */
     protected static Position findPositionForGasBuilding(UnitType building) {
-        for (Unit base : SelectUnits.ourBases().list()) {
-            Unit geyser = SelectUnits.neutral().ofType(UnitType.Resource_Vespene_Geyser).nearestTo(base.getPosition());
+        for (Unit base : Select.ourBases().list()) {
+            Unit geyser = Select.neutral().ofType(UnitType.Resource_Vespene_Geyser).nearestTo(base.getPosition());
 
             if (geyser != null && PositionUtil.distanceTo(geyser, base) < 10) {
                 return PositionUtil.translate(geyser.getPosition(), -48, -32);
@@ -63,7 +63,7 @@ public class AtlantisSpecialPositionFinder {
     // =========================================================
     
     private static Position findPositionForBase_nearestFreeBase(UnitType building, Unit builder) {
-        BaseLocation baseLocationToExpand = AtlantisMap.getNearestBaseLocationToExpand(SelectUnits.mainBase().getPosition());
+        BaseLocation baseLocationToExpand = AtlantisMap.getNearestBaseLocationToExpand(Select.mainBase().getPosition());
         if (baseLocationToExpand == null) {
             System.err.println("baseLocationToExpand is null");
             return null;
@@ -76,7 +76,7 @@ public class AtlantisSpecialPositionFinder {
     }
 
     private static Position findPositionForBase_nearestMainBase(UnitType building, Unit builder) {
-        return AtlantisPositionFinder.findStandardPosition(builder, building, SelectUnits.mainBase().getPosition(), 20);
+        return AtlantisPositionFinder.findStandardPosition(builder, building, Select.mainBase().getPosition(), 20);
     }
 
 }

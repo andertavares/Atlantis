@@ -3,7 +3,7 @@ package atlantis.production;
 import atlantis.AtlantisConfig;
 import atlantis.constructing.AtlantisConstructingManager;
 import atlantis.production.strategies.AtlantisProductionStrategy;
-import atlantis.wrappers.SelectUnits;
+import atlantis.wrappers.Select;
 import java.util.ArrayList;
 import bwapi.Unit;
 import bwapi.UnitType;
@@ -68,7 +68,7 @@ public class AtlantisProduceUnitManager {
     private static void researchUpgrade(UpgradeType upgrade) {
         UnitType buildingType = upgrade.whatUpgrades(); //UnitType.getUnitType(upgrade.getWhatUpgradesTypeID());
         if (buildingType != null) {
-            Unit building = SelectUnits.ourBuildings().ofType(buildingType).first();
+            Unit building = Select.ourBuildings().ofType(buildingType).first();
             if (building != null) {
                 building.upgrade(upgrade);
             }

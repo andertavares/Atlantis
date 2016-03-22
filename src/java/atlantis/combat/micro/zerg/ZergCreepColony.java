@@ -2,7 +2,7 @@ package atlantis.combat.micro.zerg;
 
 import atlantis.constructing.ConstructionOrder;
 import atlantis.constructing.position.AtlantisPositionFinder;
-import atlantis.wrappers.SelectUnits;
+import atlantis.wrappers.Select;
 import bwapi.Position;
 import bwapi.Unit;
 import bwapi.UnitType;
@@ -14,7 +14,7 @@ import bwapi.UnitType;
 public class ZergCreepColony {
 
     public static Position findPosition(UnitType building, Unit builder, ConstructionOrder constructionOrder) {
-        Unit secondBase = SelectUnits.secondBaseOrMainIfNoSecond();
+        Unit secondBase = Select.secondBaseOrMainIfNoSecond();
         if (secondBase != null) {
             return AtlantisPositionFinder.findStandardPosition(builder, building, secondBase.getPosition(), 10);
         }
@@ -26,7 +26,7 @@ public class ZergCreepColony {
     // =========================================================
 
     public static void creepOneIntoSunkenColony() {
-        Unit creepColony = SelectUnits.ourBuildings().ofType(UnitType.Zerg_Creep_Colony).first();
+        Unit creepColony = Select.ourBuildings().ofType(UnitType.Zerg_Creep_Colony).first();
         if (creepColony != null) {
             creepColony.morph(UnitType.Zerg_Sunken_Colony);
         }

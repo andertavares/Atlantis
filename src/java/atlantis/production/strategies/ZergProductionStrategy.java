@@ -2,7 +2,7 @@ package atlantis.production.strategies;
 
 import atlantis.AtlantisConfig;
 import atlantis.workers.AtlantisWorkerCommander;
-import atlantis.wrappers.SelectUnits;
+import atlantis.wrappers.Select;
 import java.util.ArrayList;
 import bwapi.Unit;
 import bwapi.UnitType;
@@ -46,7 +46,7 @@ public class ZergProductionStrategy extends AtlantisProductionStrategy {
 
     // =========================================================
     protected void _produceUnit(UnitType unitType) {
-        for (Unit base : SelectUnits.ourBases().list()) {
+        for (Unit base : Select.ourBases().list()) {
             for (Unit unit : base.getLarva()) {
 //                System.out.println(unit + " into " + unitType);
                 base.train(unitType);
@@ -58,7 +58,7 @@ public class ZergProductionStrategy extends AtlantisProductionStrategy {
     // =========================================================
     // Auxiliary
     private Unit getFreeLarva() {
-        return SelectUnits.our().ofType(UnitType.Zerg_Larva).first();
+        return Select.our().ofType(UnitType.Zerg_Larva).first();
     }
 
 }

@@ -7,7 +7,7 @@ import atlantis.information.AtlantisEnemyInformationManager;
 import atlantis.information.AtlantisMap;
 import atlantis.information.AtlantisUnitInformationManager;
 import atlantis.util.UnitUtil;
-import atlantis.wrappers.SelectUnits;
+import atlantis.wrappers.Select;
 import java.util.ArrayList;
 import bwta.BaseLocation;
 import bwapi.Unit;
@@ -91,7 +91,7 @@ public class AtlantisScoutManager {
 //            return;
 //        }
         // Define center point for our searches
-        Unit ourMainBase = SelectUnits.mainBase();
+        Unit ourMainBase = Select.mainBase();
         if (ourMainBase == null) {
             return;
         }
@@ -127,7 +127,7 @@ public class AtlantisScoutManager {
             if (AtlantisEnemyInformationManager.hasDiscoveredEnemyBuilding()) { // We know enemy building
                 scouts.clear();
                 if (AtlantisGame.getTimeSeconds() < 600) {
-                    scouts.add(SelectUnits.ourWorkers().first());
+                    scouts.add(Select.ourWorkers().first());
                 }
 //                if (scouts.size() > 1) {
 //                    scouts.clear();
@@ -139,14 +139,14 @@ public class AtlantisScoutManager {
             } // Haven't discovered any enemy building
             else {
                 scouts.clear();
-                scouts.addAll(SelectUnits.ourCombatUnits().list());
+                scouts.addAll(Select.ourCombatUnits().list());
             }
         } 
 
         // =========================================================
         // TERRAN + PRTOSSS
         else if (scouts.isEmpty() && AtlantisUnitInformationManager.countOurWorkers() >= AtlantisConfig.SCOUT_IS_NTH_WORKER) {
-            scouts.add(SelectUnits.ourWorkers().first());
+            scouts.add(Select.ourWorkers().first());
         }
     }
 

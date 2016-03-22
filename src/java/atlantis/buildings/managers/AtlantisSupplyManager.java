@@ -4,7 +4,7 @@ import atlantis.AtlantisConfig;
 import atlantis.AtlantisGame;
 import atlantis.constructing.AtlantisConstructingManager;
 import atlantis.production.strategies.ZergProductionStrategy;
-import atlantis.wrappers.SelectUnits;
+import atlantis.wrappers.Select;
 import bwapi.UnitType;
 
 public class AtlantisSupplyManager {

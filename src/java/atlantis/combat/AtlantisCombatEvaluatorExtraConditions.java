@@ -3,7 +3,7 @@ package atlantis.combat;
 import atlantis.AtlantisGame;
 import atlantis.debug.tooltip.TooltipManager;
 import atlantis.util.PositionUtil;
-import atlantis.wrappers.SelectUnits;
+import atlantis.wrappers.Select;
 import bwapi.Unit;
 
 /**
@@ -49,7 +49,7 @@ public class AtlantisCombatEvaluatorExtraConditions {
 //        }
         
         // If you're near the main base, force the fight
-        Unit mainBase = SelectUnits.mainBase();
+        Unit mainBase = Select.mainBase();
         if (mainBase != null) {
             if (PositionUtil.distanceTo(mainBase, unit) < 7) {
 
@@ -76,11 +76,11 @@ public class AtlantisCombatEvaluatorExtraConditions {
         // If enemy is somewhat near, disallow attacking without support
         else {
             if (AtlantisGame.playsAsTerran()) {
-                return SelectUnits.ourCombatUnits().inRadius(2.5, unit.getPosition()).count() <= 2
-                        || SelectUnits.ourCombatUnits().inRadius(5, unit.getPosition()).count() <= 5;
+                return Select.ourCombatUnits().inRadius(2.5, unit.getPosition()).count() <= 2
+                        || Select.ourCombatUnits().inRadius(5, unit.getPosition()).count() <= 5;
             }
             else {
-                return SelectUnits.ourCombatUnits().inRadius(8, unit.getPosition()).count() <= 6;
+                return Select.ourCombatUnits().inRadius(8, unit.getPosition()).count() <= 6;
             }
         }
     }

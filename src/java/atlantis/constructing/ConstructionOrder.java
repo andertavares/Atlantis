@@ -2,7 +2,7 @@ package atlantis.constructing;
 
 import atlantis.constructing.position.AtlantisPositionFinder;
 import atlantis.production.ProductionOrder;
-import atlantis.wrappers.SelectUnits;
+import atlantis.wrappers.Select;
 import bwapi.Position;
 import bwapi.Unit;
 import bwapi.UnitType;
@@ -45,7 +45,7 @@ public class ConstructionOrder implements Comparable<ConstructionOrder> {
      * and we're cool, bro.
      */
     protected void assignRandomBuilderForNow() {
-        builder = SelectUnits.ourWorkers().first();
+        builder = Select.ourWorkers().first();
     }
 
     /**
@@ -54,7 +54,7 @@ public class ConstructionOrder implements Comparable<ConstructionOrder> {
      * @return Unit for convenience it returns
      */
     protected Unit assignOptimalBuilder() {
-        builder = SelectUnits.ourWorkersFreeToBuildOrRepair().nearestTo(positionToBuild);
+        builder = Select.ourWorkersFreeToBuildOrRepair().nearestTo(positionToBuild);
         return builder;
     }
 

@@ -5,7 +5,7 @@ import atlantis.AtlantisGame;
 import atlantis.buildings.managers.AtlantisGasManager;
 import atlantis.information.AtlantisUnitInformationManager;
 import atlantis.util.PositionUtil;
-import atlantis.wrappers.SelectUnits;
+import atlantis.wrappers.Select;
 import atlantis.wrappers.Units;
 import java.util.Collection;
 import bwapi.Unit;
@@ -22,7 +22,7 @@ public class AtlantisWorkerCommander {
         AtlantisGasManager.handleGasBuildings();
         handleNumberOfWorkersNearBases();
 
-        for (Unit unit : SelectUnits.ourWorkers().list()) {
+        for (Unit unit : Select.ourWorkers().list()) {
             AtlantisWorkerManager.update(unit);
         }
     }
@@ -83,7 +83,7 @@ public class AtlantisWorkerCommander {
         
         // =========================================================
         
-        Collection<Unit> ourBases = SelectUnits.ourBases().list();
+        Collection<Unit> ourBases = Select.ourBases().list();
         if (ourBases.size() <= 1) {
             return;
         }
@@ -91,8 +91,8 @@ public class AtlantisWorkerCommander {
         // Count ratios of workers / minerals for every base
         Units baseWorkersRatios = new Units();
         for (Unit ourBase : ourBases) {
-            int numOfWorkersNearBase = SelectUnits.ourWorkersThatGather().inRadius(15, ourBase.getPosition()).count();
-            int numOfMineralsNearBase = SelectUnits.minerals().inRadius(10, ourBase.getPosition()).count() + 1;
+            int numOfWorkersNearBase = Select.ourWorkersThatGather().inRadius(15, ourBase.getPosition()).count();
+            int numOfMineralsNearBase = Select.minerals().inRadius(10, ourBase.getPosition()).count() + 1;
             if (numOfWorkersNearBase <= 2) {
                 continue;
             }
@@ -124,7 +124,7 @@ public class AtlantisWorkerCommander {
         // If the difference is "significant" transfer one worker from base to base
         if (baseWorkersRatios.getValueFor(baseWithMostWorkers) - 0.1 > 
                 baseWorkersRatios.getValueFor(baseWithFewestWorkers)) {
-            Unit worker = SelectUnits.ourWorkersThatGather().inRadius(10, baseWithMostWorkers.getPosition()).first();
+            Unit worker = Select.ourWorkersThatGather().inRadius(10, baseWithMostWorkers.getPosition()).first();
             if (worker != null) {
                 worker.move(baseWithFewestWorkers.getPosition());
             }

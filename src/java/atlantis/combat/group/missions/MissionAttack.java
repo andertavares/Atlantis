@@ -7,7 +7,7 @@ import atlantis.debug.tooltip.TooltipManager;
 import atlantis.information.AtlantisEnemyInformationManager;
 import atlantis.information.AtlantisMap;
 import atlantis.util.PositionUtil;
-import atlantis.wrappers.SelectUnits;
+import atlantis.wrappers.Select;
 import bwta.BaseLocation;
 import bwapi.Color;
 import bwapi.Position;
@@ -92,14 +92,14 @@ public class MissionAttack extends Mission {
         }
 
         // Try going to any known enemy unit
-        Unit anyEnemyUnit = SelectUnits.enemy().first();
+        Unit anyEnemyUnit = Select.enemy().first();
         if (anyEnemyUnit != null) {
         	System.out.println("focus on enemy unit");	//TODO debug
             return anyEnemyUnit.getPosition();
         }
         
         // Try to go to some starting location, hoping to find enemy there.
-        BaseLocation startLocation = AtlantisMap.getNearestUnexploredStartingLocation(SelectUnits.mainBase().getPosition());
+        BaseLocation startLocation = AtlantisMap.getNearestUnexploredStartingLocation(Select.mainBase().getPosition());
         if (startLocation != null) {
         	System.out.println("focus on start location");	//TODO debug
             return startLocation.getPosition();

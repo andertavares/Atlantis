@@ -2,7 +2,7 @@ package atlantis.constructing.position;
 
 import atlantis.Atlantis;
 import atlantis.util.PositionUtil;
-import atlantis.wrappers.SelectUnits;
+import atlantis.wrappers.Select;
 import bwapi.Position;
 import bwapi.TilePosition;
 import bwapi.Unit;
@@ -88,14 +88,14 @@ public class ProtossPositionFinder extends AbstractPositionFinder {
     private static boolean isTooCloseToMineralsOrGeyser(UnitType building, Position position) {
 
         // We have problem only if building is both close to base and to minerals or to geyser
-        Unit nearestBase = SelectUnits.ourBases().nearestTo(position);
+        Unit nearestBase = Select.ourBases().nearestTo(position);
         if (nearestBase != null && PositionUtil.distanceTo(nearestBase.getPosition(), position) <= 8) {
-            for (Unit mineral : SelectUnits.minerals().inRadius(8, position).list()) {
+            for (Unit mineral : Select.minerals().inRadius(8, position).list()) {
                 if (PositionUtil.distanceTo(mineral.getPosition(), position) <= 4) {
                     return true;
                 }
             }
-            for (Unit mineral : SelectUnits.geysers().inRadius(8, position).list()) {
+            for (Unit mineral : Select.geysers().inRadius(8, position).list()) {
                 if (PositionUtil.distanceTo(mineral.getPosition(), position) <= 4) {
                     return true;
                 }

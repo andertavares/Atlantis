@@ -3,7 +3,7 @@ package atlantis.combat.micro;
 import atlantis.combat.AtlantisCombatEvaluator;
 import atlantis.util.PositionUtil;
 import atlantis.util.UnitUtil;
-import atlantis.wrappers.SelectUnits;
+import atlantis.wrappers.Select;
 import bwapi.Unit;
 import bwapi.WeaponType;
 
@@ -60,13 +60,13 @@ public abstract class MicroManager {
      * If unit is severly wounded, it should run.
      */
     protected boolean handleLowHealthIfNeeded(Unit unit) {
-        Unit nearestEnemy = SelectUnits.nearestEnemy(unit.getPosition());
+        Unit nearestEnemy = Select.nearestEnemy(unit.getPosition());
         if (nearestEnemy == null || PositionUtil.distanceTo(nearestEnemy, unit) > 6) {
             return false;
         }
         
         if (unit.getHitPoints() <= 16 || UnitUtil.getHPPercent(unit) < 30) {
-            if (SelectUnits.ourCombatUnits().inRadius(4, unit.getPosition()).count() <= 6) {
+            if (Select.ourCombatUnits().inRadius(4, unit.getPosition()).count() <= 6) {
                 return AtlantisRunManager.run(unit);
             }
         }
@@ -78,7 +78,7 @@ public abstract class MicroManager {
      * @return <b>true</b> if any of the enemy units can shoot at this unit.
      */
     private boolean isInShootRangeOfAnyEnemyUnit(Unit unit) {
-        for (Unit enemy : SelectUnits.enemy().combatUnits().inRadius(12, unit.getPosition()).list()) {
+        for (Unit enemy : Select.enemy().combatUnits().inRadius(12, unit.getPosition()).list()) {
             WeaponType enemyWeapon = (unit.getType().isFlyer() ? enemy.getType().airWeapon() : enemy.getType().groundWeapon());
             double distToEnemy = PositionUtil.distanceTo(unit, enemy);
             

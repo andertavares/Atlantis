@@ -7,7 +7,7 @@ import atlantis.combat.AtlantisCombatInformation;
 import atlantis.debug.tooltip.TooltipManager;
 import atlantis.information.AtlantisMap;
 import atlantis.util.PositionUtil;
-import atlantis.wrappers.SelectUnits;
+import atlantis.wrappers.Select;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -48,7 +48,7 @@ public class AtlantisRunning {
     public static boolean runFrom(Unit runner, Unit chaser) {
     	
     	if (chaser == null) {
-            chaser = SelectUnits.enemyRealUnits().nearestTo(runner.getPosition());
+            chaser = Select.enemyRealUnits().nearestTo(runner.getPosition());
         }
 
         if (chaser == null) {
@@ -118,7 +118,7 @@ public class AtlantisRunning {
     private void notifyOurUnitsAroundToRunAsWell(Unit ourUnit, Unit nearestEnemy) {
         
         // Get all of our units that are close to this unit
-        Collection<Unit> ourUnitsNearby = SelectUnits.our().inRadius(1.5, ourUnit.getPosition()).list();
+        Collection<Unit> ourUnitsNearby = Select.our().inRadius(1.5, ourUnit.getPosition()).list();
         
         // Tell them to run as well, not to block our escape route
         for (Unit ourOtherUnit : ourUnitsNearby) {
@@ -136,7 +136,7 @@ public class AtlantisRunning {
      * Running behavior which will make unit run toward main base.
      */
     private static Position findPositionToRun_preferMainBase(Unit unit, Position runAwayFrom) {
-        Unit mainBase = SelectUnits.mainBase();
+        Unit mainBase = Select.mainBase();
         if (mainBase != null) {
             if (PositionUtil.distanceTo(mainBase, unit) > 5) {
                 return mainBase.getPosition();
@@ -194,7 +194,7 @@ public class AtlantisRunning {
             }
         }
         
-        return SelectUnits.mainBase().getPosition();
+        return Select.mainBase().getPosition();
     }
     
     // =========================================================

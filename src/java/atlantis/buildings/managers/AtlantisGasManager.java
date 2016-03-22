@@ -3,7 +3,7 @@ package atlantis.buildings.managers;
 import atlantis.AtlantisConfig;
 import atlantis.AtlantisGame;
 import atlantis.workers.AtlantisWorkerManager;
-import atlantis.wrappers.SelectUnits;
+import atlantis.wrappers.Select;
 import java.util.Collection;
 import bwapi.Unit;
 import bwapi.TechType;
@@ -27,8 +27,8 @@ public class AtlantisGasManager {
         
         // =========================================================
         
-        Collection<Unit> gasBuildings = SelectUnits.ourBuildings().ofType(AtlantisConfig.GAS_BUILDING).list();
-        Collection<Unit> workers = SelectUnits.ourWorkers().list();
+        Collection<Unit> gasBuildings = Select.ourBuildings().ofType(AtlantisConfig.GAS_BUILDING).list();
+        Collection<Unit> workers = Select.ourWorkers().list();
         
         // =========================================================
         
@@ -89,7 +89,7 @@ public class AtlantisGasManager {
 //    }
 
     private static Unit getWorkerForGasBuilding(Unit gasBuilding) {
-        Unit worker = SelectUnits.ourWorkers().gatheringMinerals(true).first();
+        Unit worker = Select.ourWorkers().gatheringMinerals(true).first();
         return worker;
     }
 

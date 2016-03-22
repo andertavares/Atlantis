@@ -3,7 +3,7 @@ package atlantis.util;
 import java.lang.reflect.Field;
 
 import atlantis.debug.tooltip.TooltipManager;
-import atlantis.wrappers.SelectUnits;
+import atlantis.wrappers.Select;
 import bwapi.Unit;
 import bwapi.UnitType;
 import bwapi.WeaponType;
@@ -54,7 +54,7 @@ public class UnitUtil {
      */
     public static int getUnitIndex(Unit u) {
         int index = 0;
-        for (Unit otherUnit : SelectUnits.our().ofType(u.getType()).list()) {
+        for (Unit otherUnit : Select.our().ofType(u.getType()).list()) {
             if (otherUnit.getID() < u.getID()) {
                 index++;
             }

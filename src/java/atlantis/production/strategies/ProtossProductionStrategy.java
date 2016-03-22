@@ -1,7 +1,7 @@
 package atlantis.production.strategies;
 
 import atlantis.AtlantisConfig;
-import atlantis.wrappers.SelectUnits;
+import atlantis.wrappers.Select;
 import java.util.ArrayList;
 import bwapi.Unit;
 import bwapi.UnitType;
@@ -15,7 +15,7 @@ public class ProtossProductionStrategy extends AtlantisProductionStrategy {
 
     @Override
     public void produceWorker() {
-        Unit building = SelectUnits.ourOneIdle(AtlantisConfig.BASE);
+        Unit building = Select.ourOneIdle(AtlantisConfig.BASE);
         if (building != null) {
             building.train(AtlantisConfig.WORKER);
         }
@@ -23,7 +23,7 @@ public class ProtossProductionStrategy extends AtlantisProductionStrategy {
 
     @Override
     public void produceInfantry(UnitType infantryType) {
-        Unit building = SelectUnits.ourOneIdle(AtlantisConfig.BARRACKS);
+        Unit building = Select.ourOneIdle(AtlantisConfig.BARRACKS);
         if (building != null) {
             building.train(infantryType);
         }

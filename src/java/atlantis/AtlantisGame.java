@@ -4,7 +4,7 @@ import static atlantis.Atlantis.getBwapi;
 import atlantis.production.strategies.AtlantisProductionStrategy;
 import atlantis.util.RUtilities;
 import atlantis.wrappers.AtlantisTech;
-import atlantis.wrappers.SelectUnits;
+import atlantis.wrappers.Select;
 import bwapi.Player;
 import bwapi.Race;
 import bwapi.TechType;
@@ -63,7 +63,7 @@ public class AtlantisGame {
             
             int requiredAmount = unitType.requiredUnits().get(requiredUnitType);
             int weHaveAmount = requiredUnitType.equals(UnitType.Zerg_Larva) ? 
-                    SelectUnits.ourLarva().count() : SelectUnits.our().ofType(requiredUnitType).count();
+                    Select.ourLarva().count() : Select.our().ofType(requiredUnitType).count();
 //            System.out.println(requiredUnitType + "    x" + requiredAmount);
 //            System.out.println("   and we have: " + weHaveAmount);
             if (weHaveAmount < requiredAmount) {

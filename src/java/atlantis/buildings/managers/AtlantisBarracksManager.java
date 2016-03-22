@@ -2,7 +2,7 @@ package atlantis.buildings.managers;
 
 import atlantis.AtlantisGame;
 import atlantis.production.ProductionOrder;
-import atlantis.wrappers.SelectUnits;
+import atlantis.wrappers.Select;
 import java.util.ArrayList;
 import bwapi.Unit;
 import bwapi.UnitType;
@@ -71,7 +71,7 @@ public class AtlantisBarracksManager {
 
     private static boolean hasEmptySlot(Unit barracks) {
         if (AtlantisGame.playsAsZerg()) {
-            return SelectUnits.ourLarva().count() > 0;
+            return Select.ourLarva().count() > 0;
         }
         else {
             return barracks.getTrainingQueue().size() == 0;

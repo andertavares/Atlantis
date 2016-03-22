@@ -6,7 +6,7 @@ import atlantis.constructing.ConstructionOrder;
 import atlantis.debug.tooltip.TooltipManager;
 import atlantis.util.NameUtil;
 import atlantis.util.UnitUtil;
-import atlantis.wrappers.SelectUnits;
+import atlantis.wrappers.Select;
 import bwapi.Unit;
 
 public class AtlantisWorkerManager {
@@ -54,7 +54,7 @@ public class AtlantisWorkerManager {
         boolean isGasBuilding = UnitUtil.isGasBuilding(target.getType());
         int total = 0;
         
-        for (Unit worker : SelectUnits.ourWorkers().inRadius(15, target.getPosition()).list()) {
+        for (Unit worker : Select.ourWorkers().inRadius(15, target.getPosition()).list()) {
             if (target.equals(worker.getTarget())) {
                 total++;
             }
@@ -74,7 +74,7 @@ public class AtlantisWorkerManager {
     }
     
     public static Unit getRandomWorkerAssignedTo(Unit target) {
-        for (Unit worker : SelectUnits.ourWorkers().list()) {
+        for (Unit worker : Select.ourWorkers().list()) {
             if (target.equals(worker.getTarget()) || target.equals(worker.getOrderTarget()) 
                     || target.equals(worker.getBuildUnit())) {
                 return worker;

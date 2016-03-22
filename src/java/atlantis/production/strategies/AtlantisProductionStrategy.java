@@ -11,7 +11,7 @@ import atlantis.util.RUtilities;
 import atlantis.util.UnitUtil;
 import atlantis.wrappers.AtlantisTech;
 import atlantis.wrappers.MappingCounter;
-import atlantis.wrappers.SelectUnits;
+import atlantis.wrappers.Select;
 import java.util.ArrayList;
 import bwapi.TechType;
 import bwapi.UnitType;
@@ -185,7 +185,7 @@ public abstract class AtlantisProductionStrategy {
             // Protoss fix: wait for at least one Pylon
             if (AtlantisGame.playsAsProtoss() && unitType != null
                     && !UnitType.Protoss_Pylon.equals(unitType)
-                    && SelectUnits.our().countUnitsOfType(UnitType.Protoss_Pylon) == 0) {
+                    && Select.our().countUnitsOfType(UnitType.Protoss_Pylon) == 0) {
                 continue;
             }
             

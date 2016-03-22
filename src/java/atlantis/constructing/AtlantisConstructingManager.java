@@ -6,7 +6,7 @@ import atlantis.constructing.position.AtlantisPositionFinder;
 import atlantis.information.AtlantisUnitInformationManager;
 import atlantis.production.ProductionOrder;
 import atlantis.util.UnitUtil;
-import atlantis.wrappers.SelectUnits;
+import atlantis.wrappers.Select;
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import bwapi.Position;
@@ -113,7 +113,7 @@ public class AtlantisConstructingManager {
         
         // =========================================================
         // Check if we should buy a base, because we have shitload of minerals
-        if (AtlantisGame.hasMinerals(490) && SelectUnits.ourBases().count() <= 7 
+        if (AtlantisGame.hasMinerals(490) && Select.ourBases().count() <= 7 
                 && AtlantisConstructingManager.countNotStartedConstructionsOfType(AtlantisConfig.BASE) == 0) {
             requestConstructionOf(AtlantisConfig.BASE);
         }
@@ -257,14 +257,14 @@ public class AtlantisConstructingManager {
         // =========================================================
         // Special case for Overlord
         if (type.equals(UnitType.Zerg_Overlord)) {
-            total += SelectUnits.ourUnfinished().ofType(type).count();
+            total += Select.ourUnfinished().ofType(type).count();
         }
 
         return total;
     }
 
     public static int countNotFinishedConstructionsOfType(UnitType type) {
-        return SelectUnits.ourUnfinished().ofType(type).count()
+        return Select.ourUnfinished().ofType(type).count()
                 + countNotStartedConstructionsOfType(type);
     }
     
@@ -284,7 +284,7 @@ public class AtlantisConstructingManager {
         // =========================================================
         // Special case for Overlord
         if (type.equals(UnitType.Zerg_Overlord)) {
-            total += SelectUnits.ourUnfinished().ofType(UnitType.Zerg_Overlord).count();
+            total += Select.ourUnfinished().ofType(UnitType.Zerg_Overlord).count();
         }
 
         return total;

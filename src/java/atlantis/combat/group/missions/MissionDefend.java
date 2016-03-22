@@ -5,7 +5,7 @@ import atlantis.debug.tooltip.TooltipManager;
 import atlantis.information.AtlantisMap;
 import atlantis.util.PositionUtil;
 import atlantis.util.UnitUtil;
-import atlantis.wrappers.SelectUnits;
+import atlantis.wrappers.Select;
 import bwta.Chokepoint;
 import bwapi.Unit;
 
@@ -72,7 +72,7 @@ public class MissionDefend extends Mission {
     }
 
     private boolean isTooManyUnitsAround(Unit unit, Chokepoint chokepoint) {
-        return SelectUnits.ourCombatUnits().inRadius(1.0, unit.getPosition()).count() >= 3;
+        return Select.ourCombatUnits().inRadius(1.0, unit.getPosition()).count() >= 3;
     }
 
     private boolean isCloseEnoughToChokePoint(Unit unit, Chokepoint chokepoint) {
@@ -137,7 +137,7 @@ public class MissionDefend extends Mission {
         }
 
         // If enemy is close, also it's dumb to do proper positioning. Let the MicroManager decide.
-        Unit nearestEnemy = SelectUnits.enemy().nearestTo(unit.getPosition());
+        Unit nearestEnemy = Select.enemy().nearestTo(unit.getPosition());
         if (nearestEnemy != null && PositionUtil.distanceTo(nearestEnemy, unit) < 15) {
             return false;
         }

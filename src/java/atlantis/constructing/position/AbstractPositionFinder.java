@@ -5,7 +5,7 @@ import atlantis.constructing.AtlantisConstructingManager;
 import atlantis.constructing.ConstructionOrder;
 import atlantis.constructing.ConstructionOrderStatus;
 import atlantis.util.PositionUtil;
-import atlantis.wrappers.SelectUnits;
+import atlantis.wrappers.Select;
 import bwapi.Position;
 import bwapi.Unit;
 import bwapi.UnitType;
@@ -40,7 +40,7 @@ public abstract class AbstractPositionFinder {
     protected static boolean otherBuildingsTooClose(Unit builder, UnitType building, Position position) {
         
         // Compare against existing buildings
-        for (Unit otherBuilding : SelectUnits.ourBuildings().list()) {
+        for (Unit otherBuilding : Select.ourBuildings().list()) {
             int status = areTwoBuildingsTooClose(otherBuilding, position, building);
             if (status >= STATUS_BUILDINGS_ADDON_COLLIDE) {
                 AbstractPositionFinder._CONDITION_THAT_FAILED = "BUILDING TOO CLOSE (" + otherBuilding + ")";

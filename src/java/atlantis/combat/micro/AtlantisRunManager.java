@@ -1,6 +1,6 @@
 package atlantis.combat.micro;
 
-import atlantis.wrappers.SelectUnits;
+import atlantis.wrappers.Select;
 import bwapi.Position;
 import bwapi.Unit;
 
@@ -73,7 +73,7 @@ public class AtlantisRunManager {
 
     private static int countNearbyUnits(Position position) {
         int total = 0;
-        for (Unit unit : SelectUnits.our().inRadius(6, position).list()) {
+        for (Unit unit : Select.our().inRadius(6, position).list()) {
             if (!AtlantisRunning.isRunning(unit)) {
                 total++;
             }

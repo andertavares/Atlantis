@@ -4,7 +4,7 @@ import atlantis.AtlantisGame;
 import atlantis.util.ColorUtil;
 import atlantis.util.PositionUtil;
 import atlantis.util.UnitUtil;
-import atlantis.wrappers.SelectUnits;
+import atlantis.wrappers.Select;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -48,7 +48,7 @@ public class AtlantisCombatEvaluator {
      * <b>FALSE</b> if enemy is too strong and we should pull back.
      */
     public static boolean isSituationFavorable(Unit unit) {
-        Unit nearestEnemy = SelectUnits.enemy().nearestTo(unit.getPosition());
+        Unit nearestEnemy = Select.enemy().nearestTo(unit.getPosition());
         
         if (AtlantisCombatEvaluatorExtraConditions.shouldAlwaysFight(unit, nearestEnemy)) {
             return true;
@@ -67,7 +67,7 @@ public class AtlantisCombatEvaluator {
      * <b>FALSE</b> if enemy is too strong and we should pull back.
      */
     public static boolean isSituationExtremelyFavorable(Unit unit) {
-        Unit nearestEnemy = SelectUnits.enemy().nearestTo(unit.getPosition());
+        Unit nearestEnemy = Select.enemy().nearestTo(unit.getPosition());
         
         if (AtlantisCombatEvaluatorExtraConditions.shouldAlwaysRetreat(unit, nearestEnemy)) {
             return false;
@@ -93,11 +93,11 @@ public class AtlantisCombatEvaluator {
         // =========================================================
         // Define nearby enemy and our units
         
-        Collection<Unit> enemyUnits = SelectUnits.enemy().combatUnits().inRadius(12, unit.getPosition()).list();
+        Collection<Unit> enemyUnits = Select.enemy().combatUnits().inRadius(12, unit.getPosition()).list();
         if (enemyUnits.isEmpty()) {
             return updateCombatEval(unit, +999);
         }
-        Collection<Unit> ourUnits = SelectUnits.our().combatUnits().inRadius(8.5, unit.getPosition()).list();
+        Collection<Unit> ourUnits = Select.our().combatUnits().inRadius(8.5, unit.getPosition()).list();
         
         // =========================================================
         // Evaluate our and enemy strength

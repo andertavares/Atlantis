@@ -22,7 +22,7 @@ import atlantis.util.RUtilities;
 import atlantis.util.UnitUtil;
 import atlantis.workers.AtlantisWorkerManager;
 import atlantis.wrappers.MappingCounter;
-import atlantis.wrappers.SelectUnits;
+import atlantis.wrappers.Select;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.TreeSet;
@@ -80,7 +80,7 @@ public class AtlantisPainter {
 
         // =========================================================
         // Paint TOOLTIPS over units
-        for (Unit unit : SelectUnits.our().list()) {
+        for (Unit unit : Select.our().list()) {
             if (tooltipManager.hasTooltip(unit)) { // unit.hasTooltip()
             	//System.out.println("-will paint tooltip!"); //TODO DEBUG
                 paintTextCentered(unit.getPosition(), tooltipManager.getTooltip(unit), false);
@@ -113,7 +113,7 @@ public class AtlantisPainter {
         
         Position focusPoint = MissionAttack.getFocusPoint();
         String desc = "";
-        Unit mainBase = SelectUnits.mainBase();
+        Unit mainBase = Select.mainBase();
         if (focusPoint != null && mainBase != null) {
             desc = "(dist:" + ((int) PositionUtil.distanceTo(focusPoint, mainBase.getPosition())) + ")";
         }
@@ -128,7 +128,7 @@ public class AtlantisPainter {
      * Paints small progress bars over units that have cooldown.
      */
     private static void paintSpecialsOverUnits() {
-        for (Unit unit : SelectUnits.ourCombatUnits().list()) {
+        for (Unit unit : Select.ourCombatUnits().list()) {
 
             // =========================================================
             // === Paint life bars bars over wounded units
@@ -211,7 +211,7 @@ public class AtlantisPainter {
             }
         }
         
-        for (Unit unit : SelectUnits.enemy().combatUnits().list()) {
+        for (Unit unit : Select.enemy().combatUnits().list()) {
             double eval = AtlantisCombatEvaluator.evaluateSituation(unit);
             if (eval < 999) {
                 String combatStrength = eval >= 10 ? (ColorUtil.getColorString(Color.Green) + "++") : 
@@ -252,7 +252,7 @@ public class AtlantisPainter {
     private static void paintUnitCounters() {
         // Unfinished
         MappingCounter<UnitType> unitTypesCounter = new MappingCounter<>();
-        for (Unit unit : SelectUnits.ourUnfinishedRealUnits().list()) {
+        for (Unit unit : Select.ourUnfinishedRealUnits().list()) {
             unitTypesCounter.incrementValueFor(unit.getType());
         }
 
@@ -271,7 +271,7 @@ public class AtlantisPainter {
         // =========================================================
         // Finished
         unitTypesCounter = new MappingCounter<>();
-        for (Unit unit : SelectUnits.our().list()) {
+        for (Unit unit : Select.our().list()) {
             unitTypesCounter.incrementValueFor(unit.getType());
         }
 
@@ -292,7 +292,7 @@ public class AtlantisPainter {
         paintSideMessage("Prod. queue:", Color.White);
 
         // Display units currently in production
-        for (Unit unit : SelectUnits.ourUnfinished().list()) {
+        for (Unit unit : Select.ourUnfinished().list()) {
             UnitType type = unit.getType();
             if (type.equals(UnitType.Zerg_Egg)) {
                 type = unit.getBuildType();
@@ -406,7 +406,7 @@ public class AtlantisPainter {
      * Paints circles around units which mean what's their mission.
      */
     private static void paintColorCirclesAroundUnits() {
-        for (Unit unit : SelectUnits.ourCombatUnits().list()) {
+        for (Unit unit : Select.ourCombatUnits().list()) {
 
             // STARTING ATTACK
 //            if (unit.isStartingAttack()) {
@@ -440,7 +440,7 @@ public class AtlantisPainter {
      * Paints progress bar with percent of completion over all buildings under construction.
      */
     private static void paintConstructionProgress() {
-        for (Unit unit : SelectUnits.ourBuildingsIncludingUnfinished().list()) {
+        for (Unit unit : Select.ourBuildingsIncludingUnfinished().list()) {
             if (unit.isCompleted()) {
                 continue;
             }
@@ -494,7 +494,7 @@ public class AtlantisPainter {
      * For buildings not 100% healthy, paints its hit points using progress bar.
      */
     private static void paintBuildingHealth() {
-        for (Unit unit : SelectUnits.ourBuildings().list()) {
+        for (Unit unit : Select.ourBuildings().list()) {
             if (unit.getHitPoints() >= unit.getType().maxHitPoints()) { //isWounded()
                 continue;
             }
@@ -538,7 +538,7 @@ public class AtlantisPainter {
      * Paints the number of workers that are gathering to this building.
      */
     private static void paintWorkersAssignedToBuildings() {
-        for (Unit building : SelectUnits.ourBuildings().list()) {
+        for (Unit building : Select.ourBuildings().list()) {
 
             // Paint text
             int workers = AtlantisWorkerManager.getHowManyWorkersAt(building);
@@ -553,7 +553,7 @@ public class AtlantisPainter {
      * If buildings are training units, it paints what unit is trained and the progress.
      */
     private static void paintUnitsBeingTrainedInBuildings() {
-        for (Unit unit : SelectUnits.ourBuildingsIncludingUnfinished().list()) {
+        for (Unit unit : Select.ourBuildingsIncludingUnfinished().list()) {
             if (!unit.getType().isBuilding() || !unit.isTraining()) {
                 continue;
             }
@@ -624,7 +624,7 @@ public class AtlantisPainter {
      * Paint red "X" on every enemy unit that has been targetted.
      */
     private static void paintTemporaryTargets() {
-        for (Unit ourUnit : SelectUnits.our().list()) {
+        for (Unit ourUnit : Select.our().list()) {
             
             // Paint "x" on every unit that has been targetted by one of our units.
             if (ourUnit.isAttacking() && ourUnit.getTarget() != null) {

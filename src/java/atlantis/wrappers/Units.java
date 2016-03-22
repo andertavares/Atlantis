@@ -259,7 +259,7 @@ public class Units {
     public void print() {
         System.out.println("Units in list:");
         for (Unit unit : list()) {
-            System.out.println(unit + " // Dist to main base: " + (PositionUtil.distanceTo(unit, SelectUnits.mainBase())));
+            System.out.println(unit + " // Dist to main base: " + (PositionUtil.distanceTo(unit, Select.mainBase())));
         }
         System.out.println();
     }

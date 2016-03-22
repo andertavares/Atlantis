@@ -4,22 +4,24 @@ import atlantis.Atlantis;
 import atlantis.AtlantisConfig;
 import atlantis.util.UnitUtil;
 import atlantis.wrappers.MappingCounter;
-import atlantis.wrappers.SelectUnits;
+import atlantis.wrappers.Select;
 import java.util.ArrayList;
+import java.util.HashMap;
+
 import bwapi.Unit;
 import bwapi.UnitType;	
 
 public class AtlantisUnitInformationManager {
 
-    protected static ArrayList<Unit> allUnits = new ArrayList<>();
+    protected static HashMap<Integer, Unit> allUnits = new HashMap<>();
 
 //    protected static MappingCounter<UnitType> ourUnitsFininised = new MappingCounter<>();
 //    protected static MappingCounter<UnitType> ourUnitsUnfininised = new MappingCounter<>();
     protected static MappingCounter<UnitType> enemyUnitsDiscoveredCounter = new MappingCounter<>();
     protected static MappingCounter<UnitType> enemyUnitsVisibleCounter = new MappingCounter<>();
 
-    protected static ArrayList<Unit> enemyUnitsDiscovered = new ArrayList<>();
-    protected static ArrayList<Unit> enemyUnitsVisible = new ArrayList<>();
+    protected static HashMap<Integer, UnitData> enemyUnitsDiscovered = new HashMap<>();
+    protected static HashMap<Integer, Unit> enemyUnitsVisible = new HashMap<>();
 
     // =========================================================
     // Special methods
@@ -28,7 +30,7 @@ public class AtlantisUnitInformationManager {
      * unfinished) and enemy's.
      */
     public static void rememberUnit(Unit unit) {
-        allUnits.add(unit);
+        allUnits.put(unit.getID(), unit);
     }
 
     /**
@@ -38,9 +40,9 @@ public class AtlantisUnitInformationManager {
     public static void forgetUnit(int unitID) {
         Unit unit = getUnitByID(unitID);
         if (unit != null) {
-            allUnits.remove(unit);
-            enemyUnitsDiscovered.remove(unit);
-            enemyUnitsVisible.remove(unit);
+            allUnits.remove(unit.getID());
+            enemyUnitsDiscovered.remove(unit.getID());
+            enemyUnitsVisible.remove(unit.getID());
         }
     }
 
@@ -48,13 +50,14 @@ public class AtlantisUnitInformationManager {
      * Based on a stored collection, returns unit object for given unitID.
      */
     public static Unit getUnitByID(int unitID) {
-        for (Unit unit : allUnits) {
+        return allUnits.get(unitID);
+    	/*for (Unit unit : allUnits) {
             if (unit.getID() == unitID) {
                 return unit;
             }
         }
 
-        return null;
+        return null;*/
     }
 
     // =========================================================
@@ -75,7 +78,7 @@ public class AtlantisUnitInformationManager {
      * Saves information about enemy unit that we see for the first time.
      */
     public static void discoveredEnemyUnit(Unit unit) {
-        enemyUnitsDiscovered.add(unit);
+        enemyUnitsDiscovered.put(unit.getID(), new UnitData(unit));
         enemyUnitsDiscoveredCounter.incrementValueFor(unit.getType());
     }
 
@@ -93,18 +96,21 @@ public class AtlantisUnitInformationManager {
         if (Atlantis.getInstance().getBwapi().self().isEnemy(unit.getPlayer()) ) {
             enemyUnitsDiscoveredCounter.decrementValueFor(unit.getType());
             enemyUnitsVisibleCounter.decrementValueFor(unit.getType());
-            enemyUnitsDiscovered.remove(unit);
-            enemyUnitsVisible.remove(unit);
+            enemyUnitsDiscovered.remove(unit.getID());
+            enemyUnitsVisible.remove(unit.getID());
         }
     }
 
     public static void addEnemyUnitVisible(Unit unit) {
-        enemyUnitsVisible.add(unit);
+        enemyUnitsVisible.put(unit.getID(), unit);
         enemyUnitsVisibleCounter.incrementValueFor(unit.getType());
+        
+        //updates discovered units
+        enemyUnitsDiscovered.get(unit.getID()).update(unit);
     }
 
     public static void removeEnemyUnitVisible(Unit unit) {
-        enemyUnitsVisible.remove(unit);
+        enemyUnitsVisible.remove(unit.getID());
         enemyUnitsVisibleCounter.decrementValueFor(unit.getType());
     }
 
@@ -118,7 +124,7 @@ public class AtlantisUnitInformationManager {
         // Bas building
         if (UnitUtil.isGasBuilding(type)) {
             int total = 0;
-            for (Unit unit : allUnits) {
+            for (Unit unit : allUnits.values()) {
                 if (type.equals(unit.getType())) {
                     total++;
                 }
@@ -126,7 +132,7 @@ public class AtlantisUnitInformationManager {
             return total;
         } else { // Anything but gas building
 //            return ourUnitsUnfininised.getValueFor(type);
-            return SelectUnits.ourIncludingUnfinished().ofType(type).count();
+            return Select.ourIncludingUnfinished().ofType(type).count();
         }
     }
 
@@ -152,7 +158,7 @@ public class AtlantisUnitInformationManager {
      */
     public static int countOurBases() {
         int total = 0;
-        for (Unit unit : SelectUnits.our().list()) {
+        for (Unit unit : Select.our().list()) {
             if (UnitUtil.isBase(unit.getType())) {
                 total++;
             }

@@ -4,7 +4,7 @@ import atlantis.AtlantisConfig;
 import atlantis.buildings.managers.AtlantisBarracksManager;
 import atlantis.buildings.managers.AtlantisBaseManager;
 import atlantis.util.UnitUtil;
-import atlantis.wrappers.SelectUnits;
+import atlantis.wrappers.Select;
 import bwapi.Unit;
 
 /**
@@ -16,7 +16,7 @@ public class AtlantisBuildingsCommander {
      * Executed once every frame.
      */
     public static void update() {
-        for (Unit building : SelectUnits.ourBuildings().list()) {
+        for (Unit building : Select.ourBuildings().list()) {
 
             // If building is busy, don't disturb.
             if (building.getTrainingQueue().size() > 0 || building.isUpgrading()) {

@@ -4,7 +4,7 @@ import atlantis.AtlantisGame;
 import atlantis.combat.micro.zerg.ZergCreepColony;
 import atlantis.constructing.ConstructionOrder;
 import atlantis.util.UnitUtil;
-import atlantis.wrappers.SelectUnits;
+import atlantis.wrappers.Select;
 import bwapi.Position;
 import bwapi.Unit;
 import bwapi.UnitType;
@@ -56,12 +56,12 @@ public class AtlantisPositionFinder {
 
             // If we didn't specify location where to build, build somewhere near the main base
             if (nearTo == null) {
-                nearTo = SelectUnits.mainBase().getPosition();
+                nearTo = Select.mainBase().getPosition();
             }
 
             // If all of our bases have been destroyed, build somewhere near our first unit alive
             if (nearTo == null) {
-                nearTo = SelectUnits.our().first().getPosition();
+                nearTo = Select.our().first().getPosition();
             }
 
             // Hopeless case, all units have died, just quit.

@@ -1,12 +1,12 @@
 package atlantis.information;
 
 import atlantis.util.UnitUtil;
-import atlantis.wrappers.SelectUnits;
+import atlantis.wrappers.Select;
 import bwapi.Position;
 import bwapi.Unit;
 
 /**
- * Provides various useful infromation about the enemy whereabouts or if even know any enemy building.
+ * Provides various useful information about the enemy whereabouts or if even know any enemy building.
  */
 public class AtlantisEnemyInformationManager {
 
@@ -18,7 +18,7 @@ public class AtlantisEnemyInformationManager {
             return false;
         }
 
-        for (Unit enemy : AtlantisUnitInformationManager.enemyUnitsDiscovered) {
+        for (UnitData enemy : AtlantisUnitInformationManager.enemyUnitsDiscovered.values()) {
             if (enemy.getType().isBuilding()) {
                 return true;
             }
@@ -35,9 +35,9 @@ public class AtlantisEnemyInformationManager {
             return null;
         }
 
-        for (Unit enemyUnit : AtlantisUnitInformationManager.enemyUnitsDiscovered) {
+        for (UnitData enemyUnit : AtlantisUnitInformationManager.enemyUnitsDiscovered.values()) {
             if (UnitUtil.isBase(enemyUnit.getType())) {
-                return enemyUnit;
+                return enemyUnit.getUnit();	//TODO: check for problems with base out of sight
             }
         }
 
@@ -49,10 +49,10 @@ public class AtlantisEnemyInformationManager {
      */
     public static Position getEnemyBase() {
 //        System.out.println(AtlantisUnitInformationManager.enemyUnitsDiscovered.size());
-        for (Unit enemyUnit : AtlantisUnitInformationManager.enemyUnitsDiscovered) {
+        for (UnitData enemyUnitData : AtlantisUnitInformationManager.enemyUnitsDiscovered.values()) {
 //            System.out.println(enemyUnit);
-            if (UnitUtil.isBase(enemyUnit.getType()) && enemyUnit.exists()) {
-                return enemyUnit.getPosition();
+            if (UnitUtil.isBase(enemyUnitData.getType()) && enemyUnitData.getUnit().exists()) {
+                return enemyUnitData.getPosition();
             }
         }
 
@@ -63,12 +63,12 @@ public class AtlantisEnemyInformationManager {
      *
      */
     public static Unit getNearestEnemyBuilding() {
-        Unit mainBase = SelectUnits.mainBase();
+        Unit mainBase = Select.mainBase();
         if (mainBase != null && !AtlantisUnitInformationManager.enemyUnitsDiscovered.isEmpty()) {
-        	System.out.println("# all:" + SelectUnits.from(AtlantisUnitInformationManager.enemyUnitsDiscovered));
-        	System.out.println("# bldgs: " + SelectUnits.from(AtlantisUnitInformationManager.enemyUnitsDiscovered).buildings().count());
-        	System.out.println("Closest bldg: " + SelectUnits.from(AtlantisUnitInformationManager.enemyUnitsDiscovered).buildings().nearestTo(mainBase.getPosition()));
-            return SelectUnits.from(AtlantisUnitInformationManager.enemyUnitsDiscovered).buildings().nearestTo(mainBase.getPosition());
+        	System.out.println("# all:" + Select.from(AtlantisUnitInformationManager.enemyUnitsDiscovered.values()));
+        	System.out.println("# bldgs: " + Select.from(AtlantisUnitInformationManager.enemyUnitsDiscovered.values()).buildings().count());
+        	System.out.println("Closest bldg: " + Select.from(AtlantisUnitInformationManager.enemyUnitsDiscovered.values()).buildings().nearestTo(mainBase.getPosition()));
+            return Select.from(AtlantisUnitInformationManager.enemyUnitsDiscovered.values()).buildings().nearestTo(mainBase.getPosition());
         }
         return null;
     }

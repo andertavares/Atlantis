@@ -4,7 +4,7 @@ import atlantis.Atlantis;
 import atlantis.util.PositionUtil;
 import atlantis.util.RUtilities;
 import atlantis.wrappers.Positions;
-import atlantis.wrappers.SelectUnits;
+import atlantis.wrappers.Select;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -37,7 +37,7 @@ public class AtlantisMap {
      */
     public static Chokepoint getMainBaseChokepoint() {
         if (cached_mainBaseChokepoint == null) {
-            Unit mainBase = SelectUnits.mainBase();
+            Unit mainBase = Select.mainBase();
             // System.out.println("mainBase = " + mainBase);
             if (mainBase != null) {
 
@@ -207,7 +207,7 @@ public class AtlantisMap {
                 
                 // Exclude our base location if needed.
                 if (excludeOurStartLocation) {
-                    Unit mainBase = SelectUnits.mainBase();
+                    Unit mainBase = Select.mainBase();
                     if (mainBase != null && PositionUtil.distanceTo(mainBase.getPosition(), baseLocation.getPosition()) <= 10) {
                         continue;
                     }
@@ -268,7 +268,7 @@ public class AtlantisMap {
      * never returned, but they don't actually get removed. It only sets disabled=true flag for them.
      */
     public static void disableSomeOfTheChokePoints() {
-        Unit mainBase = SelectUnits.mainBase();
+        Unit mainBase = Select.mainBase();
         if (mainBase == null) {
             System.out.println("Error #821493a");
             return;
@@ -308,12 +308,12 @@ public class AtlantisMap {
     private static boolean isBaseLocationFreeOfBuildingsAndEnemyUnits(BaseLocation baseLocation) {
         
         // If we have any base, FALSE.
-        if (SelectUnits.ourBases().inRadius(7, baseLocation.getPosition()).count() > 0) {
+        if (Select.ourBases().inRadius(7, baseLocation.getPosition()).count() > 0) {
             return false;
         }
         
         // If any enemy unit is nearby
-        if (SelectUnits.enemy().inRadius(11, baseLocation.getPosition()).count() > 0) {
+        if (Select.enemy().inRadius(11, baseLocation.getPosition()).count() > 0) {
             return false;
         }
         
