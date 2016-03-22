@@ -1,10 +1,14 @@
 package atlantis.combat.micro;
 
 import atlantis.combat.micro.terran.TerranMedic;
+
+import java.util.Collection;
+
 import atlantis.AtlantisGame;
 import atlantis.combat.micro.zerg.ZergOverlordManager;
 import atlantis.debug.tooltip.TooltipManager;
 import atlantis.util.PositionUtil;
+import atlantis.util.UnitUtil;
 import atlantis.wrappers.Select;
 import atlantis.wrappers.Units;
 import bwapi.Position;
@@ -107,12 +111,13 @@ public class DefaultMeleeManager extends MicroMeleeManager {
      * If e.g. Terran Marine stands too far forward, it makes him vulnerable. Make him go back.
      */
     private boolean handleDontSpreadTooMuch(Unit unit) {
-        Units ourForcesNearby = Select.ourCombatUnits().inRadius(7, unit.getPosition()).exclude(unit).units();
+    	Select<Unit> ourClose = (Select<Unit>) Select.ourCombatUnits().inRadius(7, unit.getPosition());
+        Collection<Unit> ourForcesNearby = ourClose.exclude(unit).list();
         Position goTo = null;
         if (ourForcesNearby.isEmpty()) {
             goTo = Select.ourCombatUnits().exclude(unit).first().getPosition();
         } else if (ourForcesNearby.size() <= 4) {
-            goTo = ourForcesNearby.positionMedian();
+            goTo = UnitUtil.medianPosition(ourForcesNearby);
         }
 
         if (goTo != null && PositionUtil.distanceTo(unit.getPosition(), goTo) > 5) {

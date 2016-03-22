@@ -1,7 +1,9 @@
 package atlantis.util;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 
 import atlantis.debug.tooltip.TooltipManager;
 import atlantis.wrappers.Select;
@@ -43,6 +45,29 @@ public class UnitUtil {
         }
         return total;
 	}
+	
+	/**
+     * Returns median PX and median PY for all units.
+     */
+    public static Position medianPosition(Collection<Unit> units) {
+        if (units.isEmpty()) {
+            return null;
+        }
+
+        ArrayList<Integer> xCoordinates = new ArrayList<>();
+        ArrayList<Integer> yCoordinates = new ArrayList<>();
+        for (Unit unit : units) {
+            xCoordinates.add(unit.getPosition().getX());	//TODO: check whether position is in Pixels
+            yCoordinates.add(unit.getPosition().getX());
+        }
+        Collections.sort(xCoordinates);
+        Collections.sort(yCoordinates);
+
+        return new Position(
+                xCoordinates.get(xCoordinates.size() / 2),
+                yCoordinates.get(yCoordinates.size() / 2)
+        );
+    }
 	
 	public static boolean isBase(UnitType t){
 	        return isType(t, UnitType.Terran_Command_Center, UnitType.Protoss_Nexus, UnitType.Zerg_Hatchery,
