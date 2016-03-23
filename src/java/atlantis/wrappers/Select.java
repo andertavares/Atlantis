@@ -41,7 +41,8 @@ public class Select<T> {
     // =====================================================================
     // Constructor is private, use our(), enemy() or neutral() methods
     private Select(Collection<T> unitsData) {
-        this.data.addAll(unitsData);
+    	data = new ArrayList<>();
+        data.addAll(unitsData);
     }
 
     // =====================================================================
@@ -59,7 +60,6 @@ public class Select<T> {
                 data.add(unit);	//TODO: make it more efficient by just querying the cache of known units
             }
         }
-
         return new Select<Unit>(data);
         
     }
@@ -287,11 +287,12 @@ public class Select<T> {
      * Selects only units of given type(s).
      */
     public Select<?> ofType(UnitType... types) {
+    	//FIXME: this seems to be returning an empty list
         Iterator<T> unitsIterator = data.iterator();
         while (unitsIterator.hasNext()) {
             Object unitOrData = unitsIterator.next();
             
-            boolean typeMatches =  (unitOrData instanceof Unit ? typeMatches((Unit) unitOrData) : typeMatches((UnitData) unitOrData));
+            boolean typeMatches = (unitOrData instanceof Unit ? typeMatches((Unit) unitOrData, types) : typeMatches((UnitData) unitOrData, types));
             
             
             /*for (UnitType type : types) {
@@ -315,7 +316,7 @@ public class Select<T> {
      * @param haystack
      * @return
      */
-    private boolean typeMatches(Object needle, UnitType... haystack){
+    private boolean typeMatches(Unit needle, UnitType... haystack){
     	Unit unit = unitFrom(needle);
     	
         for (UnitType type : haystack) {
@@ -502,9 +503,11 @@ public class Select<T> {
      */
     public static Select<Unit> ourWorkers() {
         Select<Unit> selectedUnits = Select.our();
-        for (Unit unit : selectedUnits.list()) {
+        //for (Unit unit : selectedUnits.list()) {
+        for (Iterator<Unit> unitIter = selectedUnits.list().iterator(); unitIter.hasNext(); ) {
+        	Unit unit = unitIter.next();
             if (!unit.getType().isWorker() && unit.exists()) {
-                selectedUnits.data.remove(unit);
+                unitIter.remove();
             }
         }
         return selectedUnits;
@@ -516,9 +519,11 @@ public class Select<T> {
      */
     public static Select<Unit> ourWorkersThatGather() {
         Select<Unit> selectedUnits = Select.our();
-        for (Unit unit : selectedUnits.list()) {
+        //for (Unit unit : selectedUnits.list()) {
+        for (Iterator<Unit> unitIter = selectedUnits.list().iterator(); unitIter.hasNext(); ) {
+        	Unit unit = unitIter.next();
             if (!unit.getType().isWorker() || (!unit.isGatheringGas() && !unit.isGatheringMinerals())) {
-                selectedUnits.data.remove(unit);
+            	unitIter.remove();
             }
         }
         return selectedUnits;
@@ -531,9 +536,10 @@ public class Select<T> {
     public static Select<Unit> ourWorkersFreeToBuildOrRepair() {
         Select<Unit> selectedUnits = ourWorkers();
 
-        for (Unit unit : selectedUnits.list()) {
+        for (Iterator<Unit> unitIter = selectedUnits.list().iterator(); unitIter.hasNext(); ) {
+        	Unit unit = unitIter.next();
             if (unit.isConstructing() || unit.isRepairing()) {
-                selectedUnits.data.remove(unit);
+            	unitIter.remove();
             }
         }
 
@@ -552,9 +558,10 @@ public class Select<T> {
      */
     public static Select<Unit> ourBuildingsIncludingUnfinished() {
         Select<Unit> selectedUnits = Select.ourIncludingUnfinished();
-        for (Unit unit : selectedUnits.list()) {
+        for (Iterator<Unit> unitIter = selectedUnits.list().iterator(); unitIter.hasNext(); ) {
+        	Unit unit = unitIter.next();
             if (!unit.getType().isBuilding()) {
-                selectedUnits.data.remove(unit);
+            	unitIter.remove();
             }
         }
         return selectedUnits;
@@ -599,9 +606,10 @@ public class Select<T> {
      */
     public static Select<Unit> ourLarva() {
         Select<Unit> selectedUnits = Select.ourIncludingUnfinished();
-        for (Unit unit : selectedUnits.list()) {
+        for (Iterator<Unit> unitIter = selectedUnits.list().iterator(); unitIter.hasNext(); ) {
+        	Unit unit = unitIter.next();
             if (!unit.getType().equals(UnitType.Zerg_Larva)) {
-                selectedUnits.data.remove(unit);
+            	unitIter.remove();
             }
         }
         return selectedUnits;
@@ -612,9 +620,10 @@ public class Select<T> {
      */
     public static Select<Unit> ourEggs() {
         Select<Unit> selectedUnits = Select.ourIncludingUnfinished();
-        for (Unit unit : selectedUnits.list()) {
+        for (Iterator<Unit> unitIter = selectedUnits.list().iterator(); unitIter.hasNext(); ) {
+        	Unit unit = unitIter.next();
             if (!unit.getType().equals(UnitType.Zerg_Egg)) {
-                selectedUnits.data.remove(unit);
+            	unitIter.remove();
             }
         }
         return selectedUnits;
@@ -640,10 +649,11 @@ public class Select<T> {
      */
     public static Unit mainBase() {
         if (_cached_mainBase == null) {
-            List<Unit> bases = ourBases().list();
+            List<Unit> bases = ourBases().list();	
+            System.out.println("ourBases: " + ourBases());	//TODO debug
             _cached_mainBase = bases.isEmpty() ? null : bases.get(0);	//first();
         }
-
+        System.out.println("_cached_mainbase: " + _cached_mainBase);	//TODO debug
         return _cached_mainBase;
     }
 

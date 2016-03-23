@@ -38,7 +38,7 @@ public class AtlantisMap {
     public static Chokepoint getMainBaseChokepoint() {
         if (cached_mainBaseChokepoint == null) {
             Unit mainBase = Select.mainBase();
-            // System.out.println("mainBase = " + mainBase);
+             System.out.println("mainBase = " + mainBase);	//TODO debug
             if (mainBase != null) {
 
                 // Define region where our main base is

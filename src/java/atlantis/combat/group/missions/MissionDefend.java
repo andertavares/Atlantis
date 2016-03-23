@@ -7,6 +7,7 @@ import atlantis.util.PositionUtil;
 import atlantis.util.UnitUtil;
 import atlantis.wrappers.Select;
 import bwta.Chokepoint;
+import bwapi.TilePosition;
 import bwapi.Unit;
 
 public class MissionDefend extends Mission {
@@ -112,7 +113,7 @@ public class MissionDefend extends Mission {
         double standFurther = 1;
 
         // How far can the unit shoot (in build tiles)
-        double unitShootRange = unit.getType().groundWeapon().maxRange() / 32; //getShootRangeGround();
+        double unitShootRange = unit.getType().groundWeapon().maxRange() / TilePosition.SIZE_IN_PIXELS; //getShootRangeGround();
 
         // Define max distance
         double maxDistance = unitShootRange + standFurther;
@@ -122,6 +123,7 @@ public class MissionDefend extends Mission {
 
     // =========================================================
     public static Chokepoint getFocusPoint() {
+    	System.out.println("focus point: " + AtlantisMap.getMainBaseChokepoint()); //TODO DEBUG
         return AtlantisMap.getMainBaseChokepoint();
     }
 

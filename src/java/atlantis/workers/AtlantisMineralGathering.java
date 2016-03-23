@@ -3,7 +3,10 @@ package atlantis.workers;
 import atlantis.wrappers.Select;
 import atlantis.wrappers.Units;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import bwapi.Unit;
 
@@ -61,18 +64,31 @@ public class AtlantisMineralGathering {
         if (!minerals.isEmpty()) {
 
             // Count how many other workers gather this mineral
+        	Map<Unit, Integer> workersPerMineral = new HashMap<>();
+        	
         	Collection<Unit> ourWorkersInRange = (Collection<Unit>) Select.ourWorkers().inRadius(12, base.getPosition()).list();
             for (Unit otherWorker : ourWorkersInRange) {
                 if (otherWorker.isGatheringMinerals()) {
                     Unit mineralMined = otherWorker.getTarget();
                     if (mineralMined != null) {
-                        minerals.changeValueBy(mineralMined, 1);
+                    	//increments the number of workers in this mineral
+                    	int previousNumber = (workersPerMineral.get(mineralMined) == null ? 0 : workersPerMineral.get(mineralMined));
+                    	workersPerMineral.put(mineralMined, previousNumber + 1);
+                        //minerals.changeValueBy(mineralMined, 1);
                     }
                 }
             }
 
             // Get least gathered mineral
-            Unit leastGatheredMineral = minerals.getUnitWithLowestValue();
+            Unit leastGatheredMineral = null;
+            int minimumWorkersPerMineral = 1000;
+            for(Entry<Unit, Integer> workerMineral : workersPerMineral.entrySet()){
+            	if(workerMineral.getValue() < minimumWorkersPerMineral){
+            		minimumWorkersPerMineral = workerMineral.getValue();
+            		leastGatheredMineral = workerMineral.getKey();
+            	}
+            }
+            //minerals.getUnitWithLowestValue();
 
             // This is our optimal mineral to gather near given unit
             return leastGatheredMineral;
