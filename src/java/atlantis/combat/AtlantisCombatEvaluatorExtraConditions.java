@@ -33,7 +33,7 @@ public class AtlantisCombatEvaluatorExtraConditions {
         AtlantisCombatEvaluatorExtraConditions.nearestEnemy = nearestEnemy;
         
         if (shouldRetreatBecauseTooFewOurUnitsAround()) {
-            TooltipManager.getInstance().setTooltip(unit, "Closer!");
+            TooltipManager.setTooltip(unit, "Closer!");
             return true;
         }
         

@@ -42,7 +42,6 @@ public class AtlantisPainter {
     private static int sideMessageTopCounter = 0;
     private static int sideMessageMiddleCounter = 0;
     private static int sideMessageBottomCounter = 0;
-    private static TooltipManager tooltipManager = TooltipManager.getInstance();
     
     /**
      * List of enemy units that have been targetted in the last frame.
@@ -81,9 +80,9 @@ public class AtlantisPainter {
         // =========================================================
         // Paint TOOLTIPS over units
         for (Unit unit : Select.our().list()) {
-            if (tooltipManager.hasTooltip(unit)) { // unit.hasTooltip()
+            if (TooltipManager.hasTooltip(unit)) { // unit.hasTooltip()
             	//System.out.println("-will paint tooltip!"); //TODO DEBUG
-                paintTextCentered(unit.getPosition(), tooltipManager.getTooltip(unit), false);
+                paintTextCentered(unit.getPosition(), TooltipManager.getTooltip(unit), false);
             }
         }
     }

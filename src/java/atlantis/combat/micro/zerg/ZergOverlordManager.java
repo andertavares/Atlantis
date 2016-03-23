@@ -59,7 +59,7 @@ public class ZergOverlordManager {
      */
     private static void actWhenDontKnowEnemyLocation(Unit unit) {
         AtlantisScoutManager.tryToFindEnemy(unit);
-        TooltipManager.getInstance().setTooltip(unit, "Find enemy");
+        TooltipManager.setTooltip(unit, "Find enemy");
         //unit.setTooltip("Find enemy");
     }
 

@@ -41,9 +41,10 @@ public class AtlantisAttackEnemyUnit {
         // If we already are attacking this unit, do not issue double command.
         if (!enemyToAttack.equals(unit.getTarget())) {
             unit.attack(enemyToAttack, false);
+            TooltipManager.setTooltip(unit, "Forward!"); //setTooltip("Forward!");
         } 
         
-        TooltipManager.getInstance().removeTooltip(unit);
+        TooltipManager.removeTooltip(unit);
         //unit.removeTooltip();
         return true;
     }

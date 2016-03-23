@@ -29,7 +29,7 @@ public class UnitUtil {
         Position newPosition = new Position(u.getPosition().getX() - dx, u.getPosition().getY() - dy);
 
         u.move(newPosition, false);
-        TooltipManager.getInstance().setTooltip(u, "Run");
+        TooltipManager.setTooltip(u, "Run");
     }
 	
 	/**

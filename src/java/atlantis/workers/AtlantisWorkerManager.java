@@ -17,7 +17,7 @@ public class AtlantisWorkerManager {
      * Executed for every worker unit.
      */
     public static void update(Unit unit) {
-    	TooltipManager.getInstance().removeTooltip(unit);
+    	TooltipManager.removeTooltip(unit);
         //unit.removeTooltip();
 
         // Act as BUILDER
@@ -43,7 +43,7 @@ public class AtlantisWorkerManager {
         if (worker.isIdle()
                 || (!worker.isGatheringMinerals() && !worker.isGatheringGas() && !worker.isMoving()
                 && !worker.isConstructing() && !worker.isAttacking() && !worker.isRepairing())) {
-        	TooltipManager.getInstance().setTooltip(worker, "Move ya ass!");
+        	TooltipManager.setTooltip(worker, "Move ya ass!");
         	//worker.setTooltip("Move ya ass!");
             AtlantisMineralGathering.gatherResources(worker);
         }
@@ -124,7 +124,7 @@ public class AtlantisWorkerManager {
         // if (unit.isIdle()) {
         // tooltip += "Idle" + newLine;
         // }
-        TooltipManager.getInstance().setTooltip(unit, tooltip);
+        TooltipManager.setTooltip(unit, tooltip);
         //unit.setTooltip(tooltip);
     }
 

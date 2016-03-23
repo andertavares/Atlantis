@@ -122,7 +122,7 @@ public class DefaultMeleeManager extends MicroMeleeManager {
 
         if (goTo != null && PositionUtil.distanceTo(unit.getPosition(), goTo) > 5) {
             unit.move(goTo);
-            TooltipManager.getInstance().setTooltip(unit, "Stand closer");
+            TooltipManager.setTooltip(unit, "Stand closer");
             //unit.setTooltip("Stand closer");
             return true;
         }

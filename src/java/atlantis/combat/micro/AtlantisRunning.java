@@ -73,7 +73,7 @@ public class AtlantisRunning {
         	running.updateRunTooltip();
         }
         else {
-        	TooltipManager.getInstance().removeTooltip(runner);
+        	TooltipManager.removeTooltip(runner);
             //unit.removeTooltip();
         }
         
@@ -248,7 +248,7 @@ public class AtlantisRunning {
     private void updateRunTooltip() {
         String runTimer = String.format("%.1f", 
                     ((double) AtlantisRunManager.getHowManyFramesUnitShouldStillBeRunning(unit) / 30));
-        TooltipManager.getInstance().setTooltip(unit, "Run " + runTimer + "s");  //unit.setTooltip("Run " + runTimer + "s");
+        TooltipManager.setTooltip(unit, "Run " + runTimer + "s");  //unit.setTooltip("Run " + runTimer + "s");
     }
     
 }

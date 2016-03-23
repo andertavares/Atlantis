@@ -4,21 +4,9 @@ import java.util.HashMap;
 import bwapi.Unit;
 
 public class TooltipManager {
-	HashMap<Unit, Tooltip> tooltips;
+	private static HashMap<Unit, Tooltip> tooltips = new HashMap<>();
 	
-	private static TooltipManager instance = null; //singleton
-	
-	private TooltipManager() {
-		tooltips = new HashMap<>();
-	}
-	
-	public static TooltipManager getInstance(){
-		if (instance == null){
-			instance = new TooltipManager();
-		}
-		
-		return instance;
-	}
+	private TooltipManager() { }
 	
 	/**
 	 * Sets the tooltip for a given unit
@@ -26,11 +14,10 @@ public class TooltipManager {
 	 * @param tooltip
 	 * @return
 	 */
-	public TooltipManager setTooltip(Unit unit, String tooltip){
+	public static void setTooltip(Unit unit, String tooltip){
 		
 		tooltips.put(unit, new Tooltip(unit, tooltip));
 		
-		return this;
 	}
 
 	
@@ -39,7 +26,7 @@ public class TooltipManager {
 	 * @param unit
 	 * @return
 	 */
-    public String getTooltip(Unit unit) {
+    public static String getTooltip(Unit unit) {
     	
     	if(! tooltips.containsKey(unit)) return null;
     	
@@ -52,12 +39,11 @@ public class TooltipManager {
      * @param unit
      * @return
      */
-	public TooltipManager removeTooltip(Unit unit) {
-		if(! tooltips.containsKey(unit)) return null;
+	public static void removeTooltip(Unit unit) {
+		if(! tooltips.containsKey(unit)) return;
 		
 		tooltips.get(unit).removeTooltip();
 
-		return this;
 	}
 
 	/**
@@ -65,7 +51,7 @@ public class TooltipManager {
 	 * @param unit
 	 * @return
 	 */
-	public boolean hasTooltip(Unit unit) {
+	public static boolean hasTooltip(Unit unit) {
 		if(! tooltips.containsKey(unit)) return false;
 		
 		return tooltips.get(unit).hasTooltip();

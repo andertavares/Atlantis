@@ -77,7 +77,7 @@ public class AtlantisCombatCommander {
     private static boolean handledAsSpecialUnit(Unit unit) {
         if (unit.getType().equals(UnitType.Zerg_Overlord)) {
             ZergOverlordManager.update(unit);
-            TooltipManager.getInstance().setTooltip(unit, "Overlord");
+            TooltipManager.setTooltip(unit, "Overlord");
             return true;
         } else {
             return false;

@@ -83,7 +83,7 @@ public class AtlantisScoutManager {
         if (scout == null) {
             return;
         }
-        TooltipManager.getInstance().setTooltip(scout, "Find enemy");
+        TooltipManager.setTooltip(scout, "Find enemy");
         //scout.setTooltip("Find enemy");
 
         // Don't interrupt when moving
@@ -111,7 +111,7 @@ public class AtlantisScoutManager {
         // =========================================================
         
         if (startingLocation != null) {
-        	TooltipManager.getInstance().setTooltip(scout, "Scout!");
+        	TooltipManager.setTooltip(scout, "Scout!");
             //scout.setTooltip("Scout!");
             scout.move(startingLocation.getPosition(), false);
         }

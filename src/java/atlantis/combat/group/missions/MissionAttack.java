@@ -29,13 +29,13 @@ public class MissionAttack extends Mission {
     @Override
     public boolean update(Unit unit) {
         Position focusPoint = getFocusPoint();
-        System.out.println("Focus point: " + focusPoint);	//TODO DEBUG
+        //System.out.println("Focus point: " + focusPoint);	//TODO DEBUG
         // Focus point is well known
         if (focusPoint != null) {
-        	System.out.println("-Dist to focus point: " + PositionUtil.distanceTo(focusPoint, unit.getPosition()));
+        	//System.out.println("-Dist to focus point: " + PositionUtil.distanceTo(focusPoint, unit.getPosition()));
             if (PositionUtil.distanceTo(focusPoint, unit.getPosition()) > 5) {
                 unit.attack(focusPoint, false);
-                TooltipManager.getInstance().setTooltip(unit, "Concentrate!"); //unit.setTooltip("Mission focus");	//TODO: DEBUG
+                TooltipManager.setTooltip(unit, "Concentrate!"); //unit.setTooltip("Mission focus");	//TODO: DEBUG
                 System.out.println("--Concentrate");	//TODO DEBUG
                 return true;
             }
@@ -48,7 +48,7 @@ public class MissionAttack extends Mission {
             if (position != null) {
                 unit.attack(position, false);	
                 Atlantis.getBwapi().drawLineMap(unit.getPosition(), position, Color.Red); //TODO DEBUG
-                TooltipManager.getInstance().setTooltip(unit, "Spread!"); //TODO: DEBUG
+                TooltipManager.setTooltip(unit, "Spread!"); //TODO: DEBUG
 //                unit.setTooltip("Mission spread");
                 System.out.println("--Spread");	//TODO DEBUG
                 return true;
@@ -81,28 +81,28 @@ public class MissionAttack extends Mission {
         // Try going near enemy base
         Position enemyBase = AtlantisEnemyInformationManager.getEnemyBase();
         if (enemyBase != null) {
-        	System.out.println("focus on enemy base");	//TODO debug
+        	//System.out.println("focus on enemy base");	//TODO debug
             return enemyBase;
         }
 
         // Try going near any enemy building
         UnitData enemyBuilding = AtlantisEnemyInformationManager.getNearestEnemyBuilding();
         if (enemyBuilding != null) {
-        	System.out.println("focus on enemy bldg");	//TODO debug
+        	//System.out.println("focus on enemy bldg");	//TODO debug
             return enemyBuilding.getPosition();
         }
 
         // Try going to any known enemy unit
         Unit anyEnemyUnit = Select.enemy().first();
         if (anyEnemyUnit != null) {
-        	System.out.println("focus on enemy unit");	//TODO debug
+        	//System.out.println("focus on enemy unit");	//TODO debug
             return anyEnemyUnit.getPosition();
         }
         
         // Try to go to some starting location, hoping to find enemy there.
         BaseLocation startLocation = AtlantisMap.getNearestUnexploredStartingLocation(Select.mainBase().getPosition());
         if (startLocation != null) {
-        	System.out.println("focus on start location");	//TODO debug
+        	//System.out.println("focus on start location");	//TODO debug
             return startLocation.getPosition();
         }
 
