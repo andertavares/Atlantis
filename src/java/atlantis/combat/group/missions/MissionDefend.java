@@ -123,7 +123,6 @@ public class MissionDefend extends Mission {
 
     // =========================================================
     public static Chokepoint getFocusPoint() {
-    	System.out.println("focus point: " + AtlantisMap.getMainBaseChokepoint()); //TODO DEBUG
         return AtlantisMap.getMainBaseChokepoint();
     }
 

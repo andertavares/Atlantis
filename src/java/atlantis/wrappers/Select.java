@@ -287,7 +287,6 @@ public class Select<T> {
      * Selects only units of given type(s).
      */
     public Select<?> ofType(UnitType... types) {
-    	//FIXME: this seems to be returning an empty list
         Iterator<T> unitsIterator = data.iterator();
         while (unitsIterator.hasNext()) {
             Object unitOrData = unitsIterator.next();
@@ -650,10 +649,8 @@ public class Select<T> {
     public static Unit mainBase() {
         if (_cached_mainBase == null) {
             List<Unit> bases = ourBases().list();	
-            System.out.println("ourBases: " + ourBases());	//TODO debug
             _cached_mainBase = bases.isEmpty() ? null : bases.get(0);	//first();
         }
-        System.out.println("_cached_mainbase: " + _cached_mainBase);	//TODO debug
         return _cached_mainBase;
     }
 
