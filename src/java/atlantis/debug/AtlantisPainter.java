@@ -81,7 +81,7 @@ public class AtlantisPainter {
         // Paint TOOLTIPS over units
         for (Unit unit : Select.our().list()) {
             if (TooltipManager.hasTooltip(unit)) { // unit.hasTooltip()
-            	//System.out.println("-will paint tooltip!"); //TODO DEBUG
+            	//System.out.println("-tooltip: " + TooltipManager.getTooltipObject(unit)); //TODO DEBUG
                 paintTextCentered(unit.getPosition(), TooltipManager.getTooltip(unit), false);
             }
         }

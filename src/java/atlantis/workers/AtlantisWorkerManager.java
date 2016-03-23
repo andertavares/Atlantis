@@ -33,7 +33,7 @@ public class AtlantisWorkerManager {
 
     // =========================================================
     /**
-     * Assigns given worker unit (which is idle by now ar least doesn't have anything to do) to gather
+     * Assigns given worker unit (which is idle by now at least doesn't have anything to do) to gather
      * minerals.
      */
     private static void sendToGatherMineralsOrGas(Unit worker) {
@@ -89,7 +89,7 @@ public class AtlantisWorkerManager {
     private static void updateTooltip(Unit unit) {
         String tooltip = "";
         String newLine = "\r\n";
-
+        //FIXME: this is making tooltip get the empty string
         ConstructionOrder buildingToBuild = AtlantisConstructingManager.getConstructionOrderFor(unit);
         if (buildingToBuild != null) {
             tooltip += "Build: " + NameUtil.getShortName(buildingToBuild.getBuildingType()) + newLine;

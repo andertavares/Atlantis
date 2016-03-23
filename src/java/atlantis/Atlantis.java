@@ -196,6 +196,7 @@ public class Atlantis implements BWEventListener {
      * This was the previous onFrame. Now it is wrapped in a try-catch
      */
 	private void playerOnFrame() {
+		System.out.println(String.format("\n------------ Frame %5d ------------", AtlantisGame.getTimeFrames()));
 		// Initial actions - those should be executed only once.
         if (!_initialActionsExecuted) {
             _initialActionsExecuted = true;

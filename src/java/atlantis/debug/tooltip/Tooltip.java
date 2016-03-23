@@ -1,6 +1,7 @@
 package atlantis.debug.tooltip;
 
 import atlantis.AtlantisGame;
+import atlantis.util.NameUtil;
 import bwapi.Unit;
 
 public class Tooltip {
@@ -26,7 +27,7 @@ public class Tooltip {
     public String getTooltip() {
         if (AtlantisGame.getTimeFrames() - tooltipStartInFrames > 30) {
             String tooltipToReturn = this.tooltip;
-            this.tooltip = null;
+            this.removeTooltip();
             return tooltipToReturn;
         } else {
             return tooltip;
@@ -52,5 +53,17 @@ public class Tooltip {
     	
     	return unit.getID() == ((Tooltip)other).getUnit().getID();
     	
+    }
+    
+    @Override
+    public String toString(){
+    	return String.format(
+			"Tooltip for (%d) %s %s: %s. Start @ frame %d", 
+			unit.getID(),
+			NameUtil.getShortName(unit.getType()),
+			unit.getPosition().toTilePosition(), 
+			hasTooltip() ? String.format("'%s'", tooltip) : "null", 
+			tooltipStartInFrames
+		);
     }
 }
