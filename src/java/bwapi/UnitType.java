@@ -1189,5 +1189,22 @@ Retrieves the set of upgrades that this unit type is capable of upgrading. Note 
     	}
         return false;
     }
+    
+    /**
+     * Returns true if this type is a base (Command Center, Nexus, Hatchery, Lair or Hive)
+     * @return
+     */
+    public boolean isBase() {
+        return matches(UnitType.Terran_Command_Center, UnitType.Protoss_Nexus, UnitType.Zerg_Hatchery,
+                UnitType.Zerg_Lair, UnitType.Zerg_Hive);
+    }
+    
+    /**
+     * Returns true if this type corresponts to a Refinery, Extractor or Assimilator
+     * @return
+     */
+    public boolean isGasBuilding(){
+    	return matches(UnitType.Terran_Refinery, UnitType.Protoss_Assimilator, UnitType.Zerg_Extractor);
+    }
 
 }

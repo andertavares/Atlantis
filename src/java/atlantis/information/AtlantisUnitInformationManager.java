@@ -122,7 +122,7 @@ public class AtlantisUnitInformationManager {
     public static int countOurUnitsOfType(UnitType type) {
 
         // Bas building
-        if (UnitUtil.isGasBuilding(type)) {
+        if (type.isGasBuilding()) {
             int total = 0;
             for (UnitData unit : allUnits.values()) {
                 if (type.equals(unit.getType())) {
@@ -159,7 +159,7 @@ public class AtlantisUnitInformationManager {
     public static int countOurBases() {
         int total = 0;
         for (Unit unit : Select.our().list()) {
-            if (UnitUtil.isBase(unit.getType())) {
+            if (unit.isBase()) {
                 total++;
             }
         }

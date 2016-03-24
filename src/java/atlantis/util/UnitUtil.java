@@ -69,44 +69,13 @@ public class UnitUtil {
         );
     }
 	
-	public static boolean isBase(UnitType t){
-	        return t.matches(
-        		UnitType.Terran_Command_Center, UnitType.Protoss_Nexus, UnitType.Zerg_Hatchery,
-                UnitType.Zerg_Lair, UnitType.Zerg_Hive
-               );
-	}
 	
-	/**
-     * Returns which unit of the same type this unit is. E.g. it can be first (0) Overlord or third (2) 
-     * Zergling. It compares IDs of units to return correct result.
-     *
-    public static int getUnitIndex(Unit u) {
-        int index = 0;
-        Collection<Unit> ourUnitsOfType = (Collection<Unit>) Select.our().ofType(u.getType()).list();
-        for (Unit otherUnit : ourUnitsOfType) {
-            if (otherUnit.getID() < u.getID()) {
-                index++;
-            }
-        }
-        return index;
-    }*/
-	
-    
-    /**
-     * Returns whether UnitType is Refinery, Assimilator or Extractor
-     * @param t
-     * @return
-     */
-    public static boolean isGasBuilding(UnitType t){
-    	return t.matches(UnitType.Terran_Refinery, UnitType.Protoss_Assimilator, UnitType.Zerg_Extractor);
-    }
-    
     /**
      * Not that we're racists, but spider mines and larvas aren't really units...
-     */
+     *
     public static boolean isNotActuallyUnit(UnitType t) {
         return t.matches(UnitType.Terran_Vulture_Spider_Mine, UnitType.Zerg_Larva, UnitType.Zerg_Egg);
-    }
+    }*/
     
     /**
      * Replaces variable _isMilitaryBuildingAntiGround of old Unit class

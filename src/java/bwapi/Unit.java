@@ -1,14 +1,11 @@
 package bwapi;
 
 //@AtlantisChange
-import bwapi.*;
-
 import java.util.Map;
 
 import atlantis.AtlantisGame;
 import atlantis.combat.group.Group;
 import atlantis.combat.micro.AtlantisRunning;
-import atlantis.debug.tooltip.TooltipManager;
 import atlantis.wrappers.Select;
 
 import java.util.HashMap;
@@ -4180,6 +4177,61 @@ Cheap checks for whether the unit is able to execute a placeCOP command. See als
             }
         }
         return index;
+    }
+    
+ // =========================================================
+    // Very specific auxiliary methods
+    
+    /**
+     * Returns true if given unit is one of buildings like Bunker, Photon Cannon etc. For more details, you
+     * have to specify at least one <b>true</b> to the params.
+     * @param canShootGround
+     * @param canShootAir
+     * @return
+     */
+    public boolean isMilitaryBuilding(boolean canShootGround, boolean canShootAir) {
+        if (!isBuilding()) {
+            return false;
+        }
+        if (canShootGround && _isMilitaryBuildingAntiGround) {
+            return true;
+        }
+        else if (canShootAir && _isMilitaryBuildingAntiAir) {
+            return true;
+        }
+        return false;
+    }
+    
+    public boolean isGroundUnit() {
+        return !getType().isFlyer();
+    }
+    
+    public boolean isAirUnit() {
+        return getType().isFlyer();
+    }
+    
+    public boolean isSpiderMine() {
+        return getType().equals(UnitType.Terran_Vulture_Spider_Mine);
+    }
+
+    public boolean isLarvaOrEgg() {
+        return getType().equals(UnitType.Zerg_Larva) || getType().equals(UnitType.Zerg_Egg);
+    }
+
+    public boolean isLarva() {
+        return getType().equals(UnitType.Zerg_Larva);
+    }
+
+    public boolean isEgg() {
+        return getType().equals(UnitType.Zerg_Egg);
+    }
+
+    /**
+     * Not that we're racists, but spider mines and larvas aren't really units...
+     * @return true if unit is spider mine or egg
+     */
+    public boolean isNotActuallyUnit() {
+        return isSpiderMine() || isLarvaOrEgg();
     }
 
 }

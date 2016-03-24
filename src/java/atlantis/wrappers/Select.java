@@ -72,7 +72,7 @@ public class Select<T> {
     	List<Unit> data = new ArrayList<>();
 
         for (Unit unit : Atlantis.getBwapi().self().getUnits()) {
-            if (unit.exists() && unit.isCompleted() && ! UnitUtil.isNotActuallyUnit(unit.getType()) && !unit.getType().isBuilding()
+            if (unit.exists() && unit.isCompleted() && ! unit.isNotActuallyUnit() && !unit.getType().isBuilding()
                     && !unit.getType().equals(AtlantisConfig.WORKER)) {
                 data.add(unit);	//TODO: make it more efficient by just querying the cache of known units
             }
@@ -120,7 +120,7 @@ public class Select<T> {
     	List<Unit> data = new ArrayList<>();
 
         for (Unit unit : Atlantis.getBwapi().self().getUnits()) {
-            if (unit.exists() && unit.isCompleted() && !unit.getType().isBuilding() && ! UnitUtil.isNotActuallyUnit(unit.getType())) {
+            if (unit.exists() && unit.isCompleted() && !unit.getType().isBuilding() && ! unit.isNotActuallyUnit()) {
                 data.add(unit);
             }
         }
@@ -135,7 +135,7 @@ public class Select<T> {
     	List<Unit> data = new ArrayList<>();
 
         for (Unit unit : Atlantis.getBwapi().self().getUnits()) {
-            if (unit.exists() && !unit.isCompleted() && !unit.getType().isBuilding() && ! UnitUtil.isNotActuallyUnit(unit.getType())) {
+            if (unit.exists() && !unit.isCompleted() && !unit.getType().isBuilding() && ! unit.isNotActuallyUnit()) {
                 data.add(unit);
             }
         }
@@ -186,7 +186,7 @@ public class Select<T> {
     	List<Unit> data = new ArrayList<>();
 
         for (Unit unit : Atlantis.getBwapi().enemy().getUnits()) {
-            if (unit.exists() && unit.isVisible() && !unit.getType().isBuilding() && ! UnitUtil.isNotActuallyUnit(unit.getType())) {
+            if (unit.exists() && unit.isVisible() && !unit.getType().isBuilding() && ! unit.isNotActuallyUnit()) {
                 data.add(unit);
             }
         }

@@ -34,13 +34,13 @@ public class AtlantisPositionFinder {
 
         // =========================================================
         // Buildings extracting GAS
-        if (UnitUtil.isGasBuilding(building)) {
+        if (building.isGasBuilding()) {
             return AtlantisSpecialPositionFinder.findPositionForGasBuilding(building);
         } 
 
         // =========================================================
         // BASE
-        else if (UnitUtil.isBase(building)) {
+        else if (building.isBase()) {
             return AtlantisSpecialPositionFinder.findPositionForBase(building, builder, constructionOrder);
         } 
 

@@ -36,7 +36,7 @@ public class AtlantisEnemyInformationManager {
         }
 
         for (UnitData enemyUnit : AtlantisUnitInformationManager.enemyUnitsDiscovered.values()) {
-            if (UnitUtil.isBase(enemyUnit.getType())) {
+            if (enemyUnit.getType().isBase()) {
                 return enemyUnit.getUnit();	//TODO: check for problems with base out of sight
             }
         }
@@ -51,7 +51,7 @@ public class AtlantisEnemyInformationManager {
 //        System.out.println(AtlantisUnitInformationManager.enemyUnitsDiscovered.size());
         for (UnitData enemyUnitData : AtlantisUnitInformationManager.enemyUnitsDiscovered.values()) {
 //            System.out.println(enemyUnit);
-            if (UnitUtil.isBase(enemyUnitData.getType()) && enemyUnitData.getUnit().exists()) {
+            if (enemyUnitData.getType().isBase() && enemyUnitData.getUnit().exists()) {
                 return enemyUnitData.getPosition();
             }
         }

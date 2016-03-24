@@ -53,7 +53,7 @@ public class AtlantisWorkerManager {
     // Auxiliary
     
     public static int getHowManyWorkersAt(Unit target) {
-        boolean isGasBuilding = UnitUtil.isGasBuilding(target.getType());
+        boolean isGasBuilding = target.getType().isGasBuilding();
         int total = 0;
         Collection<Unit> ourWorkersInRange = (Collection<Unit>) Select.ourWorkers().inRadius(15, target.getPosition()).list();
         for (Unit worker : ourWorkersInRange) {

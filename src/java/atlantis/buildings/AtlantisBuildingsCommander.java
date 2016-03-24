@@ -25,7 +25,7 @@ public class AtlantisBuildingsCommander {
 
             // =========================================================
             // BASE (Command Center / Nexus / Hatchery / Lair / Hive)
-            if (UnitUtil.isBase(building.getType())) {
+            if (building.isBase()) {
                 AtlantisBaseManager.update(building);
             } 
 

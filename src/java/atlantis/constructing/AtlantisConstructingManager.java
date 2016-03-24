@@ -35,7 +35,7 @@ public class AtlantisConstructingManager {
      * it.
      */
     public static void requestConstructionOf(UnitType building, ProductionOrder order) {
-        if (UnitUtil.isGasBuilding(building)) {
+        if (building.isGasBuilding()) {
             AtlantisGame.sendMessage(building.toString());
         }
         
@@ -184,7 +184,7 @@ public class AtlantisConstructingManager {
                 removeOrder(constructionOrder);
 
                 // @FIX to fix bug with Refineries not being shown as created, because they're kinda changed.
-                if (UnitUtil.isGasBuilding(building.getType())) {
+                if (building.getType().isGasBuilding()) {
                     AtlantisUnitInformationManager.rememberUnit(building);
                 }
             } // NOT YET COMPLETED
