@@ -45,7 +45,7 @@ public class MissionPrepare extends Mission {
 
             // Too close to
             if (isCriticallyCloseToChokePoint(unit, chokepoint)) {
-                UnitUtil.moveAwayFrom(unit, chokepoint.getCenter(), 1.5);	//unit.moveAwayFrom(chokepoint, 1.5);
+            	unit.moveAwayFrom(chokepoint.getCenter(), 1.5);	//unit.moveAwayFrom(chokepoint, 1.5);
                 TooltipManager.setTooltip(unit, "Get back");  //unit.setTooltip("Get back");
                 System.out.println("get back -- prepare");	//TODO DEBUG
                 return true;
@@ -56,7 +56,7 @@ public class MissionPrepare extends Mission {
 
                 // Too many stacked units
                 if (isTooManyUnitsAround(unit, chokepoint)) {
-                    UnitUtil.moveAwayFrom(unit, chokepoint.getCenter(), 0.2);	//unit.moveAwayFrom(chokepoint, 0.2);
+                	unit.moveAwayFrom(chokepoint.getCenter(), 0.2);	//unit.moveAwayFrom(chokepoint, 0.2);
                     TooltipManager.setTooltip(unit, "Stacked"); //unit.setTooltip("Stacked");
                 } // Units aren't stacked too much
                 else {

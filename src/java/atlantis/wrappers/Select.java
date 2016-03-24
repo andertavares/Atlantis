@@ -56,7 +56,7 @@ public class Select<T> {
 
         //self().getUnits() replaces getMyUnits()
         for (Unit unit : Atlantis.getBwapi().self().getUnits()) {
-            if (unit.exists() && unit.isCompleted() && ! UnitUtil.isType(unit.getType(), UnitType.Terran_Vulture_Spider_Mine, UnitType.Zerg_Larva, UnitType.Zerg_Egg) ) {
+            if (unit.exists() && unit.isCompleted() && ! unit.isType(UnitType.Terran_Vulture_Spider_Mine, UnitType.Zerg_Larva, UnitType.Zerg_Egg) ) {
                 data.add(unit);	//TODO: make it more efficient by just querying the cache of known units
             }
         }
@@ -202,7 +202,7 @@ public class Select<T> {
     	List<Unit> data = new ArrayList<>();
 
         for (Unit unit : Atlantis.getBwapi().enemy().getUnits()) {
-            if (unit.exists() && unit.isVisible() && !unit.getType().isBuilding() && !UnitUtil.isType(unit.getType(), UnitType.Zerg_Larva, UnitType.Zerg_Egg)) {
+            if (unit.exists() && unit.isVisible() && !unit.getType().isBuilding() && !unit.isType(UnitType.Zerg_Larva, UnitType.Zerg_Egg)) {
                 if ((!unit.getType().isFlyer() && includeGroundUnits) || (unit.getType().isFlyer() && includeAirUnits)) {
                     data.add(unit);
                 }
@@ -455,11 +455,11 @@ public class Select<T> {
         Iterator<T> unitsIterator = data.iterator();
         while (unitsIterator.hasNext()) {
         	UnitData uData = dataFrom(unitsIterator.next());
-            boolean isMilitaryBuilding = UnitUtil.isType(uData.getType(),
-                    UnitType.Terran_Bunker,
-                    UnitType.Protoss_Photon_Cannon,
-                    UnitType.Zerg_Sunken_Colony,
-                    UnitType.Zerg_Spore_Colony
+            boolean isMilitaryBuilding = uData.getType().matches(	//TODO: test whether this works on units on fog of war
+                UnitType.Terran_Bunker,
+                UnitType.Protoss_Photon_Cannon,
+                UnitType.Zerg_Sunken_Colony,
+                UnitType.Zerg_Spore_Colony
             );
             Unit u = uData.getUnit();	//TODO: will work only on visible units...
             if (!u.isCompleted() || !u.exists() || (uData.getType().isBuilding() && !isMilitaryBuilding)) {

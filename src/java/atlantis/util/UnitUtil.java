@@ -17,7 +17,7 @@ public class UnitUtil {
 	/**
      * Unit will move by given distance (in build tiles) from given position.
      * @TODO: check conversion between TilePosition and Position
-     */
+     *
     public static void moveAwayFrom(Unit u, Position position, double moveDistance) {
         int dx = position.getX() - u.getPosition().getX();
         int dy = position.getY() - u.getPosition().getY();
@@ -30,7 +30,7 @@ public class UnitUtil {
 
         u.move(newPosition, false);
         TooltipManager.setTooltip(u, "Run");
-    }
+    }*/
 	
 	/**
 	 * Returns the total cost of a unit for score calculation,
@@ -70,14 +70,16 @@ public class UnitUtil {
     }
 	
 	public static boolean isBase(UnitType t){
-	        return isType(t, UnitType.Terran_Command_Center, UnitType.Protoss_Nexus, UnitType.Zerg_Hatchery,
-	                UnitType.Zerg_Lair, UnitType.Zerg_Hive);
+	        return t.matches(
+        		UnitType.Terran_Command_Center, UnitType.Protoss_Nexus, UnitType.Zerg_Hatchery,
+                UnitType.Zerg_Lair, UnitType.Zerg_Hive
+               );
 	}
 	
 	/**
      * Returns which unit of the same type this unit is. E.g. it can be first (0) Overlord or third (2) 
      * Zergling. It compares IDs of units to return correct result.
-     */
+     *
     public static int getUnitIndex(Unit u) {
         int index = 0;
         Collection<Unit> ourUnitsOfType = (Collection<Unit>) Select.our().ofType(u.getType()).list();
@@ -87,19 +89,8 @@ public class UnitUtil {
             }
         }
         return index;
-    }
+    }*/
 	
-	/**
-     * Returns true if given type equals to one of types passed as parameter.
-     */
-    public static boolean isType(UnitType t, UnitType... types) {
-        for (UnitType otherType : types) {
-            if (t.equals(otherType)) {
-                return true;
-            }
-        }
-        return false;
-    }
     
     /**
      * Returns whether UnitType is Refinery, Assimilator or Extractor
@@ -107,14 +98,14 @@ public class UnitUtil {
      * @return
      */
     public static boolean isGasBuilding(UnitType t){
-    	return isType(t, UnitType.Terran_Refinery, UnitType.Protoss_Assimilator, UnitType.Zerg_Extractor);
+    	return t.matches(UnitType.Terran_Refinery, UnitType.Protoss_Assimilator, UnitType.Zerg_Extractor);
     }
     
     /**
      * Not that we're racists, but spider mines and larvas aren't really units...
      */
     public static boolean isNotActuallyUnit(UnitType t) {
-        return isType(t, UnitType.Terran_Vulture_Spider_Mine, UnitType.Zerg_Larva, UnitType.Zerg_Egg);
+        return t.matches(UnitType.Terran_Vulture_Spider_Mine, UnitType.Zerg_Larva, UnitType.Zerg_Egg);
     }
     
     /**
@@ -123,8 +114,8 @@ public class UnitUtil {
      * @return
      */
     public static boolean isMilitaryBuildingAntiGround(UnitType t) {
-    	return isType(    
-            t, UnitType.Terran_Bunker, UnitType.Protoss_Photon_Cannon, UnitType.Zerg_Sunken_Colony
+    	return t.matches(
+			UnitType.Terran_Bunker, UnitType.Protoss_Photon_Cannon, UnitType.Zerg_Sunken_Colony
 		);
     }
     
@@ -134,8 +125,8 @@ public class UnitUtil {
      * @return
      */
     public static boolean isMilitaryBuildingAntiAir(UnitType t){
-    	return isType(
-            t, UnitType.Terran_Bunker, UnitType.Protoss_Photon_Cannon, UnitType.Zerg_Spore_Colony
+    	return t.matches(
+    			UnitType.Terran_Bunker, UnitType.Protoss_Photon_Cannon, UnitType.Zerg_Spore_Colony
 		);
     }
     
@@ -157,23 +148,14 @@ public class UnitUtil {
     }
     
     /**
-     * Returns the remaining Unit life, in %
-     * @param u
-     * @return
-     */
-    public static int getHPPercent(Unit u) {
-        return 100 * u.getHitPoints() / u.getType().maxHitPoints();
-    }
-    
-    /**
      * Returns the 'normalized' damage of a UnitType
      * 'normalized' is damageAmount * damageFactor 
      * @param t
      * @return
-     */
+     *
     public static int getNormalizedDamage(WeaponType wt){
     	return wt.damageAmount() * wt.damageFactor();
-    }
+    }*/
     
     /**
      * Returns true if unit has ground weapon.

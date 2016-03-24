@@ -132,7 +132,7 @@ public class AtlantisPainter {
             // =========================================================
             // === Paint life bars bars over wounded units
             // =========================================================
-            if (UnitUtil.getHPPercent(unit) < 100) {
+            if (unit.getHPPercent() < 100) {
                 int boxWidth = 20;
                 int boxHeight = 4;
                 int boxLeft = unit.getPosition().getX() - boxWidth / 2;
@@ -566,7 +566,7 @@ public class AtlantisPainter {
             Unit trained = unit.getBuildUnit();
             String trainedUnitString = "";
             if (trained != null) {
-                operationProgress = UnitUtil.getHPPercent(trained); // trained.getHP() * 100 / trained.getMaxHP();
+                operationProgress = trained.getHPPercent(); // trained.getHP() * 100 / trained.getMaxHP();
                 trainedUnitString = NameUtil.getShortName(trained.getType()); //trained.getShortName();
             }
 

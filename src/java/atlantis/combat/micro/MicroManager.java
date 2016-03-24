@@ -67,7 +67,7 @@ public abstract class MicroManager {
             return false;
         }
         
-        if (unit.getHitPoints() <= 16 || UnitUtil.getHPPercent(unit) < 30) {
+        if (unit.getHitPoints() <= 16 || unit.getHPPercent() < 30) {
             if (Select.ourCombatUnits().inRadius(4, unit.getPosition()).count() <= 6) {
                 return AtlantisRunManager.run(unit);
             }

@@ -101,7 +101,7 @@ public class AtlantisScoutManager {
         BaseLocation startingLocation;
         if (scout.getType().equals(UnitType.Zerg_Overlord)) {
             startingLocation = AtlantisMap.getStartingLocationBasedOnIndex(
-                    UnitUtil.getUnitIndex(scout)
+                    scout.getUnitIndex()
             );
         }
         else {

@@ -105,7 +105,7 @@ public class AtlantisCombatEvaluator {
 
         double enemyEvaluation = evaluateUnitsAgainstUnit(enemyUnits, unit, true);
         double ourEvaluation = evaluateUnitsAgainstUnit(ourUnits, enemyUnits.iterator().next(), false);
-        double lowHealthPenalty = (100 - UnitUtil.getHPPercent(unit)) / 80;
+        double lowHealthPenalty = (100 - unit.getHPPercent()) / 80;
         double combatEval = ourEvaluation / enemyEvaluation - 1 - lowHealthPenalty;
         
         return updateCombatEval(unit, combatEval);
@@ -190,8 +190,8 @@ public class AtlantisCombatEvaluator {
 
     private static double evaluateUnitHPandDamage(UnitType evaluateType, int hp, Unit againstUnit) {
         double damage = (!againstUnit.getType().isFlyer() ? 
-            UnitUtil.getNormalizedDamage(evaluateType.groundWeapon()) : 
-            UnitUtil.getNormalizedDamage(evaluateType.airWeapon())
+    		evaluateType.groundWeapon().getNormalizedDamage() : 
+    			evaluateType.airWeapon().getNormalizedDamage()
         );
         double total = hp * EVAL_HIT_POINTS_FACTOR + damage * EVAL_DAMAGE_FACTOR;
         
